@@ -6,3 +6,6 @@ __pycache__/
 
 # editor stuff
 bloom.sublime-workspace
+
+# docs
+_build/
