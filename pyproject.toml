@@ -1,0 +1,13 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module = "bloom"
+author = "A5rocks"
+author-email = "git@helvetica.moe"
+home-page = "https://github.com/A5rocks/bloom"
+classifiers = [ "License :: OSI Approved :: Apache Software License",]
+requires-python = ">=3.7,<3.10"
+dist-name = "discord-bloom"
+description-name = "README.md"

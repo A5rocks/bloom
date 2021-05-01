@@ -1,0 +1,8 @@
+# virtual environments
+venv/
+
+# python cruft
+__pycache__/
+
+# editor stuff
+bloom.sublime-workspace
