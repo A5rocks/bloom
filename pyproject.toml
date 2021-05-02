@@ -13,4 +13,5 @@ dist-name = "discord-bloom"
 description-file = "README.md"
 
 [tool.flit.metadata.requires-extra]
-doc = ["sphinx", "furo", "sphinx-autobuild", "sphinxcontrib-trio"]
+doc = ["sphinx", "furo", "sphinx-autobuild", "sphinxcontrib-trio",]
+dev = ["mypy", "isort", "flake8", "pylint", ]

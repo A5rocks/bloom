@@ -17,5 +17,8 @@ Short reference for myself:
 - install with `flit install -s`
 - generate docs with `python -m sphinx -M html docs _build`
 - autoreload docs with `sphinx-autobuild docs _build --watch bloom`
+- typecheck with `mypy . --strict`
+- stylecheck (?) with `flake8 bloom` or `pylint bloom`
+- fix imports with `isort .`
 
 TODO: write more. or don't. that's a thing too.

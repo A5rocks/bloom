@@ -4,7 +4,7 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-# -- Path setup --------------------------------------------------------------
+from __future__ import annotations
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -12,6 +12,11 @@
 #
 import os
 import sys
+import typing
+
+# -- Path setup --------------------------------------------------------------
+
+
 sys.path.insert(0, os.path.abspath('..'))
 
 
@@ -21,7 +26,7 @@ project = 'bloom'
 copyright = '2021, A5rocks'
 author = 'A5rocks'
 
-import bloom
+import bloom  # noqa: E402
 
 version = bloom.__version__
 release = version
@@ -44,10 +49,10 @@ highlight_language = 'python3'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-	'sphinx.ext.autodoc',
-	'sphinx.ext.intersphinx',
-	'sphinx.ext.napoleon',
-	'sphinxcontrib_trio'
+    'sphinx.ext.autodoc',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.napoleon',
+    'sphinxcontrib_trio'
 ]
 
 intersphinx_mapping = {
@@ -61,7 +66,7 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
+exclude_patterns: typing.List[str] = []
 
 
 # -- Options for HTML output -------------------------------------------------
