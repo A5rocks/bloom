@@ -12,6 +12,10 @@ requires-python = ">=3.7,<3.10"
 dist-name = "discord-bloom"
 description-file = "README.md"
 
+# make sure to keep this up to date with requirements.txt
+requires = []
+
+
 [tool.flit.metadata.requires-extra]
 doc = ["sphinx", "furo", "sphinx-autobuild", "sphinxcontrib-trio",]
 dev = ["mypy", "isort", "flake8", "pylint", ]
