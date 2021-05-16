@@ -1,8 +1,11 @@
 {
-	"folders":
-	[
+	"folders": [
 		{
 			"path": "."
 		}
-	]
+	],
+	"settings": {
+		"SublimeLinter.linters.mypy.disable": false,
+		"SublimeLinter.linters.mypy.executable": "~/.virtualenvs/bloom/bin/mypy"
+	}
 }

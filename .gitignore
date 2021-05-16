@@ -9,3 +9,9 @@ bloom.sublime-workspace
 
 # docs
 _build/
+
+# tool cruft
+.mypy_cache/
+
+# testing script
+main.py

@@ -19,6 +19,6 @@ Short reference for myself:
 - autoreload docs with `sphinx-autobuild docs _build --watch bloom`
 - typecheck with `mypy . --strict`
 - stylecheck (?) with `flake8 bloom` or `pylint bloom`
-- fix imports with `isort .`
+- fix imports with `isort bloom`
 
 TODO: write more. or don't. that's a thing too.
