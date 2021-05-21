@@ -14,7 +14,7 @@ You shouldn't. At least, not at the moment.
 
 Short reference for myself:
 
-- install with `flit install -s`
+- install with `poetry install`
 - generate docs with `python -m sphinx -M html docs _build`
 - autoreload docs with `sphinx-autobuild docs _build --watch bloom`
 - typecheck with `mypy . --strict`

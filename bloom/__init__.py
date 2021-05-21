@@ -1,5 +1,3 @@
 """bloom - a compact library for discord."""
 
-__version__ = '0.1'
-
-__all__ = ('__version__',)
+# should I have a version? users can just use importlib.metadata though.

@@ -89,24 +89,25 @@ class Intents(enum.IntFlag):
     @classmethod
     def all(cls) -> Intents:
         return (cls.GUILDS
-          | cls.GUILD_MEMBERS
-          | cls.GUILD_BANS
-          | cls.GUILD_EMOJIS
-          | cls.GUILD_INTEGRATIONS
-          | cls.GUILD_WEBHOOKS
-          | cls.GUILD_INVITES
-          | cls.GUILD_VOICE_STATES
-          | cls.GUILD_PRESENCES
-          | cls.GUILD_MESSAGES
-          | cls.GUILD_MESSAGE_REACTIONS
-          | cls.GUILD_MESSAGE_TYPING
-          | cls.DIRECT_MESSAGES
-          | cls.DIRECT_MESSAGE_REACTIONS
-          | cls.DIRECT_MESSAGE_TYPING)
+                | cls.GUILD_MEMBERS
+                | cls.GUILD_BANS
+                | cls.GUILD_EMOJIS
+                | cls.GUILD_INTEGRATIONS
+                | cls.GUILD_WEBHOOKS
+                | cls.GUILD_INVITES
+                | cls.GUILD_VOICE_STATES
+                | cls.GUILD_PRESENCES
+                | cls.GUILD_MESSAGES
+                | cls.GUILD_MESSAGE_REACTIONS
+                | cls.GUILD_MESSAGE_TYPING
+                | cls.DIRECT_MESSAGES
+                | cls.DIRECT_MESSAGE_REACTIONS
+                | cls.DIRECT_MESSAGE_TYPING)
 
     @classmethod
     def unprivileged(cls) -> Intents:
         return cls.all() & ~(cls.GUILD_MEMBERS | cls.GUILD_PRESENCES)
+
 
 async def _heartbeat(
         websocket: trio_websocket.WebSocketConnection,
@@ -158,6 +159,12 @@ async def _shared_logic(
                 raise _NonMonotonicHeartbeat()
 
             data.seq = seq
+
+        elif message['op'] == 1:
+            await websocket.send_message(json.dumps({
+                'op': 1,
+                'd': data.seq
+            }))
 
         elif message['op'] == 7:
             return True
@@ -259,7 +266,10 @@ async def _run_shard(
                 # TODO: dynamically get url
                 url = "wss://gateway.discord.gg/?v=9&encoding=json"
                 # set a max message size of 10mb since guilds are HUGE
-                async with trio_websocket.open_websocket_url(url, max_message_size=10 * 1024 * 1024) as websocket:
+                async with trio_websocket.open_websocket_url(
+                    url,
+                    max_message_size=10 * 1024 * 1024
+                ) as websocket:
                     should_resume = await _run_once(data, info, nursery, websocket, should_resume)
 
                     nursery.cancel_scope.cancel()
@@ -268,7 +278,6 @@ async def _run_shard(
                         await websocket.aclose(3000)
                     else:
                         await websocket.aclose(1000)
-
 
         except trio_websocket.ConnectionClosed as exc:
             logging.warning('[%r] websocket closed due to %r', exc.reason.code, exc.reason.reason)
