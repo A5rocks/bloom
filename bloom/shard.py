@@ -29,24 +29,24 @@ class _ConnectionInfo:
 
 @attr.define()
 class _Backoff:
-    _base: float = 2.0
-    _jitter: float = 0.2
-    _repeats: int = 0
-    _end: int = 6
+    base: float = 2.0
+    jitter: float = 0.2
+    repeats: int = 0
+    end: int = 6
 
     async def wait(self) -> None:
-        if self._repeats < self._end:
-            self._repeats += 1
+        if self.repeats < self.end:
+            self.repeats += 1
         # 2, 4, 8, 16, 32, 64, 64, 64
         await trio.sleep(
             # exponential wait
-            self._base ** self._repeats
+            self.base ** self.repeats
             # random jitter (+- jitter)
-            + random.random() * 2 * self._jitter - self._jitter
+            + random.random() * 2 * self.jitter - self.jitter
         )
 
     def reset(self) -> None:
-        self._repeats = 0
+        self.repeats = 0
 
 
 @attr.define()
