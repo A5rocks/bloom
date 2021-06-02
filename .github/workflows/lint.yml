@@ -1,0 +1,31 @@
+name: lint
+
+on:
+  push:
+    branches: [ default ]
+  pull_request:
+    branches: [ default ]
+  workflow_dispatch:
+
+jobs:
+  lints:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v2"
+      - uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.x"
+      - uses: abatilo/actions-poetry@v2.0.0
+      - run: poetry install
+
+      - name: run mypy
+        if: always()
+        run: poetry run mypy bloom/
+      
+      - name: run isort
+        if: always()
+        run: poetry run isort -c bloom/
+
+      - name: run flake8
+        if: always()
+        run: poetry run flake8 bloom/
