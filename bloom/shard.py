@@ -272,12 +272,12 @@ async def _run_shard(
                 ) as websocket:
                     should_resume = await _run_once(data, info, nursery, websocket, should_resume)
 
-                    nursery.cancel_scope.cancel()
-
                     if should_resume:
                         await websocket.aclose(3000)
                     else:
                         await websocket.aclose(1000)
+
+                    nursery.cancel_scope.cancel()
 
         except trio_websocket.ConnectionClosed as exc:
             logging.warning('[%r] websocket closed due to %r', exc.reason.code, exc.reason.reason)
