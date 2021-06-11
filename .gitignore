@@ -13,5 +13,6 @@ _build/
 # tool cruft
 .mypy_cache/
 
-# testing script
+# testing script(s)
 main.py
+demos/

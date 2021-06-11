@@ -11,6 +11,13 @@ import attr
 import trio
 import trio_websocket
 
+if typing.TYPE_CHECKING:
+    # typing_extensions is a mypy dependency
+    import typing_extensions
+
+
+_LOGGER: typing_extensions.Final[logging.Logger] = logging.getLogger('bloom.shard')
+
 
 @attr.define()
 class _ShardData:
@@ -118,8 +125,6 @@ async def _heartbeat(
         await trio.sleep(interval)
 
         if not data.have_acked:
-            # want to reconnect.
-            await websocket.aclose(3000)
             raise _MissedHeartbeat()
 
         data.have_acked = False
@@ -155,7 +160,6 @@ async def _shared_logic(
             seq = message['s']
 
             if data.seq and seq < data.seq:
-                await websocket.aclose(3000)
                 raise _NonMonotonicHeartbeat()
 
             data.seq = seq
@@ -185,7 +189,7 @@ async def _shared_logic(
             data.have_acked = True
 
         else:
-            logging.warning('UNIMPLEMENTED %r', message['op'])
+            _LOGGER.warning('UNIMPLEMENTED %r', message['op'])
 
     # early return? the backoff will handle identifying eventually, so a RESUME is fine
     return True
@@ -235,7 +239,6 @@ async def _run_once(
 
 async def _run_shard(
         info: _ConnectionInfo,
-        nursery: trio.Nursery
 ) -> typing.NoReturn:
     data = _ShardData()
 
@@ -252,24 +255,25 @@ async def _run_shard(
 
     while True:
         if should_resume:
-            logging.info('resuming')
+            _LOGGER.info('resuming')
             last_resume = trio.current_time()
             resumes += 1
         else:
-            logging.info('identifying')
+            _LOGGER.info('identifying')
             data = _ShardData()
             last_identify = trio.current_time()
             identifies += 1
 
-        try:
-            async with trio.open_nursery() as nursery:
-                # TODO: dynamically get url
-                url = "wss://gateway.discord.gg/?v=9&encoding=json"
-                # set a max message size of 10mb since guilds are HUGE
-                async with trio_websocket.open_websocket_url(
-                    url,
-                    max_message_size=10 * 1024 * 1024
-                ) as websocket:
+        # TODO: dynamically get url
+        url = 'wss://gateway.discord.gg/?v=9&encoding=json'
+
+        # set a max message size of 10mb since guilds are HUGE
+        async with trio_websocket.open_websocket_url(
+            url,
+            max_message_size=10 * 1024 * 1024
+        ) as websocket:
+            try:
+                async with trio.open_nursery() as nursery:
                     should_resume = await _run_once(data, info, nursery, websocket, should_resume)
 
                     if should_resume:
@@ -278,20 +282,30 @@ async def _run_shard(
                         await websocket.aclose(1000)
 
                     nursery.cancel_scope.cancel()
+            except trio_websocket.ConnectionClosed as exc:
+                _LOGGER.warning('[%r] websocket closed due to %r',
+                                exc.reason.code, exc.reason.reason)
 
-        except trio_websocket.ConnectionClosed as exc:
-            logging.warning('[%r] websocket closed due to %r', exc.reason.code, exc.reason.reason)
+                # TODO: have a more comprehensive set of close codes
+                should_resume = exc.reason.code not in [1000, 1001]
 
-            # TODO: have a more comprehensive set of close codes
-            should_resume = exc.reason.code not in [1000, 1001]
+            except _MissedHeartbeat as exc:
+                await websocket.aclose(3000)
 
-        except _MissedHeartbeat as exc:
-            logging.exception('missed a heartbeat', exc_info=exc)
-            should_resume = True
+                _LOGGER.exception('missed a heartbeat', exc_info=exc)
+                should_resume = True
 
-        except _NonMonotonicHeartbeat as exc:
-            logging.exception('heartbeat advanced non-monotonically', exc_info=exc)
-            should_resume = True
+            except _NonMonotonicHeartbeat as exc:
+                await websocket.aclose(3000)
+
+                _LOGGER.exception('heartbeat advanced non-monotonically', exc_info=exc)
+                should_resume = True
+
+            except trio.MultiError as exc:
+                await websocket.aclose(1000)
+
+                _LOGGER.exception('multiple exceptions thrown', exc_info=exc)
+                should_resume = False
 
         # resetting the counters:
         if trio.current_time() - last_identify > 60 * 60:
@@ -326,7 +340,7 @@ async def _run_shard(
 
 async def connect(
         token: str,
-        intents: int,
+        intents: Intents,
         *,
         shard_ids: typing.Sequence[int] = (0,),
         shard_count: int = 1
@@ -335,8 +349,8 @@ async def connect(
     async with trio.open_nursery() as nursery:
         for shard_id in shard_ids:
             info = _ConnectionInfo(token, intents, shard_id, shard_count)
-            nursery.start_soon(_run_shard, info, nursery)
+            nursery.start_soon(_run_shard, info)
 
-    raise RuntimeError("Should never get here.")
+    raise RuntimeError('Should never get here.')
 
 __all__ = ('connect', 'Intents', 'ShardException', 'TooManyIdentifies')
