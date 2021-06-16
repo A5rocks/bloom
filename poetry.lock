@@ -537,7 +537,7 @@ python-versions = ">= 3.5"
 
 [[package]]
 name = "trio"
-version = "0.18.0"
+version = "0.19.0"
 description = "A friendly Python library for async concurrency and I/O"
 category = "main"
 optional = false
@@ -629,7 +629,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "92f20192ba44b5e74f8ccc931e47646054baa366b082be2e2c55b4f091101d86"
+content-hash = "7a8e6876caded5a1d33273455f603a24626cc891b5c973de7d1c81df6f668933"
 
 [metadata.files]
 alabaster = [
@@ -988,8 +988,8 @@ tornado = [
     {file = "tornado-6.1.tar.gz", hash = "sha256:33c6e81d7bd55b468d2e793517c909b139960b6c790a60b7991b9b6b76fb9791"},
 ]
 trio = [
-    {file = "trio-0.18.0-py3-none-any.whl", hash = "sha256:a42af0634ba729cbfe8578be058750c6471dac19fbc7167ec6a3ca3f966fb424"},
-    {file = "trio-0.18.0.tar.gz", hash = "sha256:87a66ae61f27fe500c9024926a9ba482c07e1e0f56380b70a264d19c435ba076"},
+    {file = "trio-0.19.0-py3-none-any.whl", hash = "sha256:c27c231e66336183c484fbfe080fa6cc954149366c15dc21db8b7290081ec7b8"},
+    {file = "trio-0.19.0.tar.gz", hash = "sha256:895e318e5ec5e8cea9f60b473b6edb95b215e82d99556a03eb2d20c5e027efe1"},
 ]
 trio-typing = [
     {file = "trio-typing-0.5.0.tar.gz", hash = "sha256:f2007df617a6c26a2294db0dd63645b5451149757e1bde4cb8dbf3e1369174fb"},
