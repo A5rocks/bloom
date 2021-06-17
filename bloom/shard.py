@@ -29,11 +29,32 @@ class _ShardData:
 
 
 @attr.define()
+class _Bucket:
+    pk: trio.lowlevel.ParkingLot
+    _setter_queued: bool = False
+
+    async def park(self) -> None:
+        if not self._setter_queued:
+            self._setter_queued = True
+            await trio.lowlevel.checkpoint()
+            return
+
+        await self.pk.park()
+        self._setter_queued = True
+
+    async def set(self) -> None:
+        await trio.sleep(5)
+        self.pk.unpark()
+        self._setter_queued = False
+
+
+@attr.define()
 class _ConnectionInfo:
     token: str
     intents: int
     shard_id: int
     shard_count: int
+    bucket: _Bucket
 
 
 @attr.define()
@@ -169,7 +190,8 @@ async def _shared_logic(
         websocket: trio_websocket.WebSocketConnection,
         data: _ShardData,
         nursery: trio.Nursery,
-        hello: typing.Dict[str, typing.Any]
+        hello: typing.Dict[str, typing.Any],
+        after_start: typing.Callable[[], typing.Awaitable[None]]
 ) -> bool:
     # the return value is whether or not to resume next time.
 
@@ -205,6 +227,7 @@ async def _shared_logic(
                 data
             )
             await websocket.send_message(json.dumps(hello))
+            nursery.start_soon(after_start)
 
         elif message['op'] == 11:
             data.have_acked = True
@@ -238,6 +261,10 @@ async def _run_once(
                 'seq': shard_data.seq
             }
         }
+
+        async def setter() -> None:
+            await trio.lowlevel.checkpoint()
+
     else:
         hello = {
             'op': 2,
@@ -254,8 +281,9 @@ async def _run_once(
                 # TODO: presence?
             }
         }
+        setter = info.bucket.set
 
-    return await _shared_logic(websocket, shard_data, nursery, hello)
+    return await _shared_logic(websocket, shard_data, nursery, hello, setter)
 
 
 async def _run_shard(
@@ -280,6 +308,7 @@ async def _run_shard(
             last_resume = trio.current_time()
             resumes += 1
         else:
+            await info.bucket.park()
             _LOGGER.info('identifying')
             data = _ShardData()
             last_identify = trio.current_time()
@@ -364,12 +393,16 @@ async def connect(
         intents: Intents,
         *,
         shard_ids: typing.Sequence[int] = (0,),
-        shard_count: int = 1
+        shard_count: int = 1,
+        max_concurrency: int = 1
 ) -> typing.NoReturn:
     """Connects to the gateway with a specified token."""
+    buckets = [_Bucket(trio.lowlevel.ParkingLot()) for _ in range(max_concurrency)]
+
     async with trio.open_nursery() as nursery:
         for shard_id in shard_ids:
-            info = _ConnectionInfo(token, intents, shard_id, shard_count)
+            bucket = buckets[shard_id % max_concurrency]
+            info = _ConnectionInfo(token, intents, shard_id, shard_count, bucket)
             nursery.start_soon(_run_shard, info)
 
     raise RuntimeError('Should never get here.')
