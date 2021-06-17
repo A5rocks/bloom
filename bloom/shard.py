@@ -11,8 +11,9 @@ import attr
 import trio
 import trio_websocket
 
+import bloom._compat as compat
+
 if typing.TYPE_CHECKING:
-    # typing_extensions is a mypy dependency
     import typing_extensions
 
 
@@ -116,6 +117,21 @@ class Intents(enum.IntFlag):
         return cls.all() & ~(cls.GUILD_MEMBERS | cls.GUILD_PRESENCES)
 
 
+class _EveryPayload(compat.TypedDict):
+    op: compat.Literal[1, 7, 9, 10, 11]
+    d: typing.Any
+
+
+class _DispatchPayload(compat.TypedDict):
+    op: compat.Literal[0]
+    t: str
+    s: int
+    d: typing.Any
+
+
+_DiscordPayload = typing.Union[_EveryPayload, _DispatchPayload]
+
+
 async def _heartbeat(
         websocket: trio_websocket.WebSocketConnection,
         interval: float,
@@ -134,10 +150,9 @@ async def _heartbeat(
         }))
 
 
-# TODO: this should probably return TypedDict-s
 async def _stream(
         websocket: trio_websocket.WebSocketConnection
-) -> typing.AsyncGenerator[typing.Dict[str, typing.Any], None]:
+) -> typing.AsyncGenerator[_DiscordPayload, None]:
     while True:
         message = await websocket.get_message()
         yield json.loads(message)
