@@ -4,6 +4,7 @@ from __future__ import annotations
 import enum
 import json
 import logging
+import platform
 import random
 import typing
 
@@ -132,6 +133,11 @@ class _DispatchPayload(compat.TypedDict):
 _DiscordPayload = typing.Union[_EveryPayload, _DispatchPayload]
 
 
+# exhaustive checks with mypy!
+def _never(thing: typing.NoReturn) -> typing.NoReturn:
+    raise RuntimeError(f'Unexpected input {thing}')
+
+
 async def _heartbeat(
         websocket: trio_websocket.WebSocketConnection,
         interval: float,
@@ -205,6 +211,7 @@ async def _shared_logic(
 
         else:
             _LOGGER.warning('UNIMPLEMENTED %r', message['op'])
+            _never(message)
 
     # early return? the backoff will handle identifying eventually, so a RESUME is fine
     return True
@@ -238,8 +245,7 @@ async def _run_once(
                 'token': info.token,
                 'intents': info.intents,
                 'properties': {
-                    # TODO: this
-                    '$os': 'linux',
+                    '$os': platform.system().lower(),
                     '$browser': 'blinkenlights',
                     '$device': 'bloom'
                 },
