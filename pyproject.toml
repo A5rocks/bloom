@@ -21,7 +21,7 @@ sphinx-autobuild = "^2021.3.14"
 sphinxcontrib-trio = "^1.1.2"
 
 # dev
-mypy = "^0.901"
+mypy = "^0.902"
 isort = "^5.8.0"
 flake8 = "^3.9.2"
 pylint = "^2.8.3"
