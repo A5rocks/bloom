@@ -19,6 +19,7 @@ if typing.TYPE_CHECKING:
 
 
 _LOGGER: typing_extensions.Final[logging.Logger] = logging.getLogger('bloom.shard')
+ONE_HOUR = 60 * 60
 
 
 @attr.define()
@@ -357,35 +358,36 @@ async def _run_shard(
                 _LOGGER.exception('multiple exceptions thrown', exc_info=exc)
                 should_resume = False
 
-        # resetting the counters:
-        if trio.current_time() - last_identify > 60 * 60:
-            identifies = 0
-            identify_backoff.reset()
+        # temporary variable to make logic clearer
+        should_identify = not should_resume
 
-        if trio.current_time() - last_resume > 60 * 60:
+        if should_identify:
+            # identifying implies not resuming, so reset that backoff.
             resumes = 0
             resume_backoff.reset()
-
-        if not should_resume:
-            resumes = 0
-            resume_backoff.reset()
-
-        # backing off:
-        if should_resume and 0 < resumes < 10:
-            await resume_backoff.wait()
 
         if resumes >= 10:
             # well. Discord has just been evil.
             # just re-identify I guess?
             should_resume = False
-
-        if not should_resume and 0 < identifies < 4:
-            await identify_backoff.wait()
+            should_identify = True
 
         if identifies >= 4:
             # and Discord made the bot re-identify wayyy too much.
             # there's an identify ratelimit, which makes me antsy.
             raise TooManyIdentifies()
+
+        if trio.current_time() - last_identify > ONE_HOUR:
+            identifies = 0
+            identify_backoff.reset()
+        elif should_identify and identifies < 4:
+            await identify_backoff.wait()
+
+        if trio.current_time() - last_resume > ONE_HOUR:
+            resumes = 0
+            resume_backoff.reset()
+        elif should_resume and resumes < 10:
+            await resume_backoff.wait()
 
 
 async def connect(
