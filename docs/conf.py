@@ -10,9 +10,12 @@ from __future__ import annotations
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+
+# python >=3.8 is assumed to build docs. (for importlib.metadata)
 import os
 import sys
 import typing
+from importlib.metadata import version
 
 # -- Path setup --------------------------------------------------------------
 
@@ -25,10 +28,7 @@ sys.path.insert(0, os.path.abspath('..'))
 project = 'bloom'
 copyright = '2021, A5rocks'
 author = 'A5rocks'
-
-import bloom  # noqa: E402
-
-version = bloom.__version__
+version = version('bloom')
 release = version
 
 
