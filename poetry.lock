@@ -578,17 +578,19 @@ sortedcontainers = "*"
 
 [[package]]
 name = "trio-typing"
-version = "0.5.0"
+version = "0.5.1"
 description = "Static type checking support for Trio and related projects"
 category = "dev"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-mypy = {version = ">=0.780", markers = "implementation_name == \"cpython\""}
 mypy-extensions = ">=0.4.2"
 trio = ">=0.16.0"
 typing-extensions = ">=3.7.4"
+
+[package.extras]
+mypy = ["mypy (>=0.780)"]
 
 [[package]]
 name = "trio-websocket"
@@ -666,7 +668,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "00987b6d2c70c0a46953a8bf72ec45f7ad69f3211991484c9f96085e52a9cb7a"
+content-hash = "afdfb892377d264774a15b70519eca2ff8df64226d7a208c5a08c49dd65d8518"
 
 [metadata.files]
 alabaster = [
@@ -1037,8 +1039,8 @@ trio = [
     {file = "trio-0.19.0.tar.gz", hash = "sha256:895e318e5ec5e8cea9f60b473b6edb95b215e82d99556a03eb2d20c5e027efe1"},
 ]
 trio-typing = [
-    {file = "trio-typing-0.5.0.tar.gz", hash = "sha256:f2007df617a6c26a2294db0dd63645b5451149757e1bde4cb8dbf3e1369174fb"},
-    {file = "trio_typing-0.5.0-py3-none-any.whl", hash = "sha256:35f1bec8df2150feab6c8b073b54135321722c9d9289bbffa78a9a091ea83b72"},
+    {file = "trio-typing-0.5.1.tar.gz", hash = "sha256:3eae317514ca18af158bd14ec55ccf20e8b1461efc3a431b87c337a9ca97180b"},
+    {file = "trio_typing-0.5.1-py3-none-any.whl", hash = "sha256:c3717f097eab29f8deb58a6976da366bd98adb81d90f38002b564932839eaa84"},
 ]
 trio-websocket = [
     {file = "trio-websocket-0.9.2.tar.gz", hash = "sha256:a3d34de8fac26023eee701ed1e7bf4da9a8326b61a62934ec9e53b64970fd8fe"},
