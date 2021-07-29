@@ -146,7 +146,8 @@ class AuditLogChangeKey(Enum):
     #: description: required verification level changed
     VERIFICATION_LEVEL = "verification_level"
     #: a "guild" just changed. the values are of type integer
-    #: description: change in whose messages are scanned and deleted for explicit content in the server
+    #: description: change in whose messages are scanned and deleted for
+    # explicit content in the server
     EXPLICIT_CONTENT_FILTER = "explicit_content_filter"
     #: a "guild" just changed. the values are of type integer
     #: description: default message notification level changed
@@ -154,14 +155,17 @@ class AuditLogChangeKey(Enum):
     #: a "guild" just changed. the values are of type string
     #: description: guild invite vanity url changed
     VANITY_URL_CODE = "vanity_url_code"
-    #: a "guild" just changed. the values are of type array<partial_role_structure>
+    #: a "guild" just changed. the values are of type
+    #:   array<partial_role_structure>
     #: description: new role added
     ADD = "$add"
-    #: a "guild" just changed. the values are of type array<partial_role_structure>
+    #: a "guild" just changed. the values are of type
+    #:   array<partial_role_structure>
     #: description: role removed
     REMOVE = "$remove"
     #: a "guild" just changed. the values are of type integer
-    #: description: change in number of days after which inactive and role-unassigned members are kicked
+    #: description: change in number of days after which inactive and
+    #:    role-unassigned members are kicked
     PRUNE_DELETE_DAYS = "prune_delete_days"
     #: a "guild" just changed. the values are of type boolean
     #: description: server widget enabled/disable
@@ -175,13 +179,15 @@ class AuditLogChangeKey(Enum):
     #: a "channel" just changed. the values are of type integer
     #: description: text or voice channel position changed
     POSITION = "position"
-    #: a "channel or stage instance" just changed. the values are of type string
+    #: a "channel or stage instance" just changed. the values are of type
+    #:   string
     #: description: text channel topic or stage instance topic changed
     TOPIC = "topic"
     #: a "channel" just changed. the values are of type integer
     #: description: voice channel bitrate changed
     BITRATE = "bitrate"
-    #: a "channel" just changed. the values are of type array<channel_overwrite_structure>
+    #: a "channel" just changed. the values are of type
+    #:   array<channel_overwrite_structure>
     #: description: permissions on a channel changed
     PERMISSION_OVERWRITES = "permission_overwrites"
     #: a "channel" just changed. the values are of type boolean
@@ -191,7 +197,8 @@ class AuditLogChangeKey(Enum):
     #: description: application id of the added or removed webhook or bot
     APPLICATION_ID = "application_id"
     #: a "channel" just changed. the values are of type integer
-    #: description: amount of seconds a user has to wait before sending another message changed
+    #: description: amount of seconds a user has to wait before sending
+    #:    another message changed
     RATE_LIMIT_PER_USER = "rate_limit_per_user"
     #: a "role" just changed. the values are of type string
     #: description: permissions for a role changed
@@ -200,16 +207,19 @@ class AuditLogChangeKey(Enum):
     #: description: role color changed
     COLOR = "color"
     #: a "role" just changed. the values are of type boolean
-    #: description: role is now displayed/no longer displayed separate from online users
+    #: description: role is now displayed/no longer displayed separate from
+    #:    online users
     HOIST = "hoist"
     #: a "role" just changed. the values are of type boolean
     #: description: role is now mentionable/unmentionable
     MENTIONABLE = "mentionable"
     #: a "role" just changed. the values are of type string
-    #: description: a permission on a text or voice channel was allowed for a role
+    #: description: a permission on a text or voice channel was allowed for a
+    #:    role
     ALLOW = "allow"
     #: a "role" just changed. the values are of type string
-    #: description: a permission on a text or voice channel was denied for a role
+    #: description: a permission on a text or voice channel was denied for a
+    #:    role
     DENY = "deny"
     #: a "invite" just changed. the values are of type string
     #: description: invite code changed
@@ -245,7 +255,8 @@ class AuditLogChangeKey(Enum):
     #: description: user avatar changed
     AVATAR_HASH = "avatar_hash"
     #: a "any" just changed. the values are of type snowflake
-    #: description: the id of the changed entity - sometimes used in conjunction with other keys
+    #: description: the id of the changed entity - sometimes used in
+    #:    conjunction with other keys
     ID = "id"
     #: a "any" just changed. the values are of type integer | string
     #: description: type of entity created
@@ -262,7 +273,8 @@ class AuditLogChangeKey(Enum):
     #: a "voice channel" just changed. the values are of type integer
     #: description: new user limit in a voice channel
     USER_LIMIT = "user_limit"
-    #: a "stage instance" just changed. the values are of type integer (privacy level)
+    #: a "stage instance" just changed. the values are of type integer
+    #:   (privacy level)
     #: description: privacy level of the stage instance changed
     PRIVACY_LEVEL = "privacy_level"
     #: a "sticker" just changed. the values are of type string

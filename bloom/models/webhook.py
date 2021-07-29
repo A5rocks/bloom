@@ -24,22 +24,27 @@ class Webhook:
     application_id: t.Optional[Snowflake]
     #: the guild id this webhook is for, if any
     guild_id: Unknownish[t.Optional[Snowflake]] = UNKNOWN
-    #: the user this webhook was created by (not returned when getting a webhook with its token)
+    #: the user this webhook was created by (not returned when getting a
+    #: webhook with its token)
     user: Unknownish[User] = UNKNOWN
     #: the secure token of the webhook (returned for Incoming Webhooks)
     token: Unknownish[str] = UNKNOWN
-    #: the guild of the channel that this webhook is following (returned for Channel Follower Webhooks)
+    #: the guild of the channel that this webhook is following (returned for
+    #: Channel Follower Webhooks)
     source_guild: Unknownish[t.Dict[str, object]] = UNKNOWN
-    #: the channel that this webhook is following (returned for Channel Follower Webhooks)
+    #: the channel that this webhook is following (returned for Channel
+    #: Follower Webhooks)
     source_channel: Unknownish[t.Dict[str, object]] = UNKNOWN
-    #: the url used for executing the webhook (returned by the webhooks OAuth2 flow)
+    #: the url used for executing the webhook (returned by the webhooks OAuth2
+    #: flow)
     url: Unknownish[str] = UNKNOWN
 
 
 class WebhookTypes(Enum):
     #: Incoming Webhooks can post messages to channels with a generated token
     INCOMING = 1
-    #: Channel Follower Webhooks are internal webhooks used with Channel Following to post new messages into channels
+    #: Channel Follower Webhooks are internal webhooks used with Channel
+    #: Following to post new messages into channels
     CHANNEL_FOLLOWER = 2
     #: Application webhooks are webhooks used with Interactions
     APPLICATION = 3

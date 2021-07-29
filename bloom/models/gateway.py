@@ -18,9 +18,11 @@ from .user import User
 class GuildRequestMembers:
     #: id of the guild to get members for
     guild_id: Snowflake
-    #: maximum number of members to send matching the query; a limit of 0 can be used with an empty string query to return all members
+    #: maximum number of members to send matching the query; a limit of 0 can
+    #: be used with an empty string query to return all members
     limit: t.Optional[int]
-    #: string that username starts with, or an empty string to return all members
+    #: string that username starts with, or an empty string to return all
+    #: members
     query: Unknownish[t.Optional[str]] = UNKNOWN
     #: used to specify if we want the presences of the matched members
     presences: Unknownish[t.Optional[bool]] = UNKNOWN
@@ -44,7 +46,8 @@ class GatewayVoiceStateUpdate:
 
 @dataclass()
 class Presence:
-    #: unix time (in milliseconds) of when the client went idle, or null if the client is not idle
+    #: unix time (in milliseconds) of when the client went idle, or null if
+    #: the client is not idle
     since: t.Optional[int]
     #: the user's activities
     activities: t.List[Activity]
@@ -80,7 +83,8 @@ class ReadyEvent:
     session_id: str
     #: contains id and flags
     application: t.Dict[str, object]
-    #: the shard information associated with this session, if sent when identifying
+    #: the shard information associated with this session, if sent when
+    #: identifying
     shard: Unknownish[t.List[int]] = UNKNOWN
 
 
@@ -88,11 +92,16 @@ class ReadyEvent:
 class ThreadListSyncEvent:
     #: the id of the guild
     guild_id: Snowflake
-    #: all active threads in the given channels that the current user can access
+    #: all active threads in the given channels that the current user can
+    #: access
     threads: t.List[Channel]
-    #: all thread member objects from the synced threads for the current user, indicating which threads the current user has been added to
+    #: all thread member objects from the synced threads for the current user,
+    #: indicating which threads the current user has been added to
     members: t.List[ThreadMember]
-    #: the parent channel ids whose threads are being synced. If omitted, then threads were synced for the entire guild. This array may contain channel_ids that have no active threads as well, so you know to clear that data.
+    #: the parent channel ids whose threads are being synced. If omitted, then
+    #: threads were synced for the entire guild. This array may contain
+    #: channel_ids that have no active threads as well, so you know to clear
+    #: that data.
     channel_ids: Unknownish[t.List[Snowflake]] = UNKNOWN
 
 
@@ -190,7 +199,8 @@ class GuildMemberUpdateEvent:
     deaf: Unknownish[bool] = UNKNOWN
     #: whether the user is muted in voice channels
     mute: Unknownish[bool] = UNKNOWN
-    #: whether the user has not yet passed the guild's Membership Screening requirements
+    #: whether the user has not yet passed the guild's Membership Screening
+    #: requirements
     pending: Unknownish[bool] = UNKNOWN
 
 
@@ -200,13 +210,16 @@ class GuildMembersChunkEvent:
     guild_id: Snowflake
     #: set of guild members
     members: t.List[GuildMember]
-    #: the chunk index in the expected chunks for this response (0 <= chunk_index < chunk_count)
+    #: the chunk index in the expected chunks for this response (0 <=
+    #: chunk_index < chunk_count)
     chunk_index: int
     #: the total number of expected chunks for this response
     chunk_count: int
-    #: if passing an invalid id to REQUEST_GUILD_MEMBERS, it will be returned here
+    #: if passing an invalid id to REQUEST_GUILD_MEMBERS, it will be returned
+    #: here
     not_found: Unknownish[t.List[Snowflake]] = UNKNOWN
-    #: if passing true to REQUEST_GUILD_MEMBERS, presences of the returned members will be here
+    #: if passing true to REQUEST_GUILD_MEMBERS, presences of the returned
+    #: members will be here
     presences: Unknownish[t.List[Presence]] = UNKNOWN
     #: the nonce used in the Guild Members Request
     nonce: Unknownish[str] = UNKNOWN
@@ -270,7 +283,8 @@ class InviteCreateEvent:
     max_age: int
     #: the maximum number of times the invite can be used
     max_uses: int
-    #: whether or not the invite is temporary (invited users will be kicked on disconnect unless they're assigned a role)
+    #: whether or not the invite is temporary (invited users will be kicked on
+    #: disconnect unless they're assigned a role)
     temporary: bool
     #: how many times the invite has been used (always will be 0)
     uses: int
@@ -282,7 +296,8 @@ class InviteCreateEvent:
     target_type: Unknownish[int] = UNKNOWN
     #: the user whose stream to display for this voice channel stream invite
     target_user: Unknownish[User] = UNKNOWN
-    #: the embedded application to open for this voice channel embedded application invite
+    #: the embedded application to open for this voice channel embedded
+    #: application invite
     target_application: Unknownish[t.Dict[str, object]] = UNKNOWN
 
 
@@ -371,11 +386,14 @@ class MessageReactionRemoveEmoji:
 @dataclass()
 class ClientStatus:
 
-    #: the user's status set for an active desktop (Windows, Linux, Mac) application session
+    #: the user's status set for an active desktop (Windows, Linux, Mac)
+    #: application session
     desktop: Unknownish[str] = UNKNOWN
-    #: the user's status set for an active mobile (iOS, Android) application session
+    #: the user's status set for an active mobile (iOS, Android) application
+    #: session
     mobile: Unknownish[str] = UNKNOWN
-    #: the user's status set for an active web (browser, bot account) application session
+    #: the user's status set for an active web (browser, bot account)
+    #: application session
     web: Unknownish[str] = UNKNOWN
 
 
@@ -385,7 +403,8 @@ class Activity:
     name: str
     #: activity type
     type: int
-    #: unix timestamp (in milliseconds) of when the activity was added to the user's session
+    #: unix timestamp (in milliseconds) of when the activity was added to the
+    #: user's session
     created_at: int
     #: stream url, is validated when type is 1
     url: Unknownish[t.Optional[str]] = UNKNOWN

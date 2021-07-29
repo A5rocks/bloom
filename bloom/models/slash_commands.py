@@ -24,7 +24,8 @@ class ApplicationCommand:
     guild_id: Unknownish[Snowflake] = UNKNOWN
     #: the parameters for the command
     options: Unknownish[t.List[ApplicationCommandOption]] = UNKNOWN
-    #: whether the command is enabled by default when the app is added to a guild
+    #: whether the command is enabled by default when the app is added to a
+    #: guild
     default_permission: Unknownish[bool] = UNKNOWN
 
 
@@ -40,7 +41,8 @@ class ApplicationCommandOption:
     required: Unknownish[bool] = UNKNOWN
     #: choices for STRING, INTEGER, and NUMBER types for the user to pick from
     choices: Unknownish[t.List[ApplicationCommandOptionChoice]] = UNKNOWN
-    #: if the option is a subcommand or subcommand group type, this nested options will be the parameters
+    #: if the option is a subcommand or subcommand group type, this nested
+    #: options will be the parameters
     options: Unknownish[t.List[ApplicationCommandOption]] = UNKNOWN
 
 
@@ -155,9 +157,11 @@ class InteractionCallbackType(Enum):
     PONG = 1
     #: respond to an interaction with a message
     CHANNEL_MESSAGE_WITH_SOURCE = 4
-    #: ACK an interaction and edit a response later, the user sees a loading state
+    #: ACK an interaction and edit a response later, the user sees a loading
+    #: state
     DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE = 5
-    #: for components, ACK an interaction and edit the original message later; the user does not see a loading state
+    #: for components, ACK an interaction and edit the original message later;
+    #: the user does not see a loading state
     DEFERRED_UPDATE_MESSAGE = 6
     #: for components, edit the message the component was attached to
     UPDATE_MESSAGE = 7

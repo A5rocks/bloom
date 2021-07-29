@@ -5,7 +5,7 @@ import typing as t
 from dataclasses import dataclass
 from enum import Enum
 
-from .base import UNKNOWN, Snowflake, Unknownish
+from .base import UNKNOWN, Unknownish
 from .user import User
 
 
@@ -23,15 +23,20 @@ class Invite:
     target_type: Unknownish[int] = UNKNOWN
     #: the user whose stream to display for this voice channel stream invite
     target_user: Unknownish[User] = UNKNOWN
-    #: the embedded application to open for this voice channel embedded application invite
+    #: the embedded application to open for this voice channel embedded
+    #: application invite
     target_application: Unknownish[t.Dict[str, object]] = UNKNOWN
-    #: approximate count of online members, returned from the GET /invites/<code> endpoint when with_counts is true
+    #: approximate count of online members, returned from the
+    #: GET /invites/<code> endpoint when with_counts is true
     approximate_presence_count: Unknownish[int] = UNKNOWN
-    #: approximate count of total members, returned from the GET /invites/<code> endpoint when with_counts is true
+    #: approximate count of total members, returned from the
+    #: GET /invites/<code> endpoint when with_counts is true
     approximate_member_count: Unknownish[int] = UNKNOWN
-    #: the expiration date of this invite, returned from the GET /invites/<code> endpoint when with_expiration is true
+    #: the expiration date of this invite, returned from the
+    #: GET /invites/<code> endpoint when with_expiration is true
     expires_at: Unknownish[t.Optional[dt.datetime]] = UNKNOWN
-    #: stage instance data if there is a public Stage instance in the Stage channel this invite is for
+    #: stage instance data if there is a public Stage instance in the Stage
+    #: channel this invite is for
     stage_instance: Unknownish[InviteStageInstance] = UNKNOWN
 
 

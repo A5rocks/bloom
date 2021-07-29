@@ -4,7 +4,7 @@ import typing as t
 from dataclasses import dataclass
 from enum import Enum
 
-from .base import UNKNOWN, Snowflake, Unknownish
+from .base import Snowflake
 
 
 @dataclass()

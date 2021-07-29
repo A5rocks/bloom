@@ -18,13 +18,15 @@ from .user import User
 class Guild:
     #: guild id
     id: Snowflake
-    #: guild name (2-100 characters, excluding trailing and leading whitespace)
+    #: guild name (2-100 characters, excluding trailing and leading
+    #: whitespace)
     name: str
     #: icon hash
     icon: t.Optional[str]
     #: splash hash
     splash: t.Optional[str]
-    #: discovery splash hash; only present for guilds with the "DISCOVERABLE" feature
+    #: discovery splash hash; only present for guilds with the "DISCOVERABLE"
+    #: feature
     discovery_splash: t.Optional[str]
     #: true if the user is the owner of the guild
     owner: bool
@@ -54,11 +56,13 @@ class Guild:
     mfa_level: int
     #: application id of the guild creator if it is bot-created
     application_id: t.Optional[Snowflake]
-    #: the id of the channel where guild notices such as welcome messages and boost events are posted
+    #: the id of the channel where guild notices such as welcome messages and
+    #: boost events are posted
     system_channel_id: t.Optional[Snowflake]
     #: system channel flags
     system_channel_flags: int
-    #: the id of the channel where Community guilds can display rules and/or guidelines
+    #: the id of the channel where Community guilds can display rules and/or
+    #: guidelines
     rules_channel_id: t.Optional[Snowflake]
     #: when this guild was joined at
     joined_at: dt.datetime
@@ -74,9 +78,11 @@ class Guild:
     members: t.List[GuildMember]
     #: channels in the guild
     channels: t.List[Channel]
-    #: all active threads in the guild that current user has permission to view
+    #: all active threads in the guild that current user has permission to
+    #: view
     threads: t.List[Channel]
-    #: presences of the members in the guild, will only include non-offline members if the size is greater than large threshold
+    #: presences of the members in the guild, will only include non-offline
+    #: members if the size is greater than large threshold
     presences: t.List[t.Dict[str, object]]
     #: the vanity url code for the guild
     vanity_url_code: t.Optional[str]
@@ -86,9 +92,11 @@ class Guild:
     banner: t.Optional[str]
     #: premium tier (Server Boost level)
     premium_tier: int
-    #: the preferred locale of a Community guild; used in server discovery and notices from Discord; defaults to "en-US"
+    #: the preferred locale of a Community guild; used in server discovery and
+    #: notices from Discord; defaults to "en-US"
     preferred_locale: str
-    #: the id of the channel where admins and moderators of Community guilds receive notices from Discord
+    #: the id of the channel where admins and moderators of Community guilds
+    #: receive notices from Discord
     public_updates_channel_id: t.Optional[Snowflake]
     #: guild NSFW level
     nsfw_level: int
@@ -98,9 +106,11 @@ class Guild:
     icon_hash: Unknownish[t.Optional[str]] = UNKNOWN
     #: true if the server widget is enabled
     widget_enabled: Unknownish[bool] = UNKNOWN
-    #: the channel id that the widget will generate an invite to, or null if set to no invite
+    #: the channel id that the widget will generate an invite to, or null if
+    #: set to no invite
     widget_channel_id: Unknownish[t.Optional[Snowflake]] = UNKNOWN
-    #: the maximum number of presences for the guild (null is always returned, apart from the largest of guilds)
+    #: the maximum number of presences for the guild (null is always returned,
+    #: apart from the largest of guilds)
     max_presences: Unknownish[t.Optional[int]] = UNKNOWN
     #: the maximum number of members for the guild
     max_members: Unknownish[int] = UNKNOWN
@@ -108,11 +118,14 @@ class Guild:
     premium_subscription_count: Unknownish[int] = UNKNOWN
     #: the maximum amount of users in a video channel
     max_video_channel_users: Unknownish[int] = UNKNOWN
-    #: approximate number of members in this guild, returned from the GET /guilds/<id> endpoint when with_counts is true
+    #: approximate number of members in this guild, returned from the GET
+    #: /guilds/<id> endpoint when with_counts is true
     approximate_member_count: Unknownish[int] = UNKNOWN
-    #: approximate number of non-offline members in this guild, returned from the GET /guilds/<id> endpoint when with_counts is true
+    #: approximate number of non-offline members in this guild, returned from
+    #: the GET /guilds/<id> endpoint when with_counts is true
     approximate_presence_count: Unknownish[int] = UNKNOWN
-    #: the welcome screen of a Community guild, shown to new members, returned in an Invite's guild object
+    #: the welcome screen of a Community guild, shown to new members, returned
+    #: in an Invite's guild object
     welcome_screen: Unknownish[WelcomeScreen] = UNKNOWN
     #: custom guild stickers
     stickers: Unknownish[t.List[Sticker]] = UNKNOWN
@@ -121,7 +134,8 @@ class Guild:
 class DefaultMessageNotificationLevel(Enum):
     #: members will receive notifications for all messages by default
     ALL_MESSAGES = 0
-    #: members will receive notifications only for messages that @mention them by default
+    #: members will receive notifications only for messages that @mention them
+    #: by default
     ONLY_MENTIONS = 1
 
 
@@ -177,9 +191,10 @@ class GuildFeatures(Enum):
     ANIMATED_ICON = "ANIMATED_ICON"
     #: guild has access to set a guild banner image
     BANNER = "BANNER"
-    #: guild has access to use commerce features (i.e. create store channels)
+    #: guild has access to use commerce features (i.e. create store channels)
     COMMERCE = "COMMERCE"
-    #: guild can enable welcome screen, Membership Screening, stage channels and discovery, and receives community updates
+    #: guild can enable welcome screen, Membership Screening, stage channels
+    #: and discovery, and receives community updates
     COMMUNITY = "COMMUNITY"
     #: guild is able to be discovered in the directory
     DISCOVERABLE = "DISCOVERABLE"
@@ -193,13 +208,15 @@ class GuildFeatures(Enum):
     NEWS = "NEWS"
     #: guild is partnered
     PARTNERED = "PARTNERED"
-    #: guild can be previewed before joining via Membership Screening or the directory
+    #: guild can be previewed before joining via Membership Screening or the
+    #: directory
     PREVIEW_ENABLED = "PREVIEW_ENABLED"
     #: guild has access to set a vanity URL
     VANITY_URL = "VANITY_URL"
     #: guild is verified
     VERIFIED = "VERIFIED"
-    #: guild has access to set 384kbps bitrate in voice (previously VIP voice servers)
+    #: guild has access to set 384kbps bitrate in voice (previously VIP voice
+    #: servers)
     VIP_REGIONS = "VIP_REGIONS"
     #: guild has enabled the welcome screen
     WELCOME_SCREEN_ENABLED = "WELCOME_SCREEN_ENABLED"
@@ -265,9 +282,11 @@ class GuildMember:
     nick: Unknownish[t.Optional[str]] = UNKNOWN
     #: when the user started boosting the guild
     premium_since: Unknownish[t.Optional[dt.datetime]] = UNKNOWN
-    #: whether the user has not yet passed the guild's Membership Screening requirements
+    #: whether the user has not yet passed the guild's Membership Screening
+    #: requirements
     pending: Unknownish[bool] = UNKNOWN
-    #: total permissions of the member in the channel, including overwrites, returned when in the interaction object
+    #: total permissions of the member in the channel, including overwrites,
+    #: returned when in the interaction object
     permissions: Unknownish[str] = UNKNOWN
 
 
@@ -285,7 +304,8 @@ class Integration:
     syncing: bool
     #: id that this integration uses for "subscribers"
     role_id: Snowflake
-    #: whether emoticons should be synced for this integration (twitch only currently)
+    #: whether emoticons should be synced for this integration (twitch only
+    #: currently)
     enable_emoticons: bool
     #: the behavior of expiring subscribers
     expire_behavior: t.Dict[str, object]
@@ -358,5 +378,6 @@ class WelcomeScreenChannel:
     description: str
     #: the emoji id, if the emoji is custom
     emoji_id: t.Optional[Snowflake]
-    #: the emoji name if custom, the unicode character if standard, or null if no emoji is set
+    #: the emoji name if custom, the unicode character if standard, or null
+    #: if no emoji is set
     emoji_name: t.Optional[str]

@@ -4,7 +4,7 @@ import typing as t
 from dataclasses import dataclass
 from enum import Enum
 
-from .base import UNKNOWN, Snowflake, Unknownish
+from .base import Snowflake
 
 
 @dataclass()
@@ -19,7 +19,8 @@ class User:
     avatar: t.Optional[str]
     #: whether the user belongs to an OAuth2 application
     bot: bool
-    #: whether the user is an Official Discord System user (part of the urgent message system)
+    #: whether the user is an Official Discord System user (part of the urgent
+    #: message system)
     system: bool
     #: whether the user has two factor enabled on their account
     mfa_enabled: bool

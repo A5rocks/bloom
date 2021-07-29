@@ -23,5 +23,6 @@ class Emoji:
     managed: Unknownish[bool] = UNKNOWN
     #: whether this emoji is animated
     animated: Unknownish[bool] = UNKNOWN
-    #: whether this emoji can be used, may be false due to loss of Server Boosts
+    #: whether this emoji can be used, may be false due to loss of Server
+    #: Boosts
     available: Unknownish[bool] = UNKNOWN

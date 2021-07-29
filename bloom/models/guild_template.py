@@ -4,7 +4,7 @@ import datetime as dt
 import typing as t
 from dataclasses import dataclass
 
-from .base import UNKNOWN, Snowflake, Unknownish
+from .base import Snowflake
 from .user import User
 
 

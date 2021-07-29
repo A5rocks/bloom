@@ -15,9 +15,12 @@ class Channel:
     id: Snowflake
     #: the type of channel
     type: int
-    #: amount of seconds a user has to wait before sending another message (0-21600); bots, as well as users with the permission manage_messages or manage_channel, are unaffected
+    #: amount of seconds a user has to wait before sending another message
+    #: (0-21600); bots, as well as users with the permission manage_messages
+    #: or manage_channel, are unaffected
     rate_limit_per_user: int
-    #: the id of the guild (may be missing for some channel objects received over gateway guild dispatches)
+    #: the id of the guild (may be missing for some channel objects received
+    #: over gateway guild dispatches)
     guild_id: Unknownish[Snowflake] = UNKNOWN
     #: sorting position of the channel
     position: Unknownish[int] = UNKNOWN
@@ -29,7 +32,8 @@ class Channel:
     topic: Unknownish[t.Optional[str]] = UNKNOWN
     #: whether the channel is nsfw
     nsfw: Unknownish[bool] = UNKNOWN
-    #: the id of the last message sent in this channel (may not point to an existing or valid message)
+    #: the id of the last message sent in this channel (may not point to an
+    #: existing or valid message)
     last_message_id: Unknownish[t.Optional[Snowflake]] = UNKNOWN
     #: the bitrate (in bits) of the voice channel
     bitrate: Unknownish[int] = UNKNOWN
@@ -43,9 +47,12 @@ class Channel:
     owner_id: Unknownish[Snowflake] = UNKNOWN
     #: application id of the group DM creator if it is bot-created
     application_id: Unknownish[Snowflake] = UNKNOWN
-    #: for guild channels: id of the parent category for a channel (each parent category can contain up to 50 channels), for threads: id of the text channel this thread was created
+    #: for guild channels: id of the parent category for a channel (each
+    #: parent category can contain up to 50 channels), for threads: id of the
+    #: text channel this thread was created
     parent_id: Unknownish[t.Optional[Snowflake]] = UNKNOWN
-    #: when the last pinned message was pinned. This may be null in events such as GUILD_CREATE when a message is not pinned.
+    #: when the last pinned message was pinned. This may be null in events
+    #: such as GUILD_CREATE when a message is not pinned.
     last_pin_timestamp: Unknownish[t.Optional[dt.datetime]] = UNKNOWN
     #: voice region id for the voice channel, automatic when set to null
     rtc_region: Unknownish[t.Optional[str]] = UNKNOWN
@@ -57,11 +64,16 @@ class Channel:
     member_count: Unknownish[int] = UNKNOWN
     #: thread-specific fields not needed by other channels
     thread_metadata: Unknownish[ThreadMetadata] = UNKNOWN
-    #: thread member object for the current user, if they have joined the thread, only included on certain API endpoints
+    #: thread member object for the current user, if they have joined the
+    #: thread, only included on certain API endpoints
     member: Unknownish[ThreadMember] = UNKNOWN
-    #: default duration for newly created threads, in minutes, to automatically archive the thread after recent activity, can be set to: 60, 1440, 4320, 10080
+    #: default duration for newly created threads, in minutes, to
+    #: automatically archive the thread after recent activity, can be set to:
+    #: 60, 1440, 4320, 10080
     default_auto_archive_duration: Unknownish[int] = UNKNOWN
-    #: computed permissions for the invoking user in the channel, including overwrites, only included when part of the resolved data received on a slash command interaction
+    #: computed permissions for the invoking user in the channel, including
+    #: overwrites, only included when part of the resolved data received on a
+    #: slash command interaction
     permissions: Unknownish[str] = UNKNOWN
 
 
@@ -84,7 +96,8 @@ class ChannelTypes(Enum):
     GUILD_NEWS_THREAD = 10
     #: a temporary sub-channel within a GUILD_TEXT channel
     GUILD_PUBLIC_THREAD = 11
-    #: a temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission
+    #: a temporary sub-channel within a GUILD_TEXT channel that is only
+    #: viewable by those invited and those with the MANAGE_THREADS permission
     GUILD_PRIVATE_THREAD = 12
     #: a voice channel for hosting events with an audience
     GUILD_STAGE_VOICE = 13
@@ -138,13 +151,16 @@ class MessageActivityTypes(Enum):
 
 
 class MessageFlags(Enum):
-    #: this message has been published to subscribed channels (via Channel Following)
+    #: this message has been published to subscribed channels (via Channel
+    #: Following)
     CROSSPOSTED = 1
-    #: this message originated from a message in another channel (via Channel Following)
+    #: this message originated from a message in another channel (via Channel
+    #: Following)
     IS_CROSSPOST = 2
     #: do not include any embeds when serializing this message
     SUPPRESS_EMBEDS = 4
-    #: the source message for this crosspost has been deleted (via Channel Following)
+    #: the source message for this crosspost has been deleted (via Channel
+    #: Following)
     SOURCE_MESSAGE_DELETED = 8
     #: this message came from the urgent message system
     URGENT = 16
@@ -164,7 +180,8 @@ class MessageReference:
     message_id: Unknownish[Snowflake] = UNKNOWN
     #: id of the originating message's guild
     guild_id: Unknownish[Snowflake] = UNKNOWN
-    #: when sending, whether to error if the referenced message doesn't exist instead of sending as a normal (non-reply) message, default true
+    #: when sending, whether to error if the referenced message doesn't exist
+    #: instead of sending as a normal (non-reply) message, default true
     fail_if_not_exists: Unknownish[bool] = UNKNOWN
 
 
@@ -202,11 +219,14 @@ class Overwrite:
 class ThreadMetadata:
     #: whether the thread is archived
     archived: bool
-    #: duration in minutes to automatically archive the thread after recent activity, can be set to: 60, 1440, 4320, 10080
+    #: duration in minutes to automatically archive the thread after recent
+    #: activity, can be set to: 60, 1440, 4320, 10080
     auto_archive_duration: int
-    #: timestamp when the thread's archive status was last changed, used for calculating recent activity
+    #: timestamp when the thread's archive status was last changed, used for
+    #: calculating recent activity
     archive_timestamp: dt.datetime
-    #: whether the thread is locked; when a thread is locked, only users with MANAGE_THREADS can unarchive it
+    #: whether the thread is locked; when a thread is locked, only users with
+    #: MANAGE_THREADS can unarchive it
     locked: Unknownish[bool] = UNKNOWN
 
 
@@ -398,7 +418,8 @@ class AllowedMentions:
     roles: t.List[Snowflake]
     #: Array of user_ids to mention (Max size of 100)
     users: t.List[Snowflake]
-    #: For replies, whether to mention the author of the message being replied to (default false)
+    #: For replies, whether to mention the author of the message being replied
+    #: to (default false)
     replied_user: bool
 
 
@@ -406,7 +427,9 @@ class AllowedMentions:
 class ResponseBody:
     #: the private, archived threads the current user has joined
     threads: t.List[Channel]
-    #: a thread member object for each returned thread the current user has joined
+    #: a thread member object for each returned thread the current user has
+    #: joined
     members: t.List[ThreadMember]
-    #: whether there are potentially additional threads that could be returned on a subsequent call
+    #: whether there are potentially additional threads that could be returned
+    #: on a subsequent call
     has_more: bool

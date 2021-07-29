@@ -20,7 +20,8 @@ class Message:
     id: Snowflake
     #: id of the channel the message was sent in
     channel_id: Snowflake
-    #: the author of this message (not guaranteed to be a valid user, see below)
+    #: the author of this message (not guaranteed to be a valid user, see
+    #: below)
     author: User
     #: member properties for this message's author
     member: GuildMember
@@ -62,17 +63,21 @@ class Message:
     activity: Unknownish[MessageActivity] = UNKNOWN
     #: sent with Rich Presence-related chat embeds
     application: Unknownish[t.Dict[str, object]] = UNKNOWN
-    #: if the message is a response to an Interaction, this is the id of the interaction's application
+    #: if the message is a response to an Interaction, this is the id of the
+    #: interaction's application
     application_id: Unknownish[Snowflake] = UNKNOWN
-    #: data showing the source of a crosspost, channel follow add, pin, or reply message
+    #: data showing the source of a crosspost, channel follow add, pin, or
+    #: reply message
     message_reference: Unknownish[MessageReference] = UNKNOWN
     #: message flags combined as a bitfield
     flags: Unknownish[int] = UNKNOWN
     #: sent if the message is a response to an Interaction
     interaction: Unknownish[MessageInteraction] = UNKNOWN
-    #: the thread that was started from this message, includes thread member object
+    #: the thread that was started from this message, includes thread member
+    #: object
     thread: Unknownish[Channel] = UNKNOWN
-    #: sent if the message contains components like buttons, action rows, or other interactive components
+    #: sent if the message contains components like buttons, action rows, or
+    #: other interactive components
     components: Unknownish[t.List[Component]] = UNKNOWN
     #: sent if the message contains stickers
     sticker_items: Unknownish[t.List[StickerItem]] = UNKNOWN

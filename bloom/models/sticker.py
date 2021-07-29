@@ -16,7 +16,9 @@ class Sticker:
     name: str
     #: description of the sticker
     description: t.Optional[str]
-    #: for guild stickers, the Discord name of a unicode emoji representing the sticker's expression. for standard stickers, a comma-separated list of related expressions.
+    #: for guild stickers, the Discord name of a unicode emoji representing
+    #: the sticker's expression. for standard stickers, a comma-separated list
+    #: of related expressions.
     tags: str
     #: Deprecated previously the sticker asset hash, now an empty string
     asset: str
@@ -26,7 +28,8 @@ class Sticker:
     format_type: int
     #: for standard stickers, id of the pack the sticker is from
     pack_id: Unknownish[Snowflake] = UNKNOWN
-    #: whether this guild sticker can be used, may be false due to loss of Server Boosts
+    #: whether this guild sticker can be used, may be false due to loss of
+    #: Server Boosts
     available: Unknownish[bool] = UNKNOWN
     #: id of the guild that owns this sticker
     guild_id: Unknownish[Snowflake] = UNKNOWN
@@ -37,7 +40,8 @@ class Sticker:
 
 
 class StickerTypes(Enum):
-    #: an official sticker in a pack, part of Nitro or in a removed purchasable pack
+    #: an official sticker in a pack, part of Nitro or in a removed
+    #: purchasable pack
     STANDARD = 1
     #: a sticker uploaded to a Boosted guild for the guild's members
     GUILD = 2

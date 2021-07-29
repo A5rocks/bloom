@@ -4,7 +4,7 @@ import typing as t
 from dataclasses import dataclass
 from enum import Enum
 
-from .base import UNKNOWN, Snowflake, Unknownish
+from .base import UNKNOWN, Unknownish
 
 
 @dataclass()
@@ -13,9 +13,11 @@ class Component:
     type: int
     #: the choices in the select, max 25 (valid for: Select Menus)
     options: t.List[SelectOption]
-    #: a developer-defined identifier for the component, max 100 characters (valid for: Buttons, Select Menus)
+    #: a developer-defined identifier for the component, max 100 characters
+    #: (valid for: Buttons, Select Menus)
     custom_id: Unknownish[str] = UNKNOWN
-    #: whether the component is disabled, default false (valid for: Buttons, Select Menus)
+    #: whether the component is disabled, default false (valid for: Buttons,
+    #: Select Menus)
     disabled: Unknownish[bool] = UNKNOWN
     #: one of button styles (valid for: Buttons)
     style: Unknownish[int] = UNKNOWN
@@ -25,11 +27,14 @@ class Component:
     emoji: Unknownish[t.Dict[str, object]] = UNKNOWN
     #: a url for link-style buttons (valid for: Buttons)
     url: Unknownish[str] = UNKNOWN
-    #: custom placeholder text if nothing is selected, max 100 characters (valid for: Select Menus)
+    #: custom placeholder text if nothing is selected, max 100 characters
+    #: (valid for: Select Menus)
     placeholder: Unknownish[str] = UNKNOWN
-    #: the minimum number of items that must be chosen; default 1, min 0, max 25 (valid for: Select Menus)
+    #: the minimum number of items that must be chosen; default 1, min 0, max
+    #: 25 (valid for: Select Menus)
     min_values: Unknownish[int] = UNKNOWN
-    #: the maximum number of items that can be chosen; default 1, max 25 (valid for: Select Menus)
+    #: the maximum number of items that can be chosen; default 1, max 25
+    #: (valid for: Select Menus)
     max_values: Unknownish[int] = UNKNOWN
     #: a list of child components (valid for: Action Rows)
     components: Unknownish[t.List[Component]] = UNKNOWN
@@ -80,7 +85,8 @@ class SelectMenu:
     options: t.List[SelectOption]
     #: custom placeholder text if nothing is selected, max 100 characters
     placeholder: Unknownish[str] = UNKNOWN
-    #: the minimum number of items that must be chosen; default 1, min 0, max 25
+    #: the minimum number of items that must be chosen; default 1, min 0, max
+    #: 25
     min_values: Unknownish[int] = UNKNOWN
     #: the maximum number of items that can be chosen; default 1, max 25
     max_values: Unknownish[int] = UNKNOWN
