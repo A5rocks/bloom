@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 import typing as t
-from dataclasses import dataclass
 from enum import Enum
+
+import attr
 
 from .base import UNKNOWN, Snowflake, Unknownish
 from .user import User
 
 
-@dataclass()
+@attr.frozen()
 class Sticker:
     #: id of the sticker
     id: Snowflake
@@ -53,7 +54,7 @@ class StickerFormatTypes(Enum):
     LOTTIE = 3
 
 
-@dataclass()
+@attr.frozen()
 class StickerItem:
     #: id of the sticker
     id: Snowflake
@@ -63,7 +64,7 @@ class StickerItem:
     format_type: int
 
 
-@dataclass()
+@attr.frozen()
 class StickerPack:
     #: id of the sticker pack
     id: Snowflake

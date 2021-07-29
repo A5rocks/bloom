@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import datetime as dt
 import typing as t
-from dataclasses import dataclass
 from enum import Enum
+
+import attr
 
 from .base import UNKNOWN, Snowflake, Unknownish
 from .channel import Channel
@@ -14,7 +15,7 @@ from .sticker import Sticker
 from .user import User
 
 
-@dataclass()
+@attr.frozen()
 class Guild:
     #: guild id
     id: Snowflake
@@ -234,7 +235,7 @@ class GuildFeatures(Enum):
     PRIVATE_THREADS = "PRIVATE_THREADS"
 
 
-@dataclass()
+@attr.frozen()
 class GuildPreview:
     #: guild id
     id: Snowflake
@@ -258,7 +259,7 @@ class GuildPreview:
     description: t.Optional[str]
 
 
-@dataclass()
+@attr.frozen()
 class GuildWidget:
     #: whether the widget is enabled
     enabled: bool
@@ -266,7 +267,7 @@ class GuildWidget:
     channel_id: t.Optional[Snowflake]
 
 
-@dataclass()
+@attr.frozen()
 class GuildMember:
     #: array of role object ids
     roles: t.List[Snowflake]
@@ -290,7 +291,7 @@ class GuildMember:
     permissions: Unknownish[str] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class Integration:
     #: integration id
     id: Snowflake
@@ -330,7 +331,7 @@ class IntegrationExpireBehaviors(Enum):
     KICK = 1
 
 
-@dataclass()
+@attr.frozen()
 class IntegrationAccount:
     #: id of the account
     id: str
@@ -338,7 +339,7 @@ class IntegrationAccount:
     name: str
 
 
-@dataclass()
+@attr.frozen()
 class IntegrationApplication:
     #: the id of the app
     id: Snowflake
@@ -354,7 +355,7 @@ class IntegrationApplication:
     bot: Unknownish[User] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class Ban:
     #: the reason for the ban
     reason: t.Optional[str]
@@ -362,7 +363,7 @@ class Ban:
     user: User
 
 
-@dataclass()
+@attr.frozen()
 class WelcomeScreen:
     #: the server description shown in the welcome screen
     description: t.Optional[str]
@@ -370,7 +371,7 @@ class WelcomeScreen:
     welcome_channels: t.List[WelcomeScreenChannel]
 
 
-@dataclass()
+@attr.frozen()
 class WelcomeScreenChannel:
     #: the channel's id
     channel_id: Snowflake

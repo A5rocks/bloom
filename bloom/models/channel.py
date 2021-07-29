@@ -2,14 +2,15 @@ from __future__ import annotations
 
 import datetime as dt
 import typing as t
-from dataclasses import dataclass
 from enum import Enum
+
+import attr
 
 from .base import UNKNOWN, Snowflake, Unknownish
 from .user import User
 
 
-@dataclass()
+@attr.frozen()
 class Channel:
     #: the id of this channel
     id: Snowflake
@@ -135,7 +136,7 @@ class MessageTypes(Enum):
     GUILD_INVITE_REMINDER = 22
 
 
-@dataclass()
+@attr.frozen()
 class MessageActivity:
     #: type of message activity
     type: int
@@ -172,7 +173,7 @@ class MessageFlags(Enum):
     LOADING = 128
 
 
-@dataclass()
+@attr.frozen()
 class MessageReference:
     #: id of the originating message's channel
     channel_id: Snowflake
@@ -185,7 +186,7 @@ class MessageReference:
     fail_if_not_exists: Unknownish[bool] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class FollowedChannel:
     #: source channel id
     channel_id: Snowflake
@@ -193,7 +194,7 @@ class FollowedChannel:
     webhook_id: Snowflake
 
 
-@dataclass()
+@attr.frozen()
 class Reaction:
     #: times this emoji has been used to react
     count: int
@@ -203,7 +204,7 @@ class Reaction:
     emoji: t.Dict[str, object]
 
 
-@dataclass()
+@attr.frozen()
 class Overwrite:
     #: role or user id
     id: Snowflake
@@ -215,7 +216,7 @@ class Overwrite:
     deny: str
 
 
-@dataclass()
+@attr.frozen()
 class ThreadMetadata:
     #: whether the thread is archived
     archived: bool
@@ -230,7 +231,7 @@ class ThreadMetadata:
     locked: Unknownish[bool] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class ThreadMember:
     #: the id of the thread
     id: Snowflake
@@ -242,7 +243,7 @@ class ThreadMember:
     flags: int
 
 
-@dataclass()
+@attr.frozen()
 class Embed:
 
     #: title of embed
@@ -288,7 +289,7 @@ class EmbedTypes(Enum):
     LINK = "link"
 
 
-@dataclass()
+@attr.frozen()
 class EmbedThumbnail:
 
     #: source url of thumbnail (only supports http(s) and attachments)
@@ -301,7 +302,7 @@ class EmbedThumbnail:
     width: Unknownish[int] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class EmbedVideo:
 
     #: source url of video
@@ -314,7 +315,7 @@ class EmbedVideo:
     width: Unknownish[int] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class EmbedImage:
 
     #: source url of image (only supports http(s) and attachments)
@@ -327,7 +328,7 @@ class EmbedImage:
     width: Unknownish[int] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class EmbedProvider:
 
     #: name of provider
@@ -336,7 +337,7 @@ class EmbedProvider:
     url: Unknownish[str] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class EmbedAuthor:
 
     #: name of author
@@ -349,7 +350,7 @@ class EmbedAuthor:
     proxy_icon_url: Unknownish[str] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class EmbedFooter:
     #: footer text
     text: str
@@ -359,7 +360,7 @@ class EmbedFooter:
     proxy_icon_url: Unknownish[str] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class EmbedField:
     #: name of the field
     name: str
@@ -369,7 +370,7 @@ class EmbedField:
     inline: Unknownish[bool] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class Attachment:
     #: attachment id
     id: Snowflake
@@ -389,7 +390,7 @@ class Attachment:
     width: Unknownish[t.Optional[int]] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class ChannelMention:
     #: id of the channel
     id: Snowflake
@@ -410,7 +411,7 @@ class AllowedMentionTypes(Enum):
     EVERYONE_MENTIONS = "everyone"
 
 
-@dataclass()
+@attr.frozen()
 class AllowedMentions:
     #: An array of allowed mention types to parse from the content.
     parse: t.List[AllowedMentionTypes]
@@ -423,7 +424,7 @@ class AllowedMentions:
     replied_user: bool
 
 
-@dataclass()
+@attr.frozen()
 class ResponseBody:
     #: the private, archived threads the current user has joined
     threads: t.List[Channel]

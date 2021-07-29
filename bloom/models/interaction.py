@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+import attr
 
 from .base import UNKNOWN, Snowflake, Unknownish
 from .guild import GuildMember
@@ -10,7 +10,7 @@ from .slash_commands import (ApplicationCommandInteractionData,
 from .user import User
 
 
-@dataclass()
+@attr.frozen()
 class Interaction:
     #: id of the interaction
     id: Snowflake

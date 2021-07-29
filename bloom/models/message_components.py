@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import typing as t
-from dataclasses import dataclass
 from enum import Enum
+
+import attr
 
 from .base import UNKNOWN, Unknownish
 
 
-@dataclass()
+@attr.frozen()
 class Component:
     #: component type (valid for: all types)
     type: int
@@ -49,7 +50,7 @@ class ComponentTypes(Enum):
     SELECT_MENU = 3
 
 
-@dataclass()
+@attr.frozen()
 class Button:
     #: 2 for a button
     type: int
@@ -75,7 +76,7 @@ class ButtonStyle(Enum):
     LINK = 5
 
 
-@dataclass()
+@attr.frozen()
 class SelectMenu:
     #: 3 for a select menu
     type: int
@@ -94,7 +95,7 @@ class SelectMenu:
     disabled: Unknownish[bool] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class SelectOption:
     #: the user-facing name of the option, max 25 characters
     label: str

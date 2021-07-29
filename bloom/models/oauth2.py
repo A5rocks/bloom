@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import datetime as dt
 import typing as t
-from dataclasses import dataclass
+
+import attr
 
 from .base import UNKNOWN, Unknownish
 from .user import User
 
 
-@dataclass()
+@attr.frozen()
 class Response:
     #: the current application
     application: t.Dict[str, object]

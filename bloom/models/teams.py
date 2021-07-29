@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import typing as t
-from dataclasses import dataclass
 from enum import Enum
+
+import attr
 
 from .base import Snowflake
 
 
-@dataclass()
+@attr.frozen()
 class Team:
     #: a hash of the image of the team's icon
     icon: t.Optional[str]
@@ -21,7 +22,7 @@ class Team:
     owner_user_id: Snowflake
 
 
-@dataclass()
+@attr.frozen()
 class TeamMember:
     #: the user's membership state on the team
     membership_state: int

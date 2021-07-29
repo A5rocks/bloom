@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import datetime as dt
 import typing as t
-from dataclasses import dataclass
+
+import attr
 
 from .base import UNKNOWN, Snowflake, Unknownish
 from .channel import (Attachment, Channel, ChannelMention, Embed,
@@ -14,7 +15,7 @@ from .sticker import Sticker, StickerItem
 from .user import User
 
 
-@dataclass()
+@attr.frozen()
 class Message:
     #: id of the message
     id: Snowflake

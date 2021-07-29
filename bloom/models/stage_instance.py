@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from enum import Enum
+
+import attr
 
 from .base import Snowflake
 
 
-@dataclass()
+@attr.frozen()
 class StageInstance:
     #: The id of this Stage instance
     id: Snowflake

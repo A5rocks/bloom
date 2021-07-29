@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import datetime as dt
 import typing as t
-from dataclasses import dataclass
 from enum import Enum
+
+import attr
 
 from .base import UNKNOWN, Snowflake, Unknownish
 from .channel import Channel, ThreadMember
@@ -14,7 +15,7 @@ from .sticker import Sticker
 from .user import User
 
 
-@dataclass()
+@attr.frozen()
 class GuildRequestMembers:
     #: id of the guild to get members for
     guild_id: Snowflake
@@ -32,7 +33,7 @@ class GuildRequestMembers:
     nonce: Unknownish[t.Optional[str]] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class GatewayVoiceStateUpdate:
     #: id of the guild
     guild_id: Snowflake
@@ -44,7 +45,7 @@ class GatewayVoiceStateUpdate:
     self_deaf: bool
 
 
-@dataclass()
+@attr.frozen()
 class Presence:
     #: unix time (in milliseconds) of when the client went idle, or null if
     #: the client is not idle
@@ -65,13 +66,13 @@ class StatusTypes(Enum):
     OFFLINE = "Offline"
 
 
-@dataclass()
+@attr.frozen()
 class Hello:
     #: the interval (in milliseconds) the client should heartbeat with
     heartbeat_interval: int
 
 
-@dataclass()
+@attr.frozen()
 class ReadyEvent:
     #: gateway version
     v: int
@@ -88,7 +89,7 @@ class ReadyEvent:
     shard: Unknownish[t.List[int]] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class ThreadListSyncEvent:
     #: the id of the guild
     guild_id: Snowflake
@@ -105,7 +106,7 @@ class ThreadListSyncEvent:
     channel_ids: Unknownish[t.List[Snowflake]] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class ThreadMembersUpdateEvent:
     #: the id of the thread
     id: Snowflake
@@ -119,7 +120,7 @@ class ThreadMembersUpdateEvent:
     removed_member_ids: Unknownish[t.List[Snowflake]] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class ChannelPinsUpdateEvent:
     #: the id of the channel
     channel_id: Snowflake
@@ -129,7 +130,7 @@ class ChannelPinsUpdateEvent:
     last_pin_timestamp: Unknownish[t.Optional[dt.datetime]] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class GuildBanAddEvent:
     #: id of the guild
     guild_id: Snowflake
@@ -137,7 +138,7 @@ class GuildBanAddEvent:
     user: User
 
 
-@dataclass()
+@attr.frozen()
 class GuildBanRemoveEvent:
     #: id of the guild
     guild_id: Snowflake
@@ -145,7 +146,7 @@ class GuildBanRemoveEvent:
     user: User
 
 
-@dataclass()
+@attr.frozen()
 class GuildEmojisUpdateEvent:
     #: id of the guild
     guild_id: Snowflake
@@ -153,7 +154,7 @@ class GuildEmojisUpdateEvent:
     emojis: t.List[Emoji]
 
 
-@dataclass()
+@attr.frozen()
 class GuildStickersUpdateEvent:
     #: id of the guild
     guild_id: Snowflake
@@ -161,19 +162,19 @@ class GuildStickersUpdateEvent:
     stickers: t.List[Sticker]
 
 
-@dataclass()
+@attr.frozen()
 class GuildIntegrationsUpdateEvent:
     #: id of the guild whose integrations were updated
     guild_id: Snowflake
 
 
-@dataclass()
+@attr.frozen()
 class GuildMemberAddExtra:
     #: id of the guild
     guild_id: Snowflake
 
 
-@dataclass()
+@attr.frozen()
 class GuildMemberRemoveEvent:
     #: the id of the guild
     guild_id: Snowflake
@@ -181,7 +182,7 @@ class GuildMemberRemoveEvent:
     user: User
 
 
-@dataclass()
+@attr.frozen()
 class GuildMemberUpdateEvent:
     #: the id of the guild
     guild_id: Snowflake
@@ -204,7 +205,7 @@ class GuildMemberUpdateEvent:
     pending: Unknownish[bool] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class GuildMembersChunkEvent:
     #: the id of the guild
     guild_id: Snowflake
@@ -225,7 +226,7 @@ class GuildMembersChunkEvent:
     nonce: Unknownish[str] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class GuildRoleCreateEvent:
     #: the id of the guild
     guild_id: Snowflake
@@ -233,7 +234,7 @@ class GuildRoleCreateEvent:
     role: Role
 
 
-@dataclass()
+@attr.frozen()
 class GuildRoleUpdateEvent:
     #: the id of the guild
     guild_id: Snowflake
@@ -241,7 +242,7 @@ class GuildRoleUpdateEvent:
     role: Role
 
 
-@dataclass()
+@attr.frozen()
 class GuildRoleDeleteEvent:
     #: id of the guild
     guild_id: Snowflake
@@ -249,19 +250,19 @@ class GuildRoleDeleteEvent:
     role_id: Snowflake
 
 
-@dataclass()
+@attr.frozen()
 class IntegrationCreateEventAdditional:
     #: id of the guild
     guild_id: Snowflake
 
 
-@dataclass()
+@attr.frozen()
 class IntegrationUpdateEventAdditional:
     #: id of the guild
     guild_id: Snowflake
 
 
-@dataclass()
+@attr.frozen()
 class IntegrationDeleteEvent:
     #: integration id
     id: Snowflake
@@ -271,7 +272,7 @@ class IntegrationDeleteEvent:
     application_id: Unknownish[Snowflake] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class InviteCreateEvent:
     #: the channel the invite is for
     channel_id: Snowflake
@@ -301,7 +302,7 @@ class InviteCreateEvent:
     target_application: Unknownish[t.Dict[str, object]] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class InviteDeleteEvent:
     #: the channel of the invite
     channel_id: Snowflake
@@ -311,7 +312,7 @@ class InviteDeleteEvent:
     guild_id: Unknownish[Snowflake] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class MessageDeleteEvent:
     #: the id of the message
     id: Snowflake
@@ -321,7 +322,7 @@ class MessageDeleteEvent:
     guild_id: Unknownish[Snowflake] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class MessageDeleteBulkEvent:
     #: the ids of the messages
     ids: t.List[Snowflake]
@@ -331,7 +332,7 @@ class MessageDeleteBulkEvent:
     guild_id: Unknownish[Snowflake] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class MessageReactionAddEvent:
     #: the id of the user
     user_id: Snowflake
@@ -347,7 +348,7 @@ class MessageReactionAddEvent:
     member: Unknownish[GuildMember] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class MessageReactionRemoveEvent:
     #: the id of the user
     user_id: Snowflake
@@ -361,7 +362,7 @@ class MessageReactionRemoveEvent:
     guild_id: Unknownish[Snowflake] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class MessageReactionRemoveAllEvent:
     #: the id of the channel
     channel_id: Snowflake
@@ -371,7 +372,7 @@ class MessageReactionRemoveAllEvent:
     guild_id: Unknownish[Snowflake] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class MessageReactionRemoveEmoji:
     #: the id of the channel
     channel_id: Snowflake
@@ -383,7 +384,7 @@ class MessageReactionRemoveEmoji:
     guild_id: Unknownish[Snowflake] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class ClientStatus:
 
     #: the user's status set for an active desktop (Windows, Linux, Mac)
@@ -397,7 +398,7 @@ class ClientStatus:
     web: Unknownish[str] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class Activity:
     #: the activity's name
     name: str
@@ -447,7 +448,7 @@ class ActivityTypes(Enum):
     COMPETING = 5
 
 
-@dataclass()
+@attr.frozen()
 class ActivityTimestamps:
 
     #: unix time (in milliseconds) of when the activity started
@@ -456,7 +457,7 @@ class ActivityTimestamps:
     end: Unknownish[int] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class ActivityEmoji:
     #: the name of the emoji
     name: str
@@ -466,7 +467,7 @@ class ActivityEmoji:
     animated: Unknownish[bool] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class ActivityParty:
 
     #: the id of the party
@@ -475,7 +476,7 @@ class ActivityParty:
     size: Unknownish[t.List[t.Tuple[int, int]]] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class ActivityAssets:
 
     #: the id for a large asset of the activity, usually a snowflake
@@ -488,7 +489,7 @@ class ActivityAssets:
     small_text: Unknownish[str] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class ActivitySecrets:
 
     #: the secret for joining a party
@@ -508,7 +509,7 @@ class ActivityFlags(Enum):
     PLAY = 32
 
 
-@dataclass()
+@attr.frozen()
 class ActivityButtons:
     #: the text shown on the button (1-32 characters)
     label: str
@@ -516,7 +517,7 @@ class ActivityButtons:
     url: str
 
 
-@dataclass()
+@attr.frozen()
 class TypingStartEvent:
     #: id of the channel
     channel_id: Snowflake
@@ -530,7 +531,7 @@ class TypingStartEvent:
     member: Unknownish[GuildMember] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class VoiceServerUpdateEvent:
     #: voice connection token
     token: str
@@ -540,7 +541,7 @@ class VoiceServerUpdateEvent:
     endpoint: t.Optional[str]
 
 
-@dataclass()
+@attr.frozen()
 class WebhookUpdateEvent:
     #: id of the guild
     guild_id: Snowflake
@@ -548,14 +549,14 @@ class WebhookUpdateEvent:
     channel_id: Snowflake
 
 
-@dataclass()
+@attr.frozen()
 class ApplicationCommandExtra:
 
     #: id of the guild the command is in
     guild_id: Unknownish[Snowflake] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class SessionStartLimit:
     #: The total number of session starts the current user is allowed
     total: int

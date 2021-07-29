@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import typing as t
-from dataclasses import dataclass
 from enum import Enum
+
+import attr
 
 from .base import UNKNOWN, Snowflake, Unknownish
 from .channel import AllowedMentions, Embed
@@ -10,7 +11,7 @@ from .message_components import Component
 from .user import User
 
 
-@dataclass()
+@attr.frozen()
 class ApplicationCommand:
     #: unique id of the command
     id: Snowflake
@@ -29,7 +30,7 @@ class ApplicationCommand:
     default_permission: Unknownish[bool] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class ApplicationCommandOption:
     #: value of application command option type
     type: int
@@ -63,7 +64,7 @@ class ApplicationCommandOptionType(Enum):
     NUMBER = 10
 
 
-@dataclass()
+@attr.frozen()
 class ApplicationCommandOptionChoice:
     #: 1-100 character choice name
     name: str
@@ -71,7 +72,7 @@ class ApplicationCommandOptionChoice:
     value: t.Union[str, int, float]
 
 
-@dataclass()
+@attr.frozen()
 class GuildApplicationCommandPermissions:
     #: the id of the command
     id: Snowflake
@@ -83,7 +84,7 @@ class GuildApplicationCommandPermissions:
     permissions: t.List[ApplicationCommandPermissions]
 
 
-@dataclass()
+@attr.frozen()
 class ApplicationCommandPermissions:
     #: the id of the role or user
     id: Snowflake
@@ -104,7 +105,7 @@ class InteractionRequestType(Enum):
     MESSAGE_COMPONENT = 3
 
 
-@dataclass()
+@attr.frozen()
 class ApplicationCommandInteractionData:
     #: the ID of the invoked command
     id: Snowflake
@@ -120,7 +121,7 @@ class ApplicationCommandInteractionData:
     options: Unknownish[t.List[ApplicationCommandInteractionDataOption]] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class ApplicationCommandInteractionDataResolved:
     #: the ids and partial Member objects
     members: t.Dict[str, object]
@@ -132,7 +133,7 @@ class ApplicationCommandInteractionDataResolved:
     roles: Unknownish[t.Dict[str, object]] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class ApplicationCommandInteractionDataOption:
     #: the name of the parameter
     name: str
@@ -144,7 +145,7 @@ class ApplicationCommandInteractionDataOption:
     options: Unknownish[t.List[ApplicationCommandInteractionDataOption]] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class InteractionResponse:
     #: the type of response
     type: InteractionCallbackType
@@ -167,7 +168,7 @@ class InteractionCallbackType(Enum):
     UPDATE_MESSAGE = 7
 
 
-@dataclass()
+@attr.frozen()
 class InteractionApplicationCommandCallbackData:
 
     #: is the response TTS
@@ -189,7 +190,7 @@ class InteractionApplicationCommandCallbackDataFlags(Enum):
     EPHEMERAL = 64
 
 
-@dataclass()
+@attr.frozen()
 class MessageInteraction:
     #: id of the interaction
     id: Snowflake

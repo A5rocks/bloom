@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import datetime as dt
 import typing as t
-from dataclasses import dataclass
+
+import attr
 
 from .base import Snowflake
 from .user import User
 
 
-@dataclass()
+@attr.frozen()
 class GuildTemplate:
     #: the template code (unique ID)
     code: str

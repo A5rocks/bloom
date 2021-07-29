@@ -2,14 +2,15 @@ from __future__ import annotations
 
 import datetime as dt
 import typing as t
-from dataclasses import dataclass
 from enum import Enum
+
+import attr
 
 from .base import UNKNOWN, Unknownish
 from .user import User
 
 
-@dataclass()
+@attr.frozen()
 class Invite:
     #: the invite code (unique ID)
     code: str
@@ -45,7 +46,7 @@ class InviteTargetTypes(Enum):
     EMBEDDED_APPLICATION = 2
 
 
-@dataclass()
+@attr.frozen()
 class InviteMetadata:
     #: number of times this invite has been used
     uses: int
@@ -59,7 +60,7 @@ class InviteMetadata:
     created_at: dt.datetime
 
 
-@dataclass()
+@attr.frozen()
 class InviteStageInstance:
     #: the members speaking in the Stage
     members: t.List[t.Dict[str, object]]

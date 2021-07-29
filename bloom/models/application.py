@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 import typing as t
-from dataclasses import dataclass
 from enum import Enum
+
+import attr
 
 from .base import UNKNOWN, Snowflake, Unknownish
 from .teams import Team
 
 
-@dataclass()
+@attr.frozen()
 class Application:
     #: the id of the app
     id: Snowflake

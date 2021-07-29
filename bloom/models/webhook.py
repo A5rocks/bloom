@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 import typing as t
-from dataclasses import dataclass
 from enum import Enum
+
+import attr
 
 from .base import UNKNOWN, Snowflake, Unknownish
 from .user import User
 
 
-@dataclass()
+@attr.frozen()
 class Webhook:
     #: the id of the webhook
     id: Snowflake

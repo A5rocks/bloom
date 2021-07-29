@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import typing as t
-from dataclasses import dataclass
 from enum import Enum
+
+import attr
 
 from .base import Snowflake
 
 
-@dataclass()
+@attr.frozen()
 class User:
     #: the user's id
     id: Snowflake

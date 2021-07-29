@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import typing as t
-from dataclasses import dataclass
 from enum import Enum
+
+import attr
 
 from .base import UNKNOWN, Snowflake, Unknownish
 
@@ -47,7 +48,7 @@ class BitwisePermissionFlags(Enum):
     USE_EXTERNAL_STICKERS = 137438953472
 
 
-@dataclass()
+@attr.frozen()
 class Role:
     #: role id
     id: Snowflake
@@ -69,9 +70,8 @@ class Role:
     tags: Unknownish[t.Dict[str, object]] = UNKNOWN
 
 
-@dataclass()
+@attr.frozen()
 class RoleTags:
-
     #: the id of the bot this role belongs to
     bot_id: Unknownish[Snowflake] = UNKNOWN
     #: the id of the integration this role belongs to

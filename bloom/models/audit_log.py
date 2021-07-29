@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import typing as t
-from dataclasses import dataclass
 from enum import Enum
+
+import attr
 
 from .base import UNKNOWN, Snowflake, Unknownish
 
 
-@dataclass()
+@attr.frozen()
 class AuditLogEntry:
     #: id of the affected entity (webhook, user, role, etc.)
     target_id: t.Optional[str]
@@ -69,7 +70,7 @@ class AuditLogEvents(Enum):
     STICKER_DELETE = 92
 
 
-@dataclass()
+@attr.frozen()
 class OptionalAuditEntryInfo:
     #: number of days after which inactive members were kicked
     delete_member_days: str
@@ -89,7 +90,7 @@ class OptionalAuditEntryInfo:
     role_name: str
 
 
-@dataclass()
+@attr.frozen()
 class AuditLogChange:
     #: name of audit log change key
     key: AuditLogChangeKey

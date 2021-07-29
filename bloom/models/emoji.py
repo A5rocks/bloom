@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import typing as t
-from dataclasses import dataclass
+
+import attr
 
 from .base import UNKNOWN, Snowflake, Unknownish
 from .user import User
 
 
-@dataclass()
+@attr.frozen()
 class Emoji:
     #: emoji id
     id: t.Optional[Snowflake]
