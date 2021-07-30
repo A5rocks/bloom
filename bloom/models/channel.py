@@ -10,16 +10,16 @@ from .base import UNKNOWN, Snowflake, Unknownish
 from .user import User
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Channel:
     #: the id of this channel
     id: Snowflake
     #: the type of channel
-    type: int
+    type: ChannelTypes
     #: amount of seconds a user has to wait before sending another message
     #: (0-21600); bots, as well as users with the permission manage_messages
     #: or manage_channel, are unaffected
-    rate_limit_per_user: int
+    rate_limit_per_user: Unknownish[int] = UNKNOWN
     #: the id of the guild (may be missing for some channel objects received
     #: over gateway guild dispatches)
     guild_id: Unknownish[Snowflake] = UNKNOWN
@@ -136,7 +136,7 @@ class MessageTypes(Enum):
     GUILD_INVITE_REMINDER = 22
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class MessageActivity:
     #: type of message activity
     type: int
@@ -173,10 +173,10 @@ class MessageFlags(Enum):
     LOADING = 128
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class MessageReference:
     #: id of the originating message's channel
-    channel_id: Snowflake
+    channel_id: Unknownish[Snowflake] = UNKNOWN
     #: id of the originating message
     message_id: Unknownish[Snowflake] = UNKNOWN
     #: id of the originating message's guild
@@ -186,7 +186,7 @@ class MessageReference:
     fail_if_not_exists: Unknownish[bool] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class FollowedChannel:
     #: source channel id
     channel_id: Snowflake
@@ -194,17 +194,17 @@ class FollowedChannel:
     webhook_id: Snowflake
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Reaction:
     #: times this emoji has been used to react
     count: int
     #: whether the current user reacted using this emoji
     me: bool
     #: emoji information
-    emoji: t.Dict[str, object]
+    emoji: t.Dict[str, t.Any]
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Overwrite:
     #: role or user id
     id: Snowflake
@@ -216,7 +216,7 @@ class Overwrite:
     deny: str
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ThreadMetadata:
     #: whether the thread is archived
     archived: bool
@@ -231,19 +231,19 @@ class ThreadMetadata:
     locked: Unknownish[bool] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ThreadMember:
     #: the id of the thread
-    id: Snowflake
+    id: Unknownish[Snowflake] = UNKNOWN
     #: the id of the user
-    user_id: Snowflake
+    user_id: Unknownish[Snowflake] = UNKNOWN
     #: the time the current user last joined the thread
     join_timestamp: dt.datetime
     #: any user-thread settings, currently only used for notifications
     flags: int
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Embed:
 
     #: title of embed
@@ -289,7 +289,7 @@ class EmbedTypes(Enum):
     LINK = "link"
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class EmbedThumbnail:
 
     #: source url of thumbnail (only supports http(s) and attachments)
@@ -302,7 +302,7 @@ class EmbedThumbnail:
     width: Unknownish[int] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class EmbedVideo:
 
     #: source url of video
@@ -315,7 +315,7 @@ class EmbedVideo:
     width: Unknownish[int] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class EmbedImage:
 
     #: source url of image (only supports http(s) and attachments)
@@ -328,7 +328,7 @@ class EmbedImage:
     width: Unknownish[int] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class EmbedProvider:
 
     #: name of provider
@@ -337,7 +337,7 @@ class EmbedProvider:
     url: Unknownish[str] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class EmbedAuthor:
 
     #: name of author
@@ -350,7 +350,7 @@ class EmbedAuthor:
     proxy_icon_url: Unknownish[str] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class EmbedFooter:
     #: footer text
     text: str
@@ -360,7 +360,7 @@ class EmbedFooter:
     proxy_icon_url: Unknownish[str] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class EmbedField:
     #: name of the field
     name: str
@@ -370,7 +370,7 @@ class EmbedField:
     inline: Unknownish[bool] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Attachment:
     #: attachment id
     id: Snowflake
@@ -390,7 +390,7 @@ class Attachment:
     width: Unknownish[t.Optional[int]] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ChannelMention:
     #: id of the channel
     id: Snowflake
@@ -411,7 +411,7 @@ class AllowedMentionTypes(Enum):
     EVERYONE_MENTIONS = "everyone"
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class AllowedMentions:
     #: An array of allowed mention types to parse from the content.
     parse: t.List[AllowedMentionTypes]
@@ -424,7 +424,7 @@ class AllowedMentions:
     replied_user: bool
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ResponseBody:
     #: the private, archived threads the current user has joined
     threads: t.List[Channel]

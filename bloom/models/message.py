@@ -15,7 +15,7 @@ from .sticker import Sticker, StickerItem
 from .user import User
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Message:
     #: id of the message
     id: Snowflake
@@ -25,7 +25,7 @@ class Message:
     #: below)
     author: User
     #: member properties for this message's author
-    member: GuildMember
+    member: Unknownish[GuildMember] = UNKNOWN
     #: contents of the message
     content: str
     #: when this message was sent
@@ -41,7 +41,7 @@ class Message:
     #: roles specifically mentioned in this message
     mention_roles: t.List[Snowflake]
     #: channels specifically mentioned in this message
-    mention_channels: t.List[ChannelMention]
+    mention_channels: Unknownish[t.List[ChannelMention]] = UNKNOWN
     #: any attached files
     attachments: t.List[Attachment]
     #: any embedded content
@@ -51,7 +51,7 @@ class Message:
     #: type of message
     type: int
     #: the message associated with the message_reference
-    referenced_message: t.Optional[Message]
+    referenced_message: Unknownish[t.Optional[Message]] = UNKNOWN
     #: id of the guild the message was sent in
     guild_id: Unknownish[Snowflake] = UNKNOWN
     #: reactions to the message
@@ -63,7 +63,7 @@ class Message:
     #: sent with Rich Presence-related chat embeds
     activity: Unknownish[MessageActivity] = UNKNOWN
     #: sent with Rich Presence-related chat embeds
-    application: Unknownish[t.Dict[str, object]] = UNKNOWN
+    application: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
     #: if the message is a response to an Interaction, this is the id of the
     #: interaction's application
     application_id: Unknownish[Snowflake] = UNKNOWN

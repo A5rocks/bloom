@@ -10,14 +10,14 @@ from .base import UNKNOWN, Unknownish
 from .user import User
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Invite:
     #: the invite code (unique ID)
     code: str
     #: the channel this invite is for
-    channel: t.Dict[str, object]
+    channel: t.Dict[str, t.Any]
     #: the guild this invite is for
-    guild: Unknownish[t.Dict[str, object]] = UNKNOWN
+    guild: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
     #: the user who created the invite
     inviter: Unknownish[User] = UNKNOWN
     #: the type of target for this voice channel invite
@@ -26,7 +26,7 @@ class Invite:
     target_user: Unknownish[User] = UNKNOWN
     #: the embedded application to open for this voice channel embedded
     #: application invite
-    target_application: Unknownish[t.Dict[str, object]] = UNKNOWN
+    target_application: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
     #: approximate count of online members, returned from the
     #: GET /invites/<code> endpoint when with_counts is true
     approximate_presence_count: Unknownish[int] = UNKNOWN
@@ -46,7 +46,7 @@ class InviteTargetTypes(Enum):
     EMBEDDED_APPLICATION = 2
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class InviteMetadata:
     #: number of times this invite has been used
     uses: int
@@ -60,10 +60,10 @@ class InviteMetadata:
     created_at: dt.datetime
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class InviteStageInstance:
     #: the members speaking in the Stage
-    members: t.List[t.Dict[str, object]]
+    members: t.List[t.Dict[str, t.Any]]
     #: the number of users in the Stage
     participant_count: int
     #: the number of users speaking in the Stage

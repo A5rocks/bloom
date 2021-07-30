@@ -9,7 +9,7 @@ from .base import UNKNOWN, Snowflake, Unknownish
 from .user import User
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Webhook:
     #: the id of the webhook
     id: Snowflake
@@ -32,10 +32,10 @@ class Webhook:
     token: Unknownish[str] = UNKNOWN
     #: the guild of the channel that this webhook is following (returned for
     #: Channel Follower Webhooks)
-    source_guild: Unknownish[t.Dict[str, object]] = UNKNOWN
+    source_guild: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
     #: the channel that this webhook is following (returned for Channel
     #: Follower Webhooks)
-    source_channel: Unknownish[t.Dict[str, object]] = UNKNOWN
+    source_channel: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
     #: the url used for executing the webhook (returned by the webhooks OAuth2
     #: flow)
     url: Unknownish[str] = UNKNOWN

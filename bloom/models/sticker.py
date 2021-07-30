@@ -9,7 +9,7 @@ from .base import UNKNOWN, Snowflake, Unknownish
 from .user import User
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Sticker:
     #: id of the sticker
     id: Snowflake
@@ -54,7 +54,7 @@ class StickerFormatTypes(Enum):
     LOTTIE = 3
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class StickerItem:
     #: id of the sticker
     id: Snowflake
@@ -64,7 +64,7 @@ class StickerItem:
     format_type: int
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class StickerPack:
     #: id of the sticker pack
     id: Snowflake

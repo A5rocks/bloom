@@ -9,7 +9,7 @@ from .base import UNKNOWN, Snowflake, Unknownish
 from .teams import Team
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Application:
     #: the id of the app
     id: Snowflake
@@ -40,7 +40,7 @@ class Application:
     #: the url of the app's privacy policy
     privacy_policy_url: Unknownish[str] = UNKNOWN
     #: partial user object containing info on the owner of the application
-    owner: Unknownish[t.Dict[str, object]] = UNKNOWN
+    owner: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
     #: if this application is a game sold on Discord, this field will be the
     #: guild to which it has been linked
     guild_id: Unknownish[Snowflake] = UNKNOWN

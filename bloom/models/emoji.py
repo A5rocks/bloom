@@ -8,7 +8,7 @@ from .base import UNKNOWN, Snowflake, Unknownish
 from .user import User
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Emoji:
     #: emoji id
     id: t.Optional[Snowflake]

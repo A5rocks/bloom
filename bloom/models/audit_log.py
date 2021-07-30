@@ -8,7 +8,7 @@ import attr
 from .base import UNKNOWN, Snowflake, Unknownish
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class AuditLogEntry:
     #: id of the affected entity (webhook, user, role, etc.)
     target_id: t.Optional[str]
@@ -70,7 +70,7 @@ class AuditLogEvents(Enum):
     STICKER_DELETE = 92
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class OptionalAuditEntryInfo:
     #: number of days after which inactive members were kicked
     delete_member_days: str
@@ -90,14 +90,14 @@ class OptionalAuditEntryInfo:
     role_name: str
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class AuditLogChange:
     #: name of audit log change key
     key: AuditLogChangeKey
     #: new value of the key
-    new_value: Unknownish[object] = UNKNOWN
+    new_value: Unknownish[t.Any] = UNKNOWN
     #: old value of the key
-    old_value: Unknownish[object] = UNKNOWN
+    old_value: Unknownish[t.Any] = UNKNOWN
 
 
 class AuditLogChangeKey(Enum):

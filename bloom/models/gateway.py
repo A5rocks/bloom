@@ -7,15 +7,20 @@ from enum import Enum
 import attr
 
 from .base import UNKNOWN, Snowflake, Unknownish
-from .channel import Channel, ThreadMember
+from .channel import Channel, ChannelTypes, ThreadMember
 from .emoji import Emoji
-from .guild import GuildMember
+from .guild import Guild, GuildMember, Integration
+from .interaction import Interaction
+from .message import Message
 from .permissions import Role
+from .slash_commands import ApplicationCommand
+from .stage_instance import StageInstance
 from .sticker import Sticker
 from .user import User
+from .voice import VoiceState
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class GuildRequestMembers:
     #: id of the guild to get members for
     guild_id: Snowflake
@@ -33,8 +38,8 @@ class GuildRequestMembers:
     nonce: Unknownish[t.Optional[str]] = UNKNOWN
 
 
-@attr.frozen()
-class GatewayVoiceStateUpdate:
+@attr.frozen(kw_only=True)
+class GatewayVoiceStateUpdateEvent:
     #: id of the guild
     guild_id: Snowflake
     #: id of the voice channel client wants to join (null if disconnecting)
@@ -45,7 +50,7 @@ class GatewayVoiceStateUpdate:
     self_deaf: bool
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Presence:
     #: unix time (in milliseconds) of when the client went idle, or null if
     #: the client is not idle
@@ -66,30 +71,71 @@ class StatusTypes(Enum):
     OFFLINE = "Offline"
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Hello:
     #: the interval (in milliseconds) the client should heartbeat with
     heartbeat_interval: int
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ReadyEvent:
     #: gateway version
     v: int
     #: information about the user including email
     user: User
     #: the guilds the user is in
-    guilds: t.List[t.Dict[str, object]]
+    guilds: t.List[t.Dict[str, t.Any]]
     #: used for resuming connections
     session_id: str
     #: contains id and flags
-    application: t.Dict[str, object]
+    application: t.Dict[str, t.Any]
     #: the shard information associated with this session, if sent when
     #: identifying
     shard: Unknownish[t.List[int]] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
+class ChannelCreateEvent(Channel):
+    pass
+
+
+@attr.frozen(kw_only=True)
+class ChannelUpdateEvent(Channel):
+    pass
+
+
+@attr.frozen(kw_only=True)
+class ChannelDeleteEvent(Channel):
+    pass
+
+
+@attr.frozen(kw_only=True)
+class ThreadCreateEvent(Channel):
+    pass
+
+
+@attr.frozen(kw_only=True)
+class ThreadUpdateEvent(Channel):
+    pass
+
+
+@attr.frozen(kw_only=True)
+class ThreadDeleteEvent:
+    # TODO: this is code duplication?
+    #: the id of this channel
+    id: Snowflake
+    #: the id of the guild (may be missing for some channel objects received
+    #: over gateway guild dispatches)
+    guild_id: Unknownish[Snowflake] = UNKNOWN
+    #: for guild channels: id of the parent category for a channel (each
+    #: parent category can contain up to 50 channels), for threads: id of the
+    #: text channel this thread was created
+    parent_id: Unknownish[t.Optional[Snowflake]] = UNKNOWN
+    #: the type of channel
+    type: ChannelTypes
+
+
+@attr.frozen(kw_only=True)
 class ThreadListSyncEvent:
     #: the id of the guild
     guild_id: Snowflake
@@ -106,7 +152,12 @@ class ThreadListSyncEvent:
     channel_ids: Unknownish[t.List[Snowflake]] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
+class ThreadMemberUpdateEvent(ThreadMember):
+    pass
+
+
+@attr.frozen(kw_only=True)
 class ThreadMembersUpdateEvent:
     #: the id of the thread
     id: Snowflake
@@ -120,7 +171,7 @@ class ThreadMembersUpdateEvent:
     removed_member_ids: Unknownish[t.List[Snowflake]] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ChannelPinsUpdateEvent:
     #: the id of the channel
     channel_id: Snowflake
@@ -130,7 +181,25 @@ class ChannelPinsUpdateEvent:
     last_pin_timestamp: Unknownish[t.Optional[dt.datetime]] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
+class GuildCreateEvent(Guild):
+    pass
+
+
+@attr.frozen(kw_only=True)
+class GuildUpdateEvent(Guild):
+    pass
+
+
+@attr.frozen(kw_only=True)
+class GuildDeleteEvent:
+    # TODO: A partial guild object. Represents an Offline Guild, or a Guild
+    # whose information has not been provided through Guild Create events
+    # during the Gateway connect.
+    pass
+
+
+@attr.frozen(kw_only=True)
 class GuildBanAddEvent:
     #: id of the guild
     guild_id: Snowflake
@@ -138,7 +207,7 @@ class GuildBanAddEvent:
     user: User
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class GuildBanRemoveEvent:
     #: id of the guild
     guild_id: Snowflake
@@ -146,7 +215,7 @@ class GuildBanRemoveEvent:
     user: User
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class GuildEmojisUpdateEvent:
     #: id of the guild
     guild_id: Snowflake
@@ -154,7 +223,7 @@ class GuildEmojisUpdateEvent:
     emojis: t.List[Emoji]
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class GuildStickersUpdateEvent:
     #: id of the guild
     guild_id: Snowflake
@@ -162,19 +231,19 @@ class GuildStickersUpdateEvent:
     stickers: t.List[Sticker]
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class GuildIntegrationsUpdateEvent:
     #: id of the guild whose integrations were updated
     guild_id: Snowflake
 
 
-@attr.frozen()
-class GuildMemberAddExtra:
+@attr.frozen(kw_only=True)
+class GuildMemberAddEvent(GuildMember):
     #: id of the guild
     guild_id: Snowflake
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class GuildMemberRemoveEvent:
     #: the id of the guild
     guild_id: Snowflake
@@ -182,7 +251,7 @@ class GuildMemberRemoveEvent:
     user: User
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class GuildMemberUpdateEvent:
     #: the id of the guild
     guild_id: Snowflake
@@ -205,7 +274,7 @@ class GuildMemberUpdateEvent:
     pending: Unknownish[bool] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class GuildMembersChunkEvent:
     #: the id of the guild
     guild_id: Snowflake
@@ -226,7 +295,7 @@ class GuildMembersChunkEvent:
     nonce: Unknownish[str] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class GuildRoleCreateEvent:
     #: the id of the guild
     guild_id: Snowflake
@@ -234,7 +303,7 @@ class GuildRoleCreateEvent:
     role: Role
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class GuildRoleUpdateEvent:
     #: the id of the guild
     guild_id: Snowflake
@@ -242,7 +311,7 @@ class GuildRoleUpdateEvent:
     role: Role
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class GuildRoleDeleteEvent:
     #: id of the guild
     guild_id: Snowflake
@@ -250,19 +319,19 @@ class GuildRoleDeleteEvent:
     role_id: Snowflake
 
 
-@attr.frozen()
-class IntegrationCreateEventAdditional:
+@attr.frozen(kw_only=True)
+class IntegrationCreateEvent(Integration):
     #: id of the guild
     guild_id: Snowflake
 
 
-@attr.frozen()
-class IntegrationUpdateEventAdditional:
+@attr.frozen(kw_only=True)
+class IntegrationUpdateEvent(Integration):
     #: id of the guild
     guild_id: Snowflake
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class IntegrationDeleteEvent:
     #: integration id
     id: Snowflake
@@ -272,7 +341,7 @@ class IntegrationDeleteEvent:
     application_id: Unknownish[Snowflake] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class InviteCreateEvent:
     #: the channel the invite is for
     channel_id: Snowflake
@@ -299,10 +368,10 @@ class InviteCreateEvent:
     target_user: Unknownish[User] = UNKNOWN
     #: the embedded application to open for this voice channel embedded
     #: application invite
-    target_application: Unknownish[t.Dict[str, object]] = UNKNOWN
+    target_application: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class InviteDeleteEvent:
     #: the channel of the invite
     channel_id: Snowflake
@@ -312,7 +381,21 @@ class InviteDeleteEvent:
     guild_id: Unknownish[Snowflake] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
+class MessageCreateEvent(Message):
+    pass
+
+
+@attr.frozen(kw_only=True)
+class MessageUpdateEvent:
+    # TODO: rest of message object payload?
+    #: id of the message
+    id: Snowflake
+    #: id of the channel the message was sent in
+    channel_id: Snowflake
+
+
+@attr.frozen(kw_only=True)
 class MessageDeleteEvent:
     #: the id of the message
     id: Snowflake
@@ -322,7 +405,7 @@ class MessageDeleteEvent:
     guild_id: Unknownish[Snowflake] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class MessageDeleteBulkEvent:
     #: the ids of the messages
     ids: t.List[Snowflake]
@@ -332,7 +415,7 @@ class MessageDeleteBulkEvent:
     guild_id: Unknownish[Snowflake] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class MessageReactionAddEvent:
     #: the id of the user
     user_id: Snowflake
@@ -341,14 +424,14 @@ class MessageReactionAddEvent:
     #: the id of the message
     message_id: Snowflake
     #: the emoji used to react - example
-    emoji: t.Dict[str, object]
+    emoji: t.Dict[str, t.Any]
     #: the id of the guild
     guild_id: Unknownish[Snowflake] = UNKNOWN
     #: the member who reacted if this happened in a guild
     member: Unknownish[GuildMember] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class MessageReactionRemoveEvent:
     #: the id of the user
     user_id: Snowflake
@@ -357,12 +440,12 @@ class MessageReactionRemoveEvent:
     #: the id of the message
     message_id: Snowflake
     #: the emoji used to react - example
-    emoji: t.Dict[str, object]
+    emoji: t.Dict[str, t.Any]
     #: the id of the guild
     guild_id: Unknownish[Snowflake] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class MessageReactionRemoveAllEvent:
     #: the id of the channel
     channel_id: Snowflake
@@ -372,19 +455,39 @@ class MessageReactionRemoveAllEvent:
     guild_id: Unknownish[Snowflake] = UNKNOWN
 
 
-@attr.frozen()
-class MessageReactionRemoveEmoji:
+@attr.frozen(kw_only=True)
+class MessageReactionRemoveEmojiEvent:
     #: the id of the channel
     channel_id: Snowflake
     #: the id of the message
     message_id: Snowflake
     #: the emoji that was removed
-    emoji: t.Dict[str, object]
+    emoji: t.Dict[str, t.Any]
     #: the id of the guild
     guild_id: Unknownish[Snowflake] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
+class PresenceUpdateUser:
+    # TODO: see note below
+    id: Snowflake
+
+
+@attr.frozen(kw_only=True)
+class PresenceUpdateEvent:
+    # TODO: The user object within this event can be partial, the only
+    # field which must be sent is the id field, everything else is optional.
+    # Along with this limitation, no fields are required, and the types of
+    # the fields are not validated. Your client should expect any combination
+    # of fields and types within this event.
+    user: Unknownish[PresenceUpdateUser] = UNKNOWN
+    guild_id: Unknownish[Snowflake] = UNKNOWN
+    status: Unknownish[str] = UNKNOWN
+    activities: Unknownish[t.List[Activity]] = UNKNOWN
+    client_status: Unknownish[ClientStatus] = UNKNOWN
+
+
+@attr.frozen(kw_only=True)
 class ClientStatus:
 
     #: the user's status set for an active desktop (Windows, Linux, Mac)
@@ -398,12 +501,12 @@ class ClientStatus:
     web: Unknownish[str] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Activity:
     #: the activity's name
     name: str
     #: activity type
-    type: int
+    type: ActivityTypes
     #: unix timestamp (in milliseconds) of when the activity was added to the
     #: user's session
     created_at: int
@@ -428,7 +531,7 @@ class Activity:
     #: whether or not the activity is an instanced game session
     instance: Unknownish[bool] = UNKNOWN
     #: activity flagsORd together, describes what the payload includes
-    flags: Unknownish[int] = UNKNOWN
+    flags: Unknownish[ActivityFlags] = UNKNOWN
     #: the custom buttons shown in the Rich Presence (max 2)
     buttons: Unknownish[t.List[ActivityButtons]] = UNKNOWN
 
@@ -448,7 +551,7 @@ class ActivityTypes(Enum):
     COMPETING = 5
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ActivityTimestamps:
 
     #: unix time (in milliseconds) of when the activity started
@@ -457,7 +560,7 @@ class ActivityTimestamps:
     end: Unknownish[int] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ActivityEmoji:
     #: the name of the emoji
     name: str
@@ -467,7 +570,7 @@ class ActivityEmoji:
     animated: Unknownish[bool] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ActivityParty:
 
     #: the id of the party
@@ -476,7 +579,7 @@ class ActivityParty:
     size: Unknownish[t.List[t.Tuple[int, int]]] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ActivityAssets:
 
     #: the id for a large asset of the activity, usually a snowflake
@@ -489,7 +592,7 @@ class ActivityAssets:
     small_text: Unknownish[str] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ActivitySecrets:
 
     #: the secret for joining a party
@@ -509,7 +612,7 @@ class ActivityFlags(Enum):
     PLAY = 32
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ActivityButtons:
     #: the text shown on the button (1-32 characters)
     label: str
@@ -517,7 +620,7 @@ class ActivityButtons:
     url: str
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class TypingStartEvent:
     #: id of the channel
     channel_id: Snowflake
@@ -531,7 +634,17 @@ class TypingStartEvent:
     member: Unknownish[GuildMember] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
+class UserUpdateEvent(User):
+    pass
+
+
+@attr.frozen(kw_only=True)
+class VoiceStateUpdateEvent(VoiceState):
+    pass
+
+
+@attr.frozen(kw_only=True)
 class VoiceServerUpdateEvent:
     #: voice connection token
     token: str
@@ -541,22 +654,53 @@ class VoiceServerUpdateEvent:
     endpoint: t.Optional[str]
 
 
-@attr.frozen()
-class WebhookUpdateEvent:
+@attr.frozen(kw_only=True)
+class WebhooksUpdateEvent:
     #: id of the guild
     guild_id: Snowflake
     #: id of the channel
     channel_id: Snowflake
 
 
-@attr.frozen()
-class ApplicationCommandExtra:
-
+@attr.frozen(kw_only=True)
+class ApplicationCommandCreateEvent(ApplicationCommand):
     #: id of the guild the command is in
     guild_id: Unknownish[Snowflake] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
+class ApplicationCommandUpdateEvent(ApplicationCommand):
+    #: id of the guild the command is in
+    guild_id: Unknownish[Snowflake] = UNKNOWN
+
+
+@attr.frozen(kw_only=True)
+class ApplicationCommandDeleteEvent(ApplicationCommand):
+    #: id of the guild the command is in
+    guild_id: Unknownish[Snowflake] = UNKNOWN
+
+
+@attr.frozen(kw_only=True)
+class InteractionCreateEvent(Interaction):
+    pass
+
+
+@attr.frozen(kw_only=True)
+class StageInstanceCreateEvent(StageInstance):
+    pass
+
+
+@attr.frozen(kw_only=True)
+class StageInstanceUpdateEvent(StageInstance):
+    pass
+
+
+@attr.frozen(kw_only=True)
+class StageInstanceDeleteEvent(StageInstance):
+    pass
+
+
+@attr.frozen(kw_only=True)
 class SessionStartLimit:
     #: The total number of session starts the current user is allowed
     total: int

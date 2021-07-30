@@ -8,7 +8,7 @@ import attr
 from .base import Snowflake
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Team:
     #: a hash of the image of the team's icon
     icon: t.Optional[str]
@@ -22,7 +22,7 @@ class Team:
     owner_user_id: Snowflake
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class TeamMember:
     #: the user's membership state on the team
     membership_state: int
@@ -31,7 +31,7 @@ class TeamMember:
     #: the id of the parent team of which they are a member
     team_id: Snowflake
     #: the avatar, discriminator, id, and username of the user
-    user: t.Dict[str, object]
+    user: t.Dict[str, t.Any]
 
 
 class MembershipState(Enum):

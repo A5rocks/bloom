@@ -11,8 +11,66 @@ import typing
 import attr
 import trio
 import trio_websocket
+from cattr import Converter
+from cattr.preconf.json import make_converter
 
 import bloom._compat as compat
+import bloom.models.base as base_models
+import bloom.models.gateway as gateway_models
+
+tags_to_model = {
+    "READY": gateway_models.ReadyEvent,
+    "CHANNEL_CREATE": gateway_models.ChannelCreateEvent,
+    "CHANNEL_UPDATE": gateway_models.ChannelUpdateEvent,
+    "CHANNEL_DELETE": gateway_models.ChannelDeleteEvent,
+    "THREAD_CREATE": gateway_models.ThreadCreateEvent,
+    "THREAD_UPDATE": gateway_models.ThreadUpdateEvent,
+    "THREAD_DELETE": gateway_models.ThreadDeleteEvent,
+    "THREAD_LIST_SYNC": gateway_models.ThreadListSyncEvent,
+    "THREAD_MEMBER_UPDATE": gateway_models.ThreadMemberUpdateEvent,
+    "THREAD_MEMBERS_UPDATE": gateway_models.ThreadMembersUpdateEvent,
+    "CHANNEL_PINS_UPDATE": gateway_models.ChannelPinsUpdateEvent,
+    "GUILD_CREATE": gateway_models.GuildCreateEvent,
+    "GUILD_UPDATE": gateway_models.GuildUpdateEvent,
+    "GUILD_DELETE": gateway_models.GuildDeleteEvent,
+    "GUILD_BAN_ADD": gateway_models.GuildBanAddEvent,
+    "GUILD_BAN_REMOVE": gateway_models.GuildBanRemoveEvent,
+    "GUILD_EMOJIS_UPDATE": gateway_models.GuildEmojisUpdateEvent,
+    "GUILD_STICKERS_UPDATE": gateway_models.GuildStickersUpdateEvent,
+    "GUILD_INTEGRATIONS_UPDATE": gateway_models.GuildIntegrationsUpdateEvent,
+    "GUILD_MEMBER_ADD": gateway_models.GuildMemberAddEvent,
+    "GUILD_MEMBER_REMOVE": gateway_models.GuildMemberRemoveEvent,
+    "GUILD_MEMBER_UPDATE": gateway_models.GuildMemberUpdateEvent,
+    "GUILD_MEMBERS_CHUNK": gateway_models.GuildMembersChunkEvent,
+    "GUILD_ROLE_CREATE": gateway_models.GuildRoleCreateEvent,
+    "GUILD_ROLE_UPDATE": gateway_models.GuildRoleUpdateEvent,
+    "GUILD_ROLE_DELETE": gateway_models.GuildRoleDeleteEvent,
+    "INTEGRATION_CREATE": gateway_models.IntegrationCreateEvent,
+    "INTEGRATION_UPDATE": gateway_models.IntegrationUpdateEvent,
+    "INTEGRATION_DELETE": gateway_models.IntegrationDeleteEvent,
+    "INVITE_CREATE": gateway_models.InviteCreateEvent,
+    "INVITE_DELETE": gateway_models.InviteDeleteEvent,
+    "MESSAGE_CREATE": gateway_models.MessageCreateEvent,
+    "MESSAGE_UPDATE": gateway_models.MessageUpdateEvent,
+    "MESSAGE_DELETE": gateway_models.MessageDeleteEvent,
+    "MESSAGE_DELETE_BULK": gateway_models.MessageDeleteBulkEvent,
+    "MESSAGE_REACTION_ADD": gateway_models.MessageReactionAddEvent,
+    "MESSAGE_REACTION_REMOVE_ALL": gateway_models.MessageReactionRemoveAllEvent,
+    "MESSAGE_REACTION_REMOVE_EMOJI": gateway_models.MessageReactionRemoveEmojiEvent,
+    "PRESENCE_UPDATE": gateway_models.PresenceUpdateEvent,
+    "TYPING_START": gateway_models.TypingStartEvent,
+    "USER_UPDATE": gateway_models.UserUpdateEvent,
+    "VOICE_STATE_UPDATE": gateway_models.VoiceStateUpdateEvent,
+    "VOICE_SERVER_UPDATE": gateway_models.VoiceServerUpdateEvent,
+    "WEBHOOKS_UPDATE": gateway_models.WebhooksUpdateEvent,  # TODO: update docs
+    "APPLICATION_COMMAND_CREATE": gateway_models.ApplicationCommandCreateEvent,
+    "APPLICATION_COMMAND_UPDATE": gateway_models.ApplicationCommandUpdateEvent,
+    "APPLICATION_COMMAND_DELETE": gateway_models.ApplicationCommandDeleteEvent,
+    "INTERACTION_CREATE": gateway_models.InteractionCreateEvent,
+    "STAGE_INSTANCE_CREATE": gateway_models.StageInstanceCreateEvent,
+    "STAGE_INSTANCE_UPDATE": gateway_models.StageInstanceUpdateEvent,
+    "STAGE_INSTANCE_DELETE": gateway_models.StageInstanceDeleteEvent,
+}
 
 if typing.TYPE_CHECKING:
     import typing_extensions
@@ -24,6 +82,7 @@ ONE_HOUR = 60 * 60
 
 @attr.define()
 class _ShardData:
+    converter: Converter
     seq: typing.Optional[int] = None
     have_acked: bool = True
     session_id: typing.Optional[str] = None
@@ -56,6 +115,7 @@ class _ConnectionInfo:
     shard_id: int
     shard_count: int
     bucket: _Bucket
+    converter: Converter
 
 
 @attr.define()
@@ -98,6 +158,13 @@ class TooManyIdentifies(ShardException):
 @attr.define()
 class _NonMonotonicHeartbeat(ShardException):
     pass
+
+
+# TODO: remove in non-debug version
+@attr.define()
+class _MissingKey(ShardException):
+    tag: str
+    unexpected: object
 
 
 class Intents(enum.IntFlag):
@@ -208,6 +275,26 @@ async def _shared_logic(
 
             data.seq = seq
 
+            # https://discord.com/channels/613425648685547541/697489244649816084/870221091849793587
+            if message['t'] == 'GUILD_APPLICATION_COMMAND_COUNTS_UPDATE':
+                continue
+
+            try:
+                model: object = data.converter.structure(message['d'], tags_to_model[message['t']])
+                reverse: typing.Dict[str, object] = data.converter.unstructure(model)
+
+                if not _skip_differences(message['t']):
+                    differences = (
+                        _diff_differences(reverse, message['d'])
+                        - _allowed_differences(message['t'])
+                    )
+                    # https://github.com/discord/discord-api-docs/issues/1789
+                    differences = differences - {'guild_hashes'}
+                    if differences:
+                        raise _MissingKey(message['t'], differences)
+            except Exception as e:
+                _LOGGER.exception('improper payload', exc_info=e)
+
         elif message['op'] == 1:
             await websocket.send_message(json.dumps({
                 'op': 1,
@@ -290,7 +377,7 @@ async def _run_once(
 async def _run_shard(
         info: _ConnectionInfo,
 ) -> typing.NoReturn:
-    data = _ShardData()
+    data = _ShardData(info.converter)
 
     # variables for not uselessly resuming
     should_resume = False
@@ -311,7 +398,7 @@ async def _run_shard(
         else:
             await info.bucket.park()
             _LOGGER.info('identifying')
-            data = _ShardData()
+            data = _ShardData(info.converter)
             last_identify = trio.current_time()
             identifies += 1
 
@@ -390,6 +477,113 @@ async def _run_shard(
             await resume_backoff.wait()
 
 
+def _register_converter(converter: Converter) -> Converter:
+    converter.register_structure_hook(base_models.Snowflake, lambda d, _: int(d))
+
+    UNKNOWN_TYPE = typing.Type[base_models.UNKNOWN]
+
+    # TODO: use the new methods in `typing`
+    def is_unknown(cls: type) -> bool:
+        if getattr(
+            cls, "__origin__"
+        ) is typing.Union and UNKNOWN_TYPE in getattr(cls, "__args__"):
+            return True
+        return False
+
+    def identity_function(data: object, _: object) -> object:
+        return data
+
+    converter.register_structure_hook_func(is_unknown, identity_function)
+
+    return converter
+
+
+def _allowed_differences(tag: str) -> typing.Set[str]:
+    # TODO: remove in non-debug version
+    if tag == 'READY':
+        return {
+            # https://github.com/discord/discord-api-docs/issues/1239#issuecomment-563396658
+            'user_settings',
+            'relationships',
+            'presences',
+            # https://github.com/discord/discord-api-docs/commit/ab5d49ae7
+            '_trace',
+            # https://github.com/discord/discord-api-docs/commit/f36156dbb
+            'private_channels',
+            # in discord api
+            # https://discord.com/channels/81384788765712384/381887113391505410/835382981681348668
+            'guild_join_requests',
+            # unknown; TODO: ask
+            'geo_ordered_rtc_regions',
+        }
+    elif tag == 'GUILD_MEMBER_UPDATE':
+        return {
+            # https://github.com/discord/discord-api-docs/pull/1610#issuecomment-626846583
+            'hoisted_role',
+            # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
+            'is_pending',
+            # unknown; TODO: ask.
+            'avatar',
+        }
+    elif tag == 'GUILD_MEMBER_ADD':
+        return {
+            # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
+            'is_pending',
+            # unknown; TODO: ask.
+            'avatar',
+        }
+    elif tag == 'GUILD_CREATE':
+        return {
+            # https://github.com/discord/discord-api-docs/pull/2976#issuecomment-846251199
+            'nsfw',
+            # https://github.com/discord/discord-api-docs/pull/1074#issuecomment-522193546
+            'lazy',
+            # https://github.com/discord/discord-api-docs/pull/3063#issuecomment-855013415
+            'application_command_count',
+            # in discord developers
+            # https://discord.com/channels/613425648685547541/697489244649816084/870221091849793587
+            'application_command_counts',
+        }
+    elif tag == 'APPLICATION_COMMAND_UPDATE':
+        return {
+            # https://github.com/discord/discord-api-docs/pull/3524
+            'version',
+            # unknown; TODO: ask
+            'type'
+        }
+    elif tag == 'THREAD_UPDATE':
+        return {
+            # unknown; TODO: ask
+            'audience'
+        }
+
+    return set()
+
+
+def _skip_differences(tag: str) -> bool:
+    # TODO: remove in non-debug version
+    # these are payloads that aren't fully implemented
+    return tag in ('MESSAGE_UPDATE')
+
+
+def _diff_differences(
+    one: typing.Dict[str, object],
+    two: typing.Dict[str, object]
+) -> typing.Set[str]:
+    # TODO: remove in non-debug version
+    keys = {k for k in two if k not in one}
+    keys.update(
+        {
+            k + '.' + v
+            for k in set(one) if isinstance(one.get(k), dict) and isinstance(two.get(k), dict)
+            # this type ignore shouldn't be necessary due to narrowing, but oh well.
+            for v in _diff_differences(one[k], two[k])  # type: ignore[arg-type]
+        }
+    )
+
+    return keys
+
+
 async def connect(
         token: str,
         intents: Intents,
@@ -399,12 +593,13 @@ async def connect(
         max_concurrency: int = 1
 ) -> typing.NoReturn:
     """Connects to the gateway with a specified token."""
+    converter = _register_converter(make_converter())
     buckets = [_Bucket(trio.lowlevel.ParkingLot()) for _ in range(max_concurrency)]
 
     async with trio.open_nursery() as nursery:
         for shard_id in shard_ids:
             bucket = buckets[shard_id % max_concurrency]
-            info = _ConnectionInfo(token, intents, shard_id, shard_count, bucket)
+            info = _ConnectionInfo(token, intents, shard_id, shard_count, bucket, converter)
             nursery.start_soon(_run_shard, info)
 
     raise RuntimeError('Should never get here.')

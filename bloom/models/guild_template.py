@@ -9,7 +9,7 @@ from .base import Snowflake
 from .user import User
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class GuildTemplate:
     #: the template code (unique ID)
     code: str
@@ -30,6 +30,6 @@ class GuildTemplate:
     #: the ID of the guild this template is based on
     source_guild_id: Snowflake
     #: the guild snapshot this template contains
-    serialized_source_guild: t.Dict[str, object]
+    serialized_source_guild: t.Dict[str, t.Any]
     #: whether the template has unsynced changes
     is_dirty: t.Optional[bool]

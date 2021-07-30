@@ -10,7 +10,7 @@ from .slash_commands import (ApplicationCommandInteractionData,
 from .user import User
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Interaction:
     #: id of the interaction
     id: Snowflake
@@ -19,9 +19,9 @@ class Interaction:
     #: the type of interaction
     type: InteractionRequestType
     #: the command data payload
-    data: ApplicationCommandInteractionData
+    data: Unknownish[ApplicationCommandInteractionData] = UNKNOWN
     #: guild member data for the invoking user, including permissions
-    member: GuildMember
+    member: Unknownish[GuildMember] = UNKNOWN
     #: a continuation token for responding to the interaction
     token: str
     #: read-only property, always 1

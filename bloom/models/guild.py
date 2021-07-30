@@ -15,7 +15,7 @@ from .sticker import Sticker
 from .user import User
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Guild:
     #: guild id
     id: Snowflake
@@ -30,13 +30,13 @@ class Guild:
     #: feature
     discovery_splash: t.Optional[str]
     #: true if the user is the owner of the guild
-    owner: bool
+    owner: Unknownish[bool] = UNKNOWN
     #: id of owner
     owner_id: Snowflake
     #: total permissions for the user in the guild (excludes overwrites)
-    permissions: str
+    permissions: Unknownish[str] = UNKNOWN
     #: voice region id for the guild (deprecated)
-    region: t.Optional[str]
+    region: Unknownish[t.Optional[str]] = UNKNOWN
     #: id of afk channel
     afk_channel_id: t.Optional[Snowflake]
     #: afk timeout in seconds
@@ -66,25 +66,25 @@ class Guild:
     #: guidelines
     rules_channel_id: t.Optional[Snowflake]
     #: when this guild was joined at
-    joined_at: dt.datetime
+    joined_at: Unknownish[dt.datetime] = UNKNOWN
     #: true if this is considered a large guild
-    large: bool
+    large: Unknownish[bool] = UNKNOWN
     #: true if this guild is unavailable due to an outage
-    unavailable: bool
+    unavailable: Unknownish[bool] = UNKNOWN
     #: total number of members in this guild
-    member_count: int
+    member_count: Unknownish[int] = UNKNOWN
     #: states of members currently in voice channels; lacks the guild_id key
-    voice_states: t.List[t.Dict[str, object]]
+    voice_states: Unknownish[t.List[t.Dict[str, t.Any]]] = UNKNOWN
     #: users in the guild
-    members: t.List[GuildMember]
+    members: Unknownish[t.List[GuildMember]] = UNKNOWN
     #: channels in the guild
-    channels: t.List[Channel]
+    channels: Unknownish[t.List[Channel]] = UNKNOWN
     #: all active threads in the guild that current user has permission to
     #: view
-    threads: t.List[Channel]
+    threads: Unknownish[t.List[Channel]] = UNKNOWN
     #: presences of the members in the guild, will only include non-offline
     #: members if the size is greater than large threshold
-    presences: t.List[t.Dict[str, object]]
+    presences: Unknownish[t.List[t.Dict[str, t.Any]]] = UNKNOWN
     #: the vanity url code for the guild
     vanity_url_code: t.Optional[str]
     #: the description of a Community guild
@@ -102,7 +102,7 @@ class Guild:
     #: guild NSFW level
     nsfw_level: int
     #: Stage instances in the guild
-    stage_instances: t.List[StageInstance]
+    stage_instances: Unknownish[t.List[StageInstance]] = UNKNOWN
     #: icon hash, returned when in the template object
     icon_hash: Unknownish[t.Optional[str]] = UNKNOWN
     #: true if the server widget is enabled
@@ -235,7 +235,7 @@ class GuildFeatures(Enum):
     PRIVATE_THREADS = "PRIVATE_THREADS"
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class GuildPreview:
     #: guild id
     id: Snowflake
@@ -259,7 +259,7 @@ class GuildPreview:
     description: t.Optional[str]
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class GuildWidget:
     #: whether the widget is enabled
     enabled: bool
@@ -267,7 +267,7 @@ class GuildWidget:
     channel_id: t.Optional[Snowflake]
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class GuildMember:
     #: array of role object ids
     roles: t.List[Snowflake]
@@ -291,7 +291,7 @@ class GuildMember:
     permissions: Unknownish[str] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Integration:
     #: integration id
     id: Snowflake
@@ -302,26 +302,26 @@ class Integration:
     #: is this integration enabled
     enabled: bool
     #: is this integration syncing
-    syncing: bool
+    syncing: Unknownish[bool] = UNKNOWN
     #: id that this integration uses for "subscribers"
-    role_id: Snowflake
+    role_id: Unknownish[Snowflake] = UNKNOWN
     #: whether emoticons should be synced for this integration (twitch only
     #: currently)
-    enable_emoticons: bool
+    enable_emoticons: Unknownish[bool] = UNKNOWN
     #: the behavior of expiring subscribers
-    expire_behavior: t.Dict[str, object]
+    expire_behavior: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
     #: the grace period (in days) before expiring subscribers
-    expire_grace_period: int
+    expire_grace_period: Unknownish[int] = UNKNOWN
     #: user for this integration
-    user: User
+    user: Unknownish[User] = UNKNOWN
     #: integration account information
     account: IntegrationAccount
     #: when this integration was last synced
-    synced_at: dt.datetime
+    synced_at: Unknownish[dt.datetime] = UNKNOWN
     #: how many subscribers this integration has
-    subscriber_count: int
+    subscriber_count: Unknownish[int] = UNKNOWN
     #: has this integration been revoked
-    revoked: bool
+    revoked: Unknownish[bool] = UNKNOWN
     #: The bot/OAuth2 application for discord integrations
     application: Unknownish[IntegrationAccount] = UNKNOWN
 
@@ -331,7 +331,7 @@ class IntegrationExpireBehaviors(Enum):
     KICK = 1
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class IntegrationAccount:
     #: id of the account
     id: str
@@ -339,7 +339,7 @@ class IntegrationAccount:
     name: str
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class IntegrationApplication:
     #: the id of the app
     id: Snowflake
@@ -355,7 +355,7 @@ class IntegrationApplication:
     bot: Unknownish[User] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Ban:
     #: the reason for the ban
     reason: t.Optional[str]
@@ -363,7 +363,7 @@ class Ban:
     user: User
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class WelcomeScreen:
     #: the server description shown in the welcome screen
     description: t.Optional[str]
@@ -371,7 +371,7 @@ class WelcomeScreen:
     welcome_channels: t.List[WelcomeScreenChannel]
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class WelcomeScreenChannel:
     #: the channel's id
     channel_id: Snowflake

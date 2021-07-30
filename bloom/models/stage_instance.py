@@ -7,7 +7,7 @@ import attr
 from .base import Snowflake
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class StageInstance:
     #: The id of this Stage instance
     id: Snowflake

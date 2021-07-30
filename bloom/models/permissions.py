@@ -48,7 +48,7 @@ class BitwisePermissionFlags(Enum):
     USE_EXTERNAL_STICKERS = 137438953472
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Role:
     #: role id
     id: Snowflake
@@ -67,10 +67,10 @@ class Role:
     #: whether this role is mentionable
     mentionable: bool
     #: the tags this role has
-    tags: Unknownish[t.Dict[str, object]] = UNKNOWN
+    tags: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class RoleTags:
     #: the id of the bot this role belongs to
     bot_id: Unknownish[Snowflake] = UNKNOWN

@@ -11,7 +11,7 @@ from .message_components import Component
 from .user import User
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ApplicationCommand:
     #: unique id of the command
     id: Snowflake
@@ -30,7 +30,7 @@ class ApplicationCommand:
     default_permission: Unknownish[bool] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ApplicationCommandOption:
     #: value of application command option type
     type: int
@@ -64,7 +64,7 @@ class ApplicationCommandOptionType(Enum):
     NUMBER = 10
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ApplicationCommandOptionChoice:
     #: 1-100 character choice name
     name: str
@@ -72,7 +72,7 @@ class ApplicationCommandOptionChoice:
     value: t.Union[str, int, float]
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class GuildApplicationCommandPermissions:
     #: the id of the command
     id: Snowflake
@@ -84,7 +84,7 @@ class GuildApplicationCommandPermissions:
     permissions: t.List[ApplicationCommandPermissions]
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ApplicationCommandPermissions:
     #: the id of the role or user
     id: Snowflake
@@ -105,7 +105,7 @@ class InteractionRequestType(Enum):
     MESSAGE_COMPONENT = 3
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ApplicationCommandInteractionData:
     #: the ID of the invoked command
     id: Snowflake
@@ -121,31 +121,31 @@ class ApplicationCommandInteractionData:
     options: Unknownish[t.List[ApplicationCommandInteractionDataOption]] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ApplicationCommandInteractionDataResolved:
     #: the ids and partial Member objects
-    members: t.Dict[str, object]
+    members: Unknownish[t.Dict[str, t.Any]]
     #: the ids and partial Channel objects
-    channels: t.Dict[str, object]
+    channels: Unknownish[t.Dict[str, t.Any]]
     #: the ids and User objects
-    users: Unknownish[t.Dict[str, object]] = UNKNOWN
+    users: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
     #: the ids and Role objects
-    roles: Unknownish[t.Dict[str, object]] = UNKNOWN
+    roles: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class ApplicationCommandInteractionDataOption:
     #: the name of the parameter
     name: str
     #: value of application command option type
     type: ApplicationCommandOptionType
     #: the value of the pair
-    value: Unknownish[object] = UNKNOWN
+    value: Unknownish[t.Any] = UNKNOWN
     #: present if this option is a group or subcommand
     options: Unknownish[t.List[ApplicationCommandInteractionDataOption]] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class InteractionResponse:
     #: the type of response
     type: InteractionCallbackType
@@ -168,7 +168,7 @@ class InteractionCallbackType(Enum):
     UPDATE_MESSAGE = 7
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class InteractionApplicationCommandCallbackData:
 
     #: is the response TTS
@@ -190,7 +190,7 @@ class InteractionApplicationCommandCallbackDataFlags(Enum):
     EPHEMERAL = 64
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class MessageInteraction:
     #: id of the interaction
     id: Snowflake

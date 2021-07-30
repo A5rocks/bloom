@@ -9,10 +9,10 @@ from .base import UNKNOWN, Unknownish
 from .user import User
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Response:
     #: the current application
-    application: t.Dict[str, object]
+    application: t.Dict[str, t.Any]
     #: the scopes the user has authorized the application for
     scopes: t.List[str]
     #: when the access token expires

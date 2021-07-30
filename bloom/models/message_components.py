@@ -8,7 +8,7 @@ import attr
 from .base import UNKNOWN, Unknownish
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Component:
     #: component type (valid for: all types)
     type: int
@@ -25,7 +25,7 @@ class Component:
     #: text that appears on the button, max 80 characters (valid for: Buttons)
     label: Unknownish[str] = UNKNOWN
     #: name, id, and animated (valid for: Buttons)
-    emoji: Unknownish[t.Dict[str, object]] = UNKNOWN
+    emoji: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
     #: a url for link-style buttons (valid for: Buttons)
     url: Unknownish[str] = UNKNOWN
     #: custom placeholder text if nothing is selected, max 100 characters
@@ -50,7 +50,7 @@ class ComponentTypes(Enum):
     SELECT_MENU = 3
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class Button:
     #: 2 for a button
     type: int
@@ -59,7 +59,7 @@ class Button:
     #: text that appears on the button, max 80 characters
     label: Unknownish[str] = UNKNOWN
     #: name, id, and animated
-    emoji: Unknownish[t.Dict[str, object]] = UNKNOWN
+    emoji: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
     #: a developer-defined identifier for the button, max 100 characters
     custom_id: Unknownish[str] = UNKNOWN
     #: a url for link-style buttons
@@ -76,7 +76,7 @@ class ButtonStyle(Enum):
     LINK = 5
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class SelectMenu:
     #: 3 for a select menu
     type: int
@@ -95,7 +95,7 @@ class SelectMenu:
     disabled: Unknownish[bool] = UNKNOWN
 
 
-@attr.frozen()
+@attr.frozen(kw_only=True)
 class SelectOption:
     #: the user-facing name of the option, max 25 characters
     label: str
@@ -104,6 +104,6 @@ class SelectOption:
     #: an additional description of the option, max 50 characters
     description: Unknownish[str] = UNKNOWN
     #: id, name, and animated
-    emoji: Unknownish[t.Dict[str, object]] = UNKNOWN
+    emoji: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
     #: will render this option as selected by default
     default: Unknownish[bool] = UNKNOWN
