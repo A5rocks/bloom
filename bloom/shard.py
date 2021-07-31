@@ -55,6 +55,7 @@ tags_to_model = {
     "MESSAGE_DELETE": gateway_models.MessageDeleteEvent,
     "MESSAGE_DELETE_BULK": gateway_models.MessageDeleteBulkEvent,
     "MESSAGE_REACTION_ADD": gateway_models.MessageReactionAddEvent,
+    "MESSAGE_REACTION_REMOVE": gateway_models.MessageReactionRemoveEvent,
     "MESSAGE_REACTION_REMOVE_ALL": gateway_models.MessageReactionRemoveAllEvent,
     "MESSAGE_REACTION_REMOVE_EMOJI": gateway_models.MessageReactionRemoveEmojiEvent,
     "PRESENCE_UPDATE": gateway_models.PresenceUpdateEvent,
@@ -294,6 +295,7 @@ async def _shared_logic(
                         raise _MissingKey(message['t'], differences)
             except Exception as e:
                 _LOGGER.exception('improper payload', exc_info=e)
+                print(message)
 
         elif message['op'] == 1:
             await websocket.send_message(json.dumps({
@@ -513,7 +515,9 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             # in discord api
             # https://discord.com/channels/81384788765712384/381887113391505410/835382981681348668
             'guild_join_requests',
-            # unknown; TODO: ask
+            # supposedly, for client voice region ordering
+            # in discord bots
+            # https://discord.com/channels/110373943822540800/110373943822540800/870570058424913930
             'geo_ordered_rtc_regions',
         }
     elif tag == 'GUILD_MEMBER_UPDATE':
@@ -522,14 +526,18 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'hoisted_role',
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
             'is_pending',
-            # unknown; TODO: ask.
+            # for per-guild avatars
+            # in discord bots
+            # https://discord.com/channels/110373943822540800/110373943822540800/870569320097411104
             'avatar',
         }
     elif tag == 'GUILD_MEMBER_ADD':
         return {
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
             'is_pending',
-            # unknown; TODO: ask.
+            # for per-guild avatars
+            # in discord bots
+            # https://discord.com/channels/110373943822540800/110373943822540800/870569320097411104
             'avatar',
         }
     elif tag == 'GUILD_CREATE':
@@ -544,12 +552,19 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             # https://discord.com/channels/613425648685547541/697489244649816084/870221091849793587
             'application_command_counts',
         }
+    elif tag == 'GUILD_UPDATE':
+        return {
+            # https://github.com/discord/discord-api-docs/pull/2976#issuecomment-846251199
+            'nsfw',
+            # unknown; TODO: ask
+            'guild_id',
+        }
     elif tag == 'APPLICATION_COMMAND_UPDATE':
         return {
             # https://github.com/discord/discord-api-docs/pull/3524
             'version',
-            # unknown; TODO: ask
-            'type'
+            # unknown, probably has to do with context menus; TODO: ask
+            'type',
         }
     elif tag == 'THREAD_UPDATE':
         return {
@@ -563,7 +578,7 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
 def _skip_differences(tag: str) -> bool:
     # TODO: remove in non-debug version
     # these are payloads that aren't fully implemented
-    return tag in ('MESSAGE_UPDATE')
+    return False
 
 
 def _diff_differences(
