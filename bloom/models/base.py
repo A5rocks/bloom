@@ -5,8 +5,8 @@ class UNKNOWN:
     pass
 
 
-T = typing.TypeVar("T")
+T = typing.TypeVar('T')
 
 Unknownish = typing.Union[typing.Type[UNKNOWN], T]
 
-Snowflake = typing.NewType("Snowflake", int)
+Snowflake = typing.NewType('Snowflake', int)

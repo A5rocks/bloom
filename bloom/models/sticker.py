@@ -80,7 +80,3 @@ class StickerPack:
     banner_asset_id: Snowflake
     #: id of a sticker in the pack which is shown as the pack's icon
     cover_sticker_id: Unknownish[Snowflake] = UNKNOWN
-
-
-class ResponseStructure(Enum):
-    STICKER_PACKS = "array of"

@@ -19,58 +19,59 @@ import bloom.models.base as base_models
 import bloom.models.gateway as gateway_models
 
 tags_to_model = {
-    "READY": gateway_models.ReadyEvent,
-    "CHANNEL_CREATE": gateway_models.ChannelCreateEvent,
-    "CHANNEL_UPDATE": gateway_models.ChannelUpdateEvent,
-    "CHANNEL_DELETE": gateway_models.ChannelDeleteEvent,
-    "THREAD_CREATE": gateway_models.ThreadCreateEvent,
-    "THREAD_UPDATE": gateway_models.ThreadUpdateEvent,
-    "THREAD_DELETE": gateway_models.ThreadDeleteEvent,
-    "THREAD_LIST_SYNC": gateway_models.ThreadListSyncEvent,
-    "THREAD_MEMBER_UPDATE": gateway_models.ThreadMemberUpdateEvent,
-    "THREAD_MEMBERS_UPDATE": gateway_models.ThreadMembersUpdateEvent,
-    "CHANNEL_PINS_UPDATE": gateway_models.ChannelPinsUpdateEvent,
-    "GUILD_CREATE": gateway_models.GuildCreateEvent,
-    "GUILD_UPDATE": gateway_models.GuildUpdateEvent,
-    "GUILD_DELETE": gateway_models.GuildDeleteEvent,
-    "GUILD_BAN_ADD": gateway_models.GuildBanAddEvent,
-    "GUILD_BAN_REMOVE": gateway_models.GuildBanRemoveEvent,
-    "GUILD_EMOJIS_UPDATE": gateway_models.GuildEmojisUpdateEvent,
-    "GUILD_STICKERS_UPDATE": gateway_models.GuildStickersUpdateEvent,
-    "GUILD_INTEGRATIONS_UPDATE": gateway_models.GuildIntegrationsUpdateEvent,
-    "GUILD_MEMBER_ADD": gateway_models.GuildMemberAddEvent,
-    "GUILD_MEMBER_REMOVE": gateway_models.GuildMemberRemoveEvent,
-    "GUILD_MEMBER_UPDATE": gateway_models.GuildMemberUpdateEvent,
-    "GUILD_MEMBERS_CHUNK": gateway_models.GuildMembersChunkEvent,
-    "GUILD_ROLE_CREATE": gateway_models.GuildRoleCreateEvent,
-    "GUILD_ROLE_UPDATE": gateway_models.GuildRoleUpdateEvent,
-    "GUILD_ROLE_DELETE": gateway_models.GuildRoleDeleteEvent,
-    "INTEGRATION_CREATE": gateway_models.IntegrationCreateEvent,
-    "INTEGRATION_UPDATE": gateway_models.IntegrationUpdateEvent,
-    "INTEGRATION_DELETE": gateway_models.IntegrationDeleteEvent,
-    "INVITE_CREATE": gateway_models.InviteCreateEvent,
-    "INVITE_DELETE": gateway_models.InviteDeleteEvent,
-    "MESSAGE_CREATE": gateway_models.MessageCreateEvent,
-    "MESSAGE_UPDATE": gateway_models.MessageUpdateEvent,
-    "MESSAGE_DELETE": gateway_models.MessageDeleteEvent,
-    "MESSAGE_DELETE_BULK": gateway_models.MessageDeleteBulkEvent,
-    "MESSAGE_REACTION_ADD": gateway_models.MessageReactionAddEvent,
-    "MESSAGE_REACTION_REMOVE": gateway_models.MessageReactionRemoveEvent,
-    "MESSAGE_REACTION_REMOVE_ALL": gateway_models.MessageReactionRemoveAllEvent,
-    "MESSAGE_REACTION_REMOVE_EMOJI": gateway_models.MessageReactionRemoveEmojiEvent,
-    "PRESENCE_UPDATE": gateway_models.PresenceUpdateEvent,
-    "TYPING_START": gateway_models.TypingStartEvent,
-    "USER_UPDATE": gateway_models.UserUpdateEvent,
-    "VOICE_STATE_UPDATE": gateway_models.VoiceStateUpdateEvent,
-    "VOICE_SERVER_UPDATE": gateway_models.VoiceServerUpdateEvent,
-    "WEBHOOKS_UPDATE": gateway_models.WebhooksUpdateEvent,  # TODO: update docs
-    "APPLICATION_COMMAND_CREATE": gateway_models.ApplicationCommandCreateEvent,
-    "APPLICATION_COMMAND_UPDATE": gateway_models.ApplicationCommandUpdateEvent,
-    "APPLICATION_COMMAND_DELETE": gateway_models.ApplicationCommandDeleteEvent,
-    "INTERACTION_CREATE": gateway_models.InteractionCreateEvent,
-    "STAGE_INSTANCE_CREATE": gateway_models.StageInstanceCreateEvent,
-    "STAGE_INSTANCE_UPDATE": gateway_models.StageInstanceUpdateEvent,
-    "STAGE_INSTANCE_DELETE": gateway_models.StageInstanceDeleteEvent,
+    'READY': gateway_models.ReadyEvent,
+    'CHANNEL_CREATE': gateway_models.ChannelCreateEvent,
+    'CHANNEL_UPDATE': gateway_models.ChannelUpdateEvent,
+    'CHANNEL_DELETE': gateway_models.ChannelDeleteEvent,
+    'THREAD_CREATE': gateway_models.ThreadCreateEvent,
+    'THREAD_UPDATE': gateway_models.ThreadUpdateEvent,
+    'THREAD_DELETE': gateway_models.ThreadDeleteEvent,
+    'THREAD_LIST_SYNC': gateway_models.ThreadListSyncEvent,
+    'THREAD_MEMBER_UPDATE': gateway_models.ThreadMemberUpdateEvent,
+    'THREAD_MEMBERS_UPDATE': gateway_models.ThreadMembersUpdateEvent,
+    'CHANNEL_PINS_UPDATE': gateway_models.ChannelPinsUpdateEvent,
+    'GUILD_CREATE': gateway_models.GuildCreateEvent,
+    'GUILD_UPDATE': gateway_models.GuildUpdateEvent,
+    'GUILD_DELETE': gateway_models.GuildDeleteEvent,
+    'GUILD_BAN_ADD': gateway_models.GuildBanAddEvent,
+    'GUILD_BAN_REMOVE': gateway_models.GuildBanRemoveEvent,
+    'GUILD_EMOJIS_UPDATE': gateway_models.GuildEmojisUpdateEvent,
+    'GUILD_STICKERS_UPDATE': gateway_models.GuildStickersUpdateEvent,
+    'GUILD_INTEGRATIONS_UPDATE': gateway_models.GuildIntegrationsUpdateEvent,
+    'GUILD_MEMBER_ADD': gateway_models.GuildMemberAddEvent,
+    'GUILD_MEMBER_REMOVE': gateway_models.GuildMemberRemoveEvent,
+    'GUILD_MEMBER_UPDATE': gateway_models.GuildMemberUpdateEvent,
+    'GUILD_MEMBERS_CHUNK': gateway_models.GuildMembersChunkEvent,
+    'GUILD_ROLE_CREATE': gateway_models.GuildRoleCreateEvent,
+    'GUILD_ROLE_UPDATE': gateway_models.GuildRoleUpdateEvent,
+    'GUILD_ROLE_DELETE': gateway_models.GuildRoleDeleteEvent,
+    'INTEGRATION_CREATE': gateway_models.IntegrationCreateEvent,
+    'INTEGRATION_UPDATE': gateway_models.IntegrationUpdateEvent,
+    'INTEGRATION_DELETE': gateway_models.IntegrationDeleteEvent,
+    'INVITE_CREATE': gateway_models.InviteCreateEvent,
+    'INVITE_DELETE': gateway_models.InviteDeleteEvent,
+    'MESSAGE_CREATE': gateway_models.MessageCreateEvent,
+    'MESSAGE_UPDATE': gateway_models.MessageUpdateEvent,
+    'MESSAGE_DELETE': gateway_models.MessageDeleteEvent,
+    'MESSAGE_DELETE_BULK': gateway_models.MessageDeleteBulkEvent,
+    'MESSAGE_REACTION_ADD': gateway_models.MessageReactionAddEvent,
+    'MESSAGE_REACTION_REMOVE': gateway_models.MessageReactionRemoveEvent,
+    'MESSAGE_REACTION_REMOVE_ALL': gateway_models.MessageReactionRemoveAllEvent,
+    'MESSAGE_REACTION_REMOVE_EMOJI': gateway_models.MessageReactionRemoveEmojiEvent,
+    'PRESENCE_UPDATE': gateway_models.PresenceUpdateEvent,
+    'TYPING_START': gateway_models.TypingStartEvent,
+    'USER_UPDATE': gateway_models.UserUpdateEvent,
+    'VOICE_STATE_UPDATE': gateway_models.VoiceStateUpdateEvent,
+    'VOICE_SERVER_UPDATE': gateway_models.VoiceServerUpdateEvent,
+    'WEBHOOKS_UPDATE': gateway_models.WebhooksUpdateEvent,  # TODO: update docs
+    'APPLICATION_COMMAND_CREATE': gateway_models.ApplicationCommandCreateEvent,
+    'APPLICATION_COMMAND_UPDATE': gateway_models.ApplicationCommandUpdateEvent,
+    'APPLICATION_COMMAND_DELETE': gateway_models.ApplicationCommandDeleteEvent,
+    'INTERACTION_CREATE': gateway_models.InteractionCreateEvent,
+    'STAGE_INSTANCE_CREATE': gateway_models.StageInstanceCreateEvent,
+    'STAGE_INSTANCE_UPDATE': gateway_models.StageInstanceUpdateEvent,
+    'STAGE_INSTANCE_DELETE': gateway_models.StageInstanceDeleteEvent,
+    'RESUMED': gateway_models.ResumedEvent,
 }
 
 if typing.TYPE_CHECKING:
@@ -487,8 +488,8 @@ def _register_converter(converter: Converter) -> Converter:
     # TODO: use the new methods in `typing`
     def is_unknown(cls: type) -> bool:
         if getattr(
-            cls, "__origin__"
-        ) is typing.Union and UNKNOWN_TYPE in getattr(cls, "__args__"):
+            cls, '__origin__'
+        ) is typing.Union and UNKNOWN_TYPE in getattr(cls, '__args__'):
             return True
         return False
 
@@ -556,20 +557,29 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
         return {
             # https://github.com/discord/discord-api-docs/pull/2976#issuecomment-846251199
             'nsfw',
-            # unknown; TODO: ask
+            # https://github.com/discord/discord-api-docs/issues/582
             'guild_id',
         }
     elif tag == 'APPLICATION_COMMAND_UPDATE':
         return {
             # https://github.com/discord/discord-api-docs/pull/3524
             'version',
-            # unknown, probably has to do with context menus; TODO: ask
+            # has to do with context menus
+            # in discord developers
+            # https://discord.com/channels/613425648685547541/788586647142793246/870825234889056266
             'type',
         }
     elif tag == 'THREAD_UPDATE':
         return {
-            # unknown; TODO: ask
+            # will be removed soon-ish...
+            # in discord developers
+            # https://discord.com/channels/613425648685547541/859161948184379403/860543147817697300
             'audience'
+        }
+    elif tag == 'RESUMED':
+        return {
+            # https://github.com/discord/discord-api-docs/commit/ab5d49ae7
+            '_trace',
         }
 
     return set()

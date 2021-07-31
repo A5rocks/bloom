@@ -103,193 +103,193 @@ class AuditLogChange:
 class AuditLogChangeKey(Enum):
     #: a "any" just changed. the values are of type string
     #: description: name changed
-    NAME = "name"
+    NAME = 'name'
     #: a "guild or sticker" just changed. the values are of type string
     #: description: description changed
-    DESCRIPTION = "description"
+    DESCRIPTION = 'description'
     #: a "guild" just changed. the values are of type string
     #: description: icon changed
-    ICON_HASH = "icon_hash"
+    ICON_HASH = 'icon_hash'
     #: a "guild" just changed. the values are of type string
     #: description: invite splash page artwork changed
-    SPLASH_HASH = "splash_hash"
+    SPLASH_HASH = 'splash_hash'
     #: a "guild" just changed. the values are of type string
     #: description: discovery splash changed
-    DISCOVERY_SPLASH_HASH = "discovery_splash_hash"
+    DISCOVERY_SPLASH_HASH = 'discovery_splash_hash'
     #: a "guild" just changed. the values are of type string
     #: description: guild banner changed
-    BANNER_HASH = "banner_hash"
+    BANNER_HASH = 'banner_hash'
     #: a "guild" just changed. the values are of type snowflake
     #: description: owner changed
-    OWNER_ID = "owner_id"
+    OWNER_ID = 'owner_id'
     #: a "guild" just changed. the values are of type string
     #: description: region changed
-    REGION = "region"
+    REGION = 'region'
     #: a "guild" just changed. the values are of type string
     #: description: preferred locale changed
-    PREFERRED_LOCALE = "preferred_locale"
+    PREFERRED_LOCALE = 'preferred_locale'
     #: a "guild" just changed. the values are of type snowflake
     #: description: afk channel changed
-    AFK_CHANNEL_ID = "afk_channel_id"
+    AFK_CHANNEL_ID = 'afk_channel_id'
     #: a "guild" just changed. the values are of type integer
     #: description: afk timeout duration changed
-    AFK_TIMEOUT = "afk_timeout"
+    AFK_TIMEOUT = 'afk_timeout'
     #: a "guild" just changed. the values are of type snowflake
     #: description: id of the rules channel changed
-    RULES_CHANNEL_ID = "rules_channel_id"
+    RULES_CHANNEL_ID = 'rules_channel_id'
     #: a "guild" just changed. the values are of type snowflake
     #: description: id of the public updates channel changed
-    PUBLIC_UPDATES_CHANNEL_ID = "public_updates_channel_id"
+    PUBLIC_UPDATES_CHANNEL_ID = 'public_updates_channel_id'
     #: a "guild" just changed. the values are of type integer
     #: description: two-factor auth requirement changed
-    MFA_LEVEL = "mfa_level"
+    MFA_LEVEL = 'mfa_level'
     #: a "guild" just changed. the values are of type integer
     #: description: required verification level changed
-    VERIFICATION_LEVEL = "verification_level"
+    VERIFICATION_LEVEL = 'verification_level'
     #: a "guild" just changed. the values are of type integer
     #: description: change in whose messages are scanned and deleted for
     # explicit content in the server
-    EXPLICIT_CONTENT_FILTER = "explicit_content_filter"
+    EXPLICIT_CONTENT_FILTER = 'explicit_content_filter'
     #: a "guild" just changed. the values are of type integer
     #: description: default message notification level changed
-    DEFAULT_MESSAGE_NOTIFICATIONS = "default_message_notifications"
+    DEFAULT_MESSAGE_NOTIFICATIONS = 'default_message_notifications'
     #: a "guild" just changed. the values are of type string
     #: description: guild invite vanity url changed
-    VANITY_URL_CODE = "vanity_url_code"
+    VANITY_URL_CODE = 'vanity_url_code'
     #: a "guild" just changed. the values are of type
     #:   array<partial_role_structure>
     #: description: new role added
-    ADD = "$add"
+    ADD = '$add'
     #: a "guild" just changed. the values are of type
     #:   array<partial_role_structure>
     #: description: role removed
-    REMOVE = "$remove"
+    REMOVE = '$remove'
     #: a "guild" just changed. the values are of type integer
     #: description: change in number of days after which inactive and
     #:    role-unassigned members are kicked
-    PRUNE_DELETE_DAYS = "prune_delete_days"
+    PRUNE_DELETE_DAYS = 'prune_delete_days'
     #: a "guild" just changed. the values are of type boolean
     #: description: server widget enabled/disable
-    WIDGET_ENABLED = "widget_enabled"
+    WIDGET_ENABLED = 'widget_enabled'
     #: a "guild" just changed. the values are of type snowflake
     #: description: channel id of the server widget changed
-    WIDGET_CHANNEL_ID = "widget_channel_id"
+    WIDGET_CHANNEL_ID = 'widget_channel_id'
     #: a "guild" just changed. the values are of type snowflake
     #: description: id of the system channel changed
-    SYSTEM_CHANNEL_ID = "system_channel_id"
+    SYSTEM_CHANNEL_ID = 'system_channel_id'
     #: a "channel" just changed. the values are of type integer
     #: description: text or voice channel position changed
-    POSITION = "position"
+    POSITION = 'position'
     #: a "channel or stage instance" just changed. the values are of type
     #:   string
     #: description: text channel topic or stage instance topic changed
-    TOPIC = "topic"
+    TOPIC = 'topic'
     #: a "channel" just changed. the values are of type integer
     #: description: voice channel bitrate changed
-    BITRATE = "bitrate"
+    BITRATE = 'bitrate'
     #: a "channel" just changed. the values are of type
     #:   array<channel_overwrite_structure>
     #: description: permissions on a channel changed
-    PERMISSION_OVERWRITES = "permission_overwrites"
+    PERMISSION_OVERWRITES = 'permission_overwrites'
     #: a "channel" just changed. the values are of type boolean
     #: description: channel nsfw restriction changed
-    NSFW = "nsfw"
+    NSFW = 'nsfw'
     #: a "channel" just changed. the values are of type snowflake
     #: description: application id of the added or removed webhook or bot
-    APPLICATION_ID = "application_id"
+    APPLICATION_ID = 'application_id'
     #: a "channel" just changed. the values are of type integer
     #: description: amount of seconds a user has to wait before sending
     #:    another message changed
-    RATE_LIMIT_PER_USER = "rate_limit_per_user"
+    RATE_LIMIT_PER_USER = 'rate_limit_per_user'
     #: a "role" just changed. the values are of type string
     #: description: permissions for a role changed
-    PERMISSIONS = "permissions"
+    PERMISSIONS = 'permissions'
     #: a "role" just changed. the values are of type integer
     #: description: role color changed
-    COLOR = "color"
+    COLOR = 'color'
     #: a "role" just changed. the values are of type boolean
     #: description: role is now displayed/no longer displayed separate from
     #:    online users
-    HOIST = "hoist"
+    HOIST = 'hoist'
     #: a "role" just changed. the values are of type boolean
     #: description: role is now mentionable/unmentionable
-    MENTIONABLE = "mentionable"
+    MENTIONABLE = 'mentionable'
     #: a "role" just changed. the values are of type string
     #: description: a permission on a text or voice channel was allowed for a
     #:    role
-    ALLOW = "allow"
+    ALLOW = 'allow'
     #: a "role" just changed. the values are of type string
     #: description: a permission on a text or voice channel was denied for a
     #:    role
-    DENY = "deny"
+    DENY = 'deny'
     #: a "invite" just changed. the values are of type string
     #: description: invite code changed
-    CODE = "code"
+    CODE = 'code'
     #: a "invite" just changed. the values are of type snowflake
     #: description: channel for invite code changed
-    CHANNEL_ID = "channel_id"
+    CHANNEL_ID = 'channel_id'
     #: a "invite" just changed. the values are of type snowflake
     #: description: person who created invite code changed
-    INVITER_ID = "inviter_id"
+    INVITER_ID = 'inviter_id'
     #: a "invite" just changed. the values are of type integer
     #: description: change to max number of times invite code can be used
-    MAX_USES = "max_uses"
+    MAX_USES = 'max_uses'
     #: a "invite" just changed. the values are of type integer
     #: description: number of times invite code used changed
-    USES = "uses"
+    USES = 'uses'
     #: a "invite" just changed. the values are of type integer
     #: description: how long invite code lasts changed
-    MAX_AGE = "max_age"
+    MAX_AGE = 'max_age'
     #: a "invite" just changed. the values are of type boolean
     #: description: invite code is temporary/never expires
-    TEMPORARY = "temporary"
+    TEMPORARY = 'temporary'
     #: a "user" just changed. the values are of type boolean
     #: description: user server deafened/undeafened
-    DEAF = "deaf"
+    DEAF = 'deaf'
     #: a "user" just changed. the values are of type boolean
     #: description: user server muted/unmuted
-    MUTE = "mute"
+    MUTE = 'mute'
     #: a "user" just changed. the values are of type string
     #: description: user nickname changed
-    NICK = "nick"
+    NICK = 'nick'
     #: a "user" just changed. the values are of type string
     #: description: user avatar changed
-    AVATAR_HASH = "avatar_hash"
+    AVATAR_HASH = 'avatar_hash'
     #: a "any" just changed. the values are of type snowflake
     #: description: the id of the changed entity - sometimes used in
     #:    conjunction with other keys
-    ID = "id"
+    ID = 'id'
     #: a "any" just changed. the values are of type integer | string
     #: description: type of entity created
-    TYPE = "type"
+    TYPE = 'type'
     #: a "integration" just changed. the values are of type boolean
     #: description: integration emoticons enabled/disabled
-    ENABLE_EMOTICONS = "enable_emoticons"
+    ENABLE_EMOTICONS = 'enable_emoticons'
     #: a "integration" just changed. the values are of type integer
     #: description: integration expiring subscriber behavior changed
-    EXPIRE_BEHAVIOR = "expire_behavior"
+    EXPIRE_BEHAVIOR = 'expire_behavior'
     #: a "integration" just changed. the values are of type integer
     #: description: integration expire grace period changed
-    EXPIRE_GRACE_PERIOD = "expire_grace_period"
+    EXPIRE_GRACE_PERIOD = 'expire_grace_period'
     #: a "voice channel" just changed. the values are of type integer
     #: description: new user limit in a voice channel
-    USER_LIMIT = "user_limit"
+    USER_LIMIT = 'user_limit'
     #: a "stage instance" just changed. the values are of type integer
     #:   (privacy level)
     #: description: privacy level of the stage instance changed
-    PRIVACY_LEVEL = "privacy_level"
+    PRIVACY_LEVEL = 'privacy_level'
     #: a "sticker" just changed. the values are of type string
     #: description: related emoji of sticker changed
-    TAGS = "tags"
+    TAGS = 'tags'
     #: a "sticker" just changed. the values are of type integer (format type)
     #: description: format type of sticker changed
-    FORMAT_TYPE = "format_type"
+    FORMAT_TYPE = 'format_type'
     #: a "sticker" just changed. the values are of type string
     #: description: empty string
-    ASSET = "asset"
+    ASSET = 'asset'
     #: a "sticker" just changed. the values are of type boolean
     #: description: availability of sticker changed
-    AVAILABLE = "available"
+    AVAILABLE = 'available'
     #: a "sticker" just changed. the values are of type snowflake
     #: description: guild sticker is in changed
-    GUILD_ID = "guild_id"
+    GUILD_ID = 'guild_id'

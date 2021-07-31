@@ -67,11 +67,11 @@ class Presence:
 
 
 class StatusTypes(Enum):
-    ONLINE = "Online"
-    DND = "Do Not Disturb"
-    IDLE = "AFK"
-    INVISIBLE = "Invisible and shown as offline"
-    OFFLINE = "Offline"
+    ONLINE = 'Online'
+    DND = 'Do Not Disturb'
+    IDLE = 'AFK'
+    INVISIBLE = 'Invisible and shown as offline'
+    OFFLINE = 'Offline'
 
 
 @attr.frozen(kw_only=True)
@@ -95,6 +95,11 @@ class ReadyEvent:
     #: the shard information associated with this session, if sent when
     #: identifying
     shard: Unknownish[t.List[int]] = UNKNOWN
+
+
+@attr.frozen(kw_only=True)
+class ResumedEvent:
+    pass
 
 
 @attr.frozen(kw_only=True)
@@ -459,7 +464,6 @@ class MessageUpdateEvent:
     sticker_items: Unknownish[t.List[StickerItem]] = UNKNOWN
     #: Deprecated the stickers sent with the message
     stickers: Unknownish[t.List[Sticker]] = UNKNOWN
-
 
 
 @attr.frozen(kw_only=True)

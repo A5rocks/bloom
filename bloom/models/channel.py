@@ -276,17 +276,17 @@ class Embed:
 
 class EmbedTypes(Enum):
     #: generic embed rendered from embed attributes
-    RICH = "rich"
+    RICH = 'rich'
     #: image embed
-    IMAGE = "image"
+    IMAGE = 'image'
     #: video embed
-    VIDEO = "video"
+    VIDEO = 'video'
     #: animated gif image embed rendered as a video embed
-    GIFV = "gifv"
+    GIFV = 'gifv'
     #: article embed
-    ARTICLE = "article"
+    ARTICLE = 'article'
     #: link embed
-    LINK = "link"
+    LINK = 'link'
 
 
 @attr.frozen(kw_only=True)
@@ -404,11 +404,11 @@ class ChannelMention:
 
 class AllowedMentionTypes(Enum):
     #: Controls role mentions
-    ROLE_MENTIONS = "roles"
+    ROLE_MENTIONS = 'roles'
     #: Controls user mentions
-    USER_MENTIONS = "users"
+    USER_MENTIONS = 'users'
     #: Controls @everyone and @here mentions
-    EVERYONE_MENTIONS = "everyone"
+    EVERYONE_MENTIONS = 'everyone'
 
 
 @attr.frozen(kw_only=True)
