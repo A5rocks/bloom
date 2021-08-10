@@ -560,6 +560,15 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             # https://github.com/discord/discord-api-docs/issues/582
             'guild_id',
         }
+    elif tag == 'APPLICATION_COMMAND_CREATE':
+        return {
+            # https://github.com/discord/discord-api-docs/pull/3524
+            'version',
+            # has to do with context menus
+            # in discord developers
+            # https://discord.com/channels/613425648685547541/788586647142793246/870825234889056266
+            'type',
+        }
     elif tag == 'APPLICATION_COMMAND_UPDATE':
         return {
             # https://github.com/discord/discord-api-docs/pull/3524

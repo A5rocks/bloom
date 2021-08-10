@@ -97,11 +97,11 @@ class SelectMenu:
 
 @attr.frozen(kw_only=True)
 class SelectOption:
-    #: the user-facing name of the option, max 25 characters
+    #: the user-facing name of the option, max 100 characters
     label: str
     #: the dev-define value of the option, max 100 characters
     value: str
-    #: an additional description of the option, max 50 characters
+    #: an additional description of the option, max 100 characters
     description: Unknownish[str] = UNKNOWN
     #: id, name, and animated
     emoji: Unknownish[t.Dict[str, t.Any]] = UNKNOWN

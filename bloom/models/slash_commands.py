@@ -69,7 +69,7 @@ class ApplicationCommandOptionChoice:
     #: 1-100 character choice name
     name: str
     #: value of the choice, up to 100 characters if string
-    value: t.Union[str, int, float]
+    value: t.Union[str, int, float, bool]
 
 
 @attr.frozen(kw_only=True)
