@@ -6,6 +6,7 @@ from enum import Enum
 
 import attr
 
+from .application_commands import ApplicationCommand, MessageInteraction
 from .base import UNKNOWN, Snowflake, Unknownish
 from .channel import (Attachment, Channel, ChannelMention, ChannelTypes, Embed,
                       MessageActivity, MessageReference, Reaction,
@@ -16,7 +17,6 @@ from .interaction import Interaction
 from .message import Message
 from .message_components import Component
 from .permissions import Role
-from .slash_commands import ApplicationCommand, MessageInteraction
 from .stage_instance import StageInstance
 from .sticker import Sticker, StickerItem
 from .user import User

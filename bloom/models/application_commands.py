@@ -17,23 +17,32 @@ class ApplicationCommand:
     id: Snowflake
     #: unique id of the parent application
     application_id: Snowflake
-    #: 1-32 lowercase character name matching ^[\w-]{1,32}$
+    #: 1-32 lowercase character name matching ^[\w-]{1,32}$ if this is a
+    #: CHAT_INPUT command, else 1-32 chars.
     name: str
     #: 1-100 character description
     description: str
     #: guild id of the command, if not global
     guild_id: Unknownish[Snowflake] = UNKNOWN
-    #: the parameters for the command
+    #: the parameters for the command (this is only on CHAT_INPUT commands)
     options: Unknownish[t.List[ApplicationCommandOption]] = UNKNOWN
     #: whether the command is enabled by default when the app is added to a
     #: guild
     default_permission: Unknownish[bool] = UNKNOWN
+    #: the type of the application command
+    type: Unknownish[CommandTypes] = UNKNOWN
+
+
+class CommandTypes(Enum):
+    CHAT_INPUT = 1
+    USER = 2
+    MESSAGE = 3
 
 
 @attr.frozen(kw_only=True)
 class ApplicationCommandOption:
     #: value of application command option type
-    type: int
+    type: ApplicationCommandOptionType
     #: 1-32 lowercase character name matching ^[\w-]{1,32}$
     name: str
     #: 1-100 character description
@@ -69,7 +78,7 @@ class ApplicationCommandOptionChoice:
     #: 1-100 character choice name
     name: str
     #: value of the choice, up to 100 characters if string
-    value: t.Union[str, int, float, bool]
+    value: t.Union[str, int, float]
 
 
 @attr.frozen(kw_only=True)
@@ -131,6 +140,8 @@ class ApplicationCommandInteractionDataResolved:
     users: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
     #: the ids and Role objects
     roles: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
+    #: the ids and partial Message objects
+    messages: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)

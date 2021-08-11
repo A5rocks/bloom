@@ -5,12 +5,12 @@ import typing as t
 
 import attr
 
+from .application_commands import MessageInteraction
 from .base import UNKNOWN, Snowflake, Unknownish
 from .channel import (Attachment, Channel, ChannelMention, Embed,
                       MessageActivity, MessageReference, Reaction)
 from .guild import GuildMember
 from .message_components import Component
-from .slash_commands import MessageInteraction
 from .sticker import Sticker, StickerItem
 from .user import User
 

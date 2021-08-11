@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import attr
 
+from .application_commands import (ApplicationCommandInteractionData,
+                                   InteractionRequestType)
 from .base import UNKNOWN, Snowflake, Unknownish
 from .guild import GuildMember
 from .message import Message
-from .slash_commands import (ApplicationCommandInteractionData,
-                             InteractionRequestType)
 from .user import User
 
 
