@@ -6,16 +6,22 @@
 
 from __future__ import annotations
 
+# python >=3.8 is assumed to build docs. (for importlib.metadata)
+import os
+import sys
+import typing
+
+if sys.version_info >= (3, 8):
+    from importlib.metadata import version as v
+else:
+    def v(pkg_name: str) -> str:
+        return '0.0.0'
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 
-# python >=3.8 is assumed to build docs. (for importlib.metadata)
-import os
-import sys
-import typing
-from importlib.metadata import version
 
 # -- Path setup --------------------------------------------------------------
 
@@ -28,7 +34,7 @@ sys.path.insert(0, os.path.abspath('..'))
 project = 'bloom'
 copyright = '2021, A5rocks'
 author = 'A5rocks'
-version = version('bloom')
+version = v('bloom')
 release = version
 
 

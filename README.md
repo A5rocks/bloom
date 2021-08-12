@@ -20,5 +20,6 @@ Short reference for myself:
 - typecheck with `mypy . --strict`
 - stylecheck (?) with `flake8 bloom` or `pylint bloom`
 - fix imports with `isort bloom`
+- test with `pytest`
 
 TODO: write more. or don't. that's a thing too.

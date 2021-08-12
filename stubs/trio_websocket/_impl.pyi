@@ -8,7 +8,6 @@ from typing import (Any, AsyncContextManager, Iterator, List, Optional, Tuple,
 from trio import Nursery
 from trio.abc import Stream
 
-
 def open_websocket_url(
     url: str,
     ssl_context: Optional[SSLContext] = ...,

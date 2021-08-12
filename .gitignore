@@ -12,6 +12,7 @@ _build/
 
 # tool cruft
 .mypy_cache/
+.pytest_cache/
 
 # testing script(s)
 main.py
