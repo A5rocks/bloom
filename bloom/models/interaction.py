@@ -3,7 +3,7 @@ from __future__ import annotations
 import attr
 
 from .application_commands import (ApplicationCommandInteractionData,
-                                   InteractionRequestType)
+                                   InteractionType)
 from .base import UNKNOWN, Snowflake, Unknownish
 from .guild import GuildMember
 from .message import Message
@@ -17,7 +17,7 @@ class Interaction:
     #: id of the application this interaction is for
     application_id: Snowflake
     #: the type of interaction
-    type: InteractionRequestType
+    type: InteractionType
     #: the command data payload
     data: Unknownish[ApplicationCommandInteractionData] = UNKNOWN
     #: guild member data for the invoking user, including permissions

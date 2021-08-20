@@ -21,7 +21,7 @@ class Invite:
     #: the user who created the invite
     inviter: Unknownish[User] = UNKNOWN
     #: the type of target for this voice channel invite
-    target_type: Unknownish[int] = UNKNOWN
+    target_type: Unknownish[InviteTargetTypes] = UNKNOWN
     #: the user whose stream to display for this voice channel stream invite
     target_user: Unknownish[User] = UNKNOWN
     #: the embedded application to open for this voice channel embedded

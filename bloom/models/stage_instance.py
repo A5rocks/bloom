@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from enum import Enum
+from enum import IntEnum
 
 import attr
 
@@ -18,12 +18,12 @@ class StageInstance:
     #: The topic of the Stage instance (1-120 characters)
     topic: str
     #: The privacy level of the Stage instance
-    privacy_level: int
+    privacy_level: PrivacyLevel
     #: Whether or not Stage Discovery is disabled
     discoverable_disabled: bool
 
 
-class PrivacyLevel(Enum):
+class PrivacyLevel(IntEnum):
     #: The Stage instance is visible publicly, such as on Stage Discovery.
     PUBLIC = 1
     #: The Stage instance is visible to only guild members.

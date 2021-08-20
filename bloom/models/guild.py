@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime as dt
 import typing as t
-from enum import Enum
+from enum import Enum, IntFlag
 
 import attr
 
@@ -185,6 +185,12 @@ class PremiumTier(Enum):
     TIER_2 = 2
     #: guild has unlocked Server Boost level 3 perks
     TIER_3 = 3
+
+
+class SystemChannelFlags(IntFlag):
+    SUPPRESS_JOIN_NOTIFICATIONS = 1 << 0
+    SUPPRESS_PREMIUM_SUBSCRIPTIONS = 1 << 1
+    SUPPRESS_GUILD_REMINDER_NOTIFICATIONS = 1 << 2
 
 
 class GuildFeatures(Enum):
@@ -382,3 +388,44 @@ class WelcomeScreenChannel:
     #: the emoji name if custom, the unicode character if standard, or null
     #: if no emoji is set
     emoji_name: t.Optional[str]
+
+
+@attr.frozen(kw_only=True)
+class ModifyGuildChannelPositionsParameters:
+    #: channel id
+    id: Snowflake
+    # TODO: some of these are optional (in the Unknownish kind of way)
+    #      figure this out then update the documentation
+    #: sorting position of the channel
+    position: t.Optional[int]
+    #: syncs the permission overwrites with the new parent, if moving to a new
+    #: category
+    lock_permissions: t.Optional[bool]
+    #: the new parent ID for the channel that is moved
+    parent_id: t.Optional[Snowflake]
+
+
+@attr.frozen(kw_only=True)
+class ModifyGuildRolePositionsParameters:
+    #: role
+    id: Snowflake
+    #: sorting position of the role
+    position: Unknownish[t.Optional[int]] = UNKNOWN
+
+
+class WidgetStyleOptions(Enum):
+    #: shield style widget with Discord icon and guild members online count
+    SHIELD = "shield"
+    #: large image with guild icon, name and online count. "POWERED BY
+    #: DISCORD" as the footer of the widget
+    BANNER1 = "banner1"
+    #: smaller widget style with guild icon, name and online count. Split on
+    #: the right with Discord logo
+    BANNER2 = "banner2"
+    #: large image with guild icon, name and online count. In the footer,
+    #: Discord logo on the left and "Chat Now" on the right
+    BANNER3 = "banner3"
+    #: large Discord logo at the top of the widget. Guild icon, name and
+    #: online count in the middle portion of the widget and a "JOIN MY SERVER"
+    #: button at the bottom
+    BANNER4 = "banner4"

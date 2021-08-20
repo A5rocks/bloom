@@ -45,7 +45,7 @@ import attr
 import httpx
 import trio
 
-from .http import Request
+from bloom.rest.models import Request
 
 API_BASE_URL = 'https://discord.com/api/v9'
 
@@ -80,6 +80,10 @@ class HttpClientProto(typing.Protocol):
                 ]
             ] = ...,
             json: typing.Any = ...,
+            headers: typing.Dict[str, str] = ...,
+            data: typing.Dict[str, str] = ...,
+            # TODO: narrow file type?
+            files: typing.Dict[str, typing.Any] = ...,
     ) -> HttpResponseProto:
         ...
 
@@ -104,31 +108,30 @@ class RatelimitingState(typing.Generic[HttpClientT]):
     # XXX: *technically* this is a leak but... who cares.
     locks: typing.Dict[
         str,
-        typing.Dict[typing.Optional[int], trio.Lock]
+        typing.Dict[typing.Optional[typing.Union[int, str]], trio.Lock]
     ] = attr.Factory(
         lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: trio.Lock()))
     )
 
     buckets: typing.Dict[
         str,
-        typing.Dict[typing.Optional[int], typing.List[Bucket]]
+        typing.Dict[typing.Optional[typing.Union[int, str]], typing.List[Bucket]]
     ] = attr.Factory(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: [])))
 
     buckets_by_hash: typing.Dict[
         str,
-        typing.Dict[typing.Optional[int], Bucket]
+        typing.Dict[typing.Optional[typing.Union[int, str]], Bucket]
     ] = attr.Factory(lambda: collections.defaultdict(lambda: {}))
 
     async def request(self, req: Request) -> typing.Any:
         # this code makes the assumption of only a single param.
         major_parameter = req.args.get('channel_id') or req.args.get('guild_id')
 
+        # the routes with only webhook_id and not webhook_token are not
+        # ratelimited, so this is perfectly fine.
         if 'webhook_id' in req.args and 'webhook_token' in req.args:
-            # keep an int key
-            major_parameter = req.args['webhook_id']
-
-        if major_parameter is not None:
-            assert isinstance(major_parameter, int)
+            # str key (cause interaction's webhook id is the app id...)
+            major_parameter = str(req.args['webhook_id']) + str(req.args['webhook_token'])
 
         async with self.locks[req.route][major_parameter]:
             async with trio.open_nursery() as nursery:
@@ -143,6 +146,15 @@ class RatelimitingState(typing.Generic[HttpClientT]):
 
             if req.json is not None:
                 kw_args['json'] = req.json
+
+            if req.headers is not None:
+                kw_args['headers'] = req.headers
+
+            if req.data is not None:
+                kw_args['data'] = req.data
+
+            if req.files is not None:
+                kw_args['files'] = req.files
 
             result = await self.http.request(req.method, req.url, **kw_args)
             headers = result.headers

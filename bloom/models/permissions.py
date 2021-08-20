@@ -8,6 +8,7 @@ import attr
 from .base import UNKNOWN, Snowflake, Unknownish
 
 
+# TODO: this should be serialized as a str :(
 class BitwisePermissionFlags(Enum):
     CREATE_INSTANT_INVITE = 1
     KICK_MEMBERS_ = 2

@@ -5,8 +5,8 @@ import httpx
 import trio
 
 import bloom._compat
-import bloom.http
 import bloom.ratelimits
+import bloom.rest.models
 
 
 @attr.frozen()
@@ -25,7 +25,9 @@ class Response:
 @attr.define()
 class Client:
     responses: typing.List[Response]
-    storage: typing.List[typing.Tuple[float, str, str, object, object]] = attr.Factory(list)
+    storage: typing.List[
+        typing.Tuple[float, str, str, object, object, object, object, object]
+    ] = attr.Factory(list)
 
     async def request(
             self,
@@ -46,8 +48,11 @@ class Client:
                 ]
             ] = None,
             json: typing.Any = None,
+            headers: typing.Optional[typing.Dict[str, str]] = None,
+            data: typing.Optional[typing.Dict[str, str]] = None,
+            files: typing.Optional[typing.Dict[str, typing.Any]] = None,
     ) -> Response:
-        self.storage.append((trio.current_time(), method, url, params, json))
+        self.storage.append((trio.current_time(), method, url, params, json, headers, data, files))
 
         return self.responses.pop()
 
@@ -56,7 +61,7 @@ async def test_makes_a_request() -> None:
     client = Client([Response({'a': 'header'}, {})])
     state = bloom.ratelimits.RatelimitingState(client)
 
-    req = bloom.http.Request(method='GET', route='/blah', args={})
+    req = bloom.rest.models.Request(method='GET', route='/blah', args={})
 
     await state.request(req)
 
@@ -82,7 +87,7 @@ async def test_ratelimits_once(autojump_clock: object) -> None:
 
     start = trio.current_time()
 
-    req = bloom.http.Request(method='GET', route='/blah', args={})
+    req = bloom.rest.models.Request(method='GET', route='/blah', args={})
 
     await state.request(req)
     await state.request(req)
@@ -104,7 +109,7 @@ async def test_ratelimits_twice(autojump_clock: object) -> None:
 
     start = trio.current_time()
 
-    req = bloom.http.Request(method='GET', route='/blah', args={})
+    req = bloom.rest.models.Request(method='GET', route='/blah', args={})
 
     await state.request(req)
     await state.request(req)
@@ -139,7 +144,7 @@ async def test_respects_remaining(autojump_clock: object) -> None:
 
     start = trio.current_time()
 
-    req = bloom.http.Request(method='GET', route='/blah', args={})
+    req = bloom.rest.models.Request(method='GET', route='/blah', args={})
 
     await state.request(req)
     await state.request(req)
@@ -162,7 +167,7 @@ async def test_respects_endless_remaining(autojump_clock: object) -> None:
 
     start = trio.current_time()
 
-    req = bloom.http.Request(method='GET', route='/blah', args={})
+    req = bloom.rest.models.Request(method='GET', route='/blah', args={})
 
     await state.request(req)
     await state.request(req)

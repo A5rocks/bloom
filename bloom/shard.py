@@ -483,7 +483,7 @@ async def _run_shard(
 def _register_converter(converter: Converter) -> Converter:
     converter.register_structure_hook(base_models.Snowflake, lambda d, _: int(d))
 
-    UNKNOWN_TYPE = typing.Type[base_models.UNKNOWN]
+    UNKNOWN_TYPE = base_models.UNKNOWN_TYPE
 
     # TODO: use the new methods in `typing`
     def is_unknown(cls: type) -> bool:

@@ -7,6 +7,7 @@ from enum import Enum
 import attr
 
 from .base import UNKNOWN, Snowflake, Unknownish
+from .permissions import BitwisePermissionFlags
 from .user import User
 
 
@@ -75,7 +76,7 @@ class Channel:
     #: computed permissions for the invoking user in the channel, including
     #: overwrites, only included when part of the resolved data received on a
     #: slash command interaction
-    permissions: Unknownish[str] = UNKNOWN
+    permissions: Unknownish[BitwisePermissionFlags] = UNKNOWN
 
 
 class ChannelTypes(Enum):
@@ -211,9 +212,9 @@ class Overwrite:
     #: either 0 (role) or 1 (member)
     type: int
     #: permission bit set
-    allow: str
+    allow: BitwisePermissionFlags
     #: permission bit set
-    deny: str
+    deny: BitwisePermissionFlags
 
 
 @attr.frozen(kw_only=True)

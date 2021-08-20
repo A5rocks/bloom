@@ -34,8 +34,13 @@ class ApplicationCommand:
 
 
 class CommandTypes(Enum):
+    #: Slash commands; a text-based command that shows up when a user types
+    #: `/`
     CHAT_INPUT = 1
+    #: A UI-based command that shows up when you right click or tap on a user
     USER = 2
+    #: A UI-based command that shows up when you right click or tap on a
+    #: message
     MESSAGE = 3
 
 
@@ -108,7 +113,7 @@ class ApplicationCommandPermissionType(Enum):
     USER = 2
 
 
-class InteractionRequestType(Enum):
+class InteractionType(Enum):
     PING = 1
     APPLICATION_COMMAND = 2
     MESSAGE_COMPONENT = 3
@@ -206,7 +211,7 @@ class MessageInteraction:
     #: id of the interaction
     id: Snowflake
     #: the type of interaction
-    type: InteractionRequestType
+    type: InteractionType
     #: the name of the application command
     name: str
     #: the user who invoked the interaction
