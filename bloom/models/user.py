@@ -25,6 +25,11 @@ class User:
     system: Unknownish[bool] = UNKNOWN
     #: whether the user has two factor enabled on their account
     mfa_enabled: Unknownish[bool] = UNKNOWN
+    #: the user's banner, or None if unset
+    banner: Unknownish[t.Optional[str]] = UNKNOWN
+    #: the user's banner color encoded as an integer representation of
+    #: hexadecimal color code
+    accent_color: Unknownish[t.Optional[int]] = UNKNOWN
     #: the user's chosen language option
     locale: Unknownish[str] = UNKNOWN
     #: whether the email on this account has been verified

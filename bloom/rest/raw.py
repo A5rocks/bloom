@@ -4,6 +4,7 @@ import datetime
 import json
 import typing
 
+import attr
 from cattr import Converter
 
 from bloom._compat import Literal
@@ -38,6 +39,7 @@ def prepare(rest: RawRest, input_dict: typing.Dict[str, object]) -> typing.Dict[
     return res
 
 
+@attr.define()
 class RawRest:
     # every single API method.
     conv: Converter

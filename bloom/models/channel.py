@@ -74,8 +74,8 @@ class Channel:
     #: 60, 1440, 4320, 10080
     default_auto_archive_duration: Unknownish[int] = UNKNOWN
     #: computed permissions for the invoking user in the channel, including
-    #: overwrites, only included when part of the resolved data received on a
-    #: slash command interaction
+    #: overwrites, only included when part of the resolved data received on an
+    #: application command interaction
     permissions: Unknownish[BitwisePermissionFlags] = UNKNOWN
 
 
@@ -229,7 +229,8 @@ class ThreadMetadata:
     archive_timestamp: dt.datetime
     #: whether the thread is locked; when a thread is locked, only users with
     #: MANAGE_THREADS can unarchive it
-    locked: Unknownish[bool] = UNKNOWN
+    locked: bool
+    invitable: Unknownish[bool] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)
