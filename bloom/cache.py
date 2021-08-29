@@ -1,15 +1,17 @@
 from __future__ import annotations
 
-import attr
-import bloom.substrate
+import collections
 import enum
 import typing
+import weakref
+
+import attr
+
 import bloom.models.base as base_models
+import bloom.models.gateway as gateway_models
 import bloom.models.guild as guild_models
 import bloom.models.user as user_models
-import bloom.models.gateway as gateway_models
-import collections
-import weakref
+import bloom.substrate
 
 
 class CacheFlag(enum.Flag):

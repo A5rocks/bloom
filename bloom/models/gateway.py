@@ -253,6 +253,10 @@ class GuildMemberAddEvent(GuildMember):
     guild_id: Snowflake
 
 
+# TODO: is this an attrs or cattrs bug?
+attr.resolve_types(GuildMemberAddEvent, globals(), locals())
+
+
 @attr.frozen(kw_only=True)
 class GuildMemberRemoveEvent:
     #: the id of the guild
