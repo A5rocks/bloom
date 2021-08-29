@@ -429,3 +429,7 @@ class WidgetStyleOptions(Enum):
     #: online count in the middle portion of the widget and a "JOIN MY SERVER"
     #: button at the bottom
     BANNER4 = "banner4"
+
+
+# TODO: is this an attrs or cattrs bug?
+attr.resolve_types(GuildMember, globals(), locals())

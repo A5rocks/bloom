@@ -25,12 +25,23 @@ class Substrate:
         trio.abc.SendChannel[typing.Any]
     ] = attr.Factory(dict)
 
+    # this cache makes event -> channels amortized O(1)
+    _cache: typing.Dict[
+        typing.Type[typing.Any],
+        typing.List[typing.Any]
+    ] = attr.Factory(dict)
+
     def register(
             self,
             typ: typing.Type[T],
             buffer_size: typing.Optional[int]
     ) -> trio.abc.ReceiveChannel[T]:
         buffer_size_ = math.inf if buffer_size is None else buffer_size
+
+        if typ not in self._events:
+            # cache invalidation is hard, just flush it every time there's a
+            # possibility of change.
+            self._cache = {}
 
         send, recv = trio.open_memory_channel[T](buffer_size_)
         self._events[typ].append(send)
@@ -45,13 +56,17 @@ class Substrate:
         self._events[typ].remove(self._recv_to_send.pop((typ, chan)))
 
     async def broadcast(self, message: typing.Any) -> None:
-        # TODO: should I broadcast to listeners listening to
-        #   types up the mro?
-        listeners = self._events[type(message)]
+        listener_types = self._cache.get(type(message))
 
-        if not listeners:
-            await trio.lowlevel.checkpoint()
-            return
+        if not listener_types:
+            listener_types = [typ for typ in self._events.keys() if isinstance(message, typ)]
+            self._cache[type(message)] = listener_types
+
+        listeners = [
+            listener
+            for listener_type in listener_types
+            for listener in self._events[listener_type]
+        ]
 
         async with trio.open_nursery() as nursery:
             for listener in listeners:

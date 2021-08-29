@@ -17,6 +17,8 @@ from cattr.preconf.json import make_converter
 import bloom._compat as compat
 import bloom.models.base as base_models
 import bloom.models.gateway as gateway_models
+import bloom.models.permissions as permission_models
+import bloom.substrate as subs
 
 tags_to_model = {
     'READY': gateway_models.ReadyEvent,
@@ -85,6 +87,7 @@ ONE_HOUR = 60 * 60
 @attr.define()
 class _ShardData:
     converter: Converter
+    substrate: subs.Substrate
     seq: typing.Optional[int] = None
     have_acked: bool = True
     session_id: typing.Optional[str] = None
@@ -118,6 +121,7 @@ class _ConnectionInfo:
     shard_count: int
     bucket: _Bucket
     converter: Converter
+    substrate: subs.Substrate
 
 
 @attr.define()
@@ -296,7 +300,8 @@ async def _shared_logic(
                         raise _MissingKey(message['t'], differences)
             except Exception as e:
                 _LOGGER.exception('improper payload', exc_info=e)
-                print(message)
+
+            await data.substrate.broadcast(model)
 
         elif message['op'] == 1:
             await websocket.send_message(json.dumps({
@@ -380,7 +385,7 @@ async def _run_once(
 async def _run_shard(
         info: _ConnectionInfo,
 ) -> typing.NoReturn:
-    data = _ShardData(info.converter)
+    data = _ShardData(info.converter, info.substrate)
 
     # variables for not uselessly resuming
     should_resume = False
@@ -401,7 +406,7 @@ async def _run_shard(
         else:
             await info.bucket.park()
             _LOGGER.info('identifying')
-            data = _ShardData(info.converter)
+            data = _ShardData(info.converter, info.substrate)
             last_identify = trio.current_time()
             identifies += 1
 
@@ -481,7 +486,30 @@ async def _run_shard(
 
 
 def _register_converter(converter: Converter) -> Converter:
-    converter.register_structure_hook(base_models.Snowflake, lambda d, _: int(d))
+    converter.register_structure_hook(
+        base_models.Snowflake,
+        lambda d, _: base_models.Snowflake(int(d))
+    )
+    converter.register_structure_hook(
+        permission_models.BitwisePermissionFlags,
+        lambda d, _: permission_models.BitwisePermissionFlags(int(d))
+    )
+
+    def unstruct_permissions(d: permission_models.BitwisePermissionFlags) -> str:
+        return str(d.value)
+
+    converter.register_unstructure_hook(
+        permission_models.BitwisePermissionFlags,
+        unstruct_permissions
+    )
+
+    def struct_int_or_str(d: typing.Any, _: object) -> typing.Union[int, str]:
+        try:
+            return int(d)
+        except ValueError:
+            return str(d)
+
+    converter.register_structure_hook(typing.Union[int, str], struct_int_or_str)
 
     UNKNOWN_TYPE = base_models.UNKNOWN_TYPE
 
@@ -493,10 +521,15 @@ def _register_converter(converter: Converter) -> Converter:
             return True
         return False
 
-    def identity_function(data: object, _: object) -> object:
-        return data
+    def unknown_function(data: object, cls: typing.Type[typing.Any]) -> object:
+        args = getattr(cls, '__args__', tuple())
+        if len(args) == 2:
+            return converter.structure(data, [n for n in args if n != UNKNOWN_TYPE][0])
+        else:
+            type: typing.Any = typing.Union[tuple(n for n in args if n != UNKNOWN_TYPE)]
+            return converter.structure(data, type)
 
-    converter.register_structure_hook_func(is_unknown, identity_function)
+    converter.register_structure_hook_func(is_unknown, unknown_function)
 
     return converter
 
@@ -552,6 +585,8 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             # in discord developers
             # https://discord.com/channels/613425648685547541/697489244649816084/870221091849793587
             'application_command_counts',
+            # I asked in DDevs, no answer yet.
+            'guild_scheduled_events'
         }
     elif tag == 'GUILD_UPDATE':
         return {
@@ -590,6 +625,65 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             # https://github.com/discord/discord-api-docs/commit/ab5d49ae7
             '_trace',
         }
+    elif tag == 'PRESENCE_UPDATE':
+        # TODO: a custom user type for presences with these?
+        return {
+            'user.username',
+            'user.discriminator',
+            'user.avatar',
+            'user.public_flags',
+            'user.bot'
+        }
+    elif tag == 'MESSAGE_CREATE':
+        return {
+            # https://github.com/discord/discord-api-docs/pull/1610
+            'member.hoisted_role',
+            # for per-guild avatars
+            # in discord bots
+            # https://discord.com/channels/110373943822540800/110373943822540800/870569320097411104
+            'member.avatar',
+            # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
+            'member.is_pending'
+        }
+    elif tag == 'MESSAGE_REACTION_ADD':
+        return {
+            # https://github.com/discord/discord-api-docs/pull/1610
+            'member.hoisted_role',
+            # for per-guild avatars
+            # in discord bots
+            # https://discord.com/channels/110373943822540800/110373943822540800/870569320097411104
+            'member.avatar',
+            # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
+            'member.is_pending'
+        }
+    elif tag == 'TYPING_START':
+        return {
+            # https://github.com/discord/discord-api-docs/pull/1610
+            'member.hoisted_role',
+            # for per-guild avatars
+            # in discord bots
+            # https://discord.com/channels/110373943822540800/110373943822540800/870569320097411104
+            'member.avatar',
+            # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
+            'member.is_pending'
+        }
+    elif tag == 'VOICE_STATE_UPDATE':
+        return {
+            # https://github.com/discord/discord-api-docs/pull/1610
+            'member.hoisted_role',
+            # for per-guild avatars
+            # in discord bots
+            # https://discord.com/channels/110373943822540800/110373943822540800/870569320097411104
+            'member.avatar',
+            # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
+            'member.is_pending'
+        }
+    elif tag == 'GUILD_ROLE_UPDATE':
+        return {
+            # TODO: ask
+            # (role icons?)
+            'role.icon'
+        }
 
     return set()
 
@@ -621,6 +715,7 @@ def _diff_differences(
 async def connect(
         token: str,
         intents: Intents,
+        substrate: subs.Substrate,
         *,
         shard_ids: typing.Sequence[int] = (0,),
         shard_count: int = 1,
@@ -633,7 +728,15 @@ async def connect(
     async with trio.open_nursery() as nursery:
         for shard_id in shard_ids:
             bucket = buckets[shard_id % max_concurrency]
-            info = _ConnectionInfo(token, intents, shard_id, shard_count, bucket, converter)
+            info = _ConnectionInfo(
+                token,
+                intents,
+                shard_id,
+                shard_count,
+                bucket,
+                converter,
+                substrate
+            )
             nursery.start_soon(_run_shard, info)
 
     raise RuntimeError('Should never get here.')

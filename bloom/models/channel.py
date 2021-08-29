@@ -436,3 +436,7 @@ class ResponseBody:
     #: whether there are potentially additional threads that could be returned
     #: on a subsequent call
     has_more: bool
+
+
+# TODO: is this an attrs or cattrs bug?
+attr.resolve_types(Channel, globals(), locals())

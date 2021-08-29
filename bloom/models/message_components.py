@@ -13,7 +13,7 @@ class Component:
     #: component type (valid for: all types)
     type: int
     #: the choices in the select, max 25 (valid for: Select Menus)
-    options: t.List[SelectOption]
+    options: Unknownish[t.List[SelectOption]] = UNKNOWN
     #: a developer-defined identifier for the component, max 100 characters
     #: (valid for: Buttons, Select Menus)
     custom_id: Unknownish[str] = UNKNOWN

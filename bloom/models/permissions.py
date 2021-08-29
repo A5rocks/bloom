@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import typing as t
-from enum import Enum
+from enum import IntFlag
 
 import attr
 
@@ -9,7 +9,8 @@ from .base import UNKNOWN, Snowflake, Unknownish
 
 
 # TODO: this should be serialized as a str :(
-class BitwisePermissionFlags(Enum):
+class BitwisePermissionFlags(IntFlag):
+    NONE = 0
     CREATE_INSTANT_INVITE = 1 << 0
     KICK_MEMBERS = 1 << 1
     BAN_MEMBERS = 1 << 2

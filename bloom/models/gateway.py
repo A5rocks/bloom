@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime as dt
 import typing as t
-from enum import Enum
+from enum import Enum, IntFlag
 
 import attr
 
@@ -201,6 +201,8 @@ class GuildUpdateEvent(Guild):
 
 @attr.frozen(kw_only=True)
 class GuildDeleteEvent:
+    id: Snowflake
+    unavailable: bool = False
     # TODO: A partial guild object. Represents an Offline Guild, or a Guild
     # whose information has not been provided through Guild Create events
     # during the Gateway connect.
@@ -261,12 +263,14 @@ class GuildMemberRemoveEvent:
 
 @attr.frozen(kw_only=True)
 class GuildMemberUpdateEvent:
+    # TODO: code duplication with GuildMember?
     #: the id of the guild
     guild_id: Snowflake
     #: user role ids
     roles: t.List[Snowflake]
     #: the user
     user: User
+    # TODO: when can this be null?
     #: when the user joined the guild
     joined_at: t.Optional[dt.datetime]
     #: nickname of the user in the guild
@@ -592,7 +596,7 @@ class Activity:
     #: the user's current party status
     state: Unknownish[t.Optional[str]] = UNKNOWN
     #: the emoji used for a custom status
-    emoji: Unknownish[t.Optional[Emoji]] = UNKNOWN
+    emoji: Unknownish[t.Optional[ActivityEmoji]] = UNKNOWN
     #: information for the current party of the player
     party: Unknownish[ActivityParty] = UNKNOWN
     #: images for the presence and their hover texts
@@ -604,7 +608,7 @@ class Activity:
     #: activity flagsORd together, describes what the payload includes
     flags: Unknownish[ActivityFlags] = UNKNOWN
     #: the custom buttons shown in the Rich Presence (max 2)
-    buttons: Unknownish[t.List[ActivityButtons]] = UNKNOWN
+    buttons: Unknownish[t.List[t.Tuple[str, str]]] = UNKNOWN
 
 
 class ActivityTypes(Enum):
@@ -643,11 +647,10 @@ class ActivityEmoji:
 
 @attr.frozen(kw_only=True)
 class ActivityParty:
-
     #: the id of the party
     id: Unknownish[str] = UNKNOWN
     #: used to show the party's current and maximum size
-    size: Unknownish[t.List[t.Tuple[int, int]]] = UNKNOWN
+    size: Unknownish[t.Tuple[int, int]] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)
@@ -674,7 +677,7 @@ class ActivitySecrets:
     match: Unknownish[str] = UNKNOWN
 
 
-class ActivityFlags(Enum):
+class ActivityFlags(IntFlag):
     INSTANCE = 1
     JOIN = 2
     SPECTATE = 4
@@ -683,6 +686,7 @@ class ActivityFlags(Enum):
     PLAY = 32
 
 
+# TODO: this gets sent when setting activity, but is not recved
 @attr.frozen(kw_only=True)
 class ActivityButtons:
     #: the text shown on the button (1-32 characters)
