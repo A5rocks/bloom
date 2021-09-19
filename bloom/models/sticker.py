@@ -17,9 +17,7 @@ class Sticker:
     name: str
     #: description of the sticker
     description: t.Optional[str]
-    #: for guild stickers, the Discord name of a unicode emoji representing
-    #: the sticker's expression. for standard stickers, a comma-separated list
-    #: of related expressions.
+    #: autocomplete/suggestion tags for the sticker (max 200 characters)
     tags: str
     #: Deprecated previously the sticker asset hash, now an empty string
     asset: str

@@ -66,9 +66,6 @@ tags_to_model = {
     'VOICE_STATE_UPDATE': gateway_models.VoiceStateUpdateEvent,
     'VOICE_SERVER_UPDATE': gateway_models.VoiceServerUpdateEvent,
     'WEBHOOKS_UPDATE': gateway_models.WebhooksUpdateEvent,  # TODO: update docs
-    'APPLICATION_COMMAND_CREATE': gateway_models.ApplicationCommandCreateEvent,
-    'APPLICATION_COMMAND_UPDATE': gateway_models.ApplicationCommandUpdateEvent,
-    'APPLICATION_COMMAND_DELETE': gateway_models.ApplicationCommandDeleteEvent,
     'INTERACTION_CREATE': gateway_models.InteractionCreateEvent,
     'STAGE_INSTANCE_CREATE': gateway_models.StageInstanceCreateEvent,
     'STAGE_INSTANCE_UPDATE': gateway_models.StageInstanceUpdateEvent,
@@ -586,7 +583,7 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             # https://discord.com/channels/613425648685547541/697489244649816084/870221091849793587
             'application_command_counts',
             # I asked in DDevs, no answer yet.
-            'guild_scheduled_events'
+            'guild_scheduled_events',
         }
     elif tag == 'GUILD_UPDATE':
         return {
@@ -595,30 +592,19 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             # https://github.com/discord/discord-api-docs/issues/582
             'guild_id',
         }
-    elif tag == 'APPLICATION_COMMAND_CREATE':
-        return {
-            # https://github.com/discord/discord-api-docs/pull/3524
-            'version',
-            # has to do with context menus
-            # in discord developers
-            # https://discord.com/channels/613425648685547541/788586647142793246/870825234889056266
-            'type',
-        }
-    elif tag == 'APPLICATION_COMMAND_UPDATE':
-        return {
-            # https://github.com/discord/discord-api-docs/pull/3524
-            'version',
-            # has to do with context menus
-            # in discord developers
-            # https://discord.com/channels/613425648685547541/788586647142793246/870825234889056266
-            'type',
-        }
     elif tag == 'THREAD_UPDATE':
         return {
             # will be removed soon-ish...
             # in discord developers
             # https://discord.com/channels/613425648685547541/859161948184379403/860543147817697300
-            'audience'
+            'audience',
+        }
+    elif tag == 'THREAD_DELETE':
+        return {
+            # will be removed soon-ish...
+            # in discord developers
+            # https://discord.com/channels/613425648685547541/859161948184379403/860543147817697300
+            'audience',
         }
     elif tag == 'RESUMED':
         return {
@@ -632,7 +618,7 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'user.discriminator',
             'user.avatar',
             'user.public_flags',
-            'user.bot'
+            'user.bot',
         }
     elif tag == 'MESSAGE_CREATE':
         return {
@@ -645,6 +631,17 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
             'member.is_pending'
         }
+    elif tag == 'MESSAGE_UPDATE':
+        return {
+            # https://github.com/discord/discord-api-docs/pull/1610
+            'member.hoisted_role',
+            # for per-guild avatars
+            # in discord bots
+            # https://discord.com/channels/110373943822540800/110373943822540800/870569320097411104
+            'member.avatar',
+            # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
+            'member.is_pending',
+        }
     elif tag == 'MESSAGE_REACTION_ADD':
         return {
             # https://github.com/discord/discord-api-docs/pull/1610
@@ -654,7 +651,7 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             # https://discord.com/channels/110373943822540800/110373943822540800/870569320097411104
             'member.avatar',
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
-            'member.is_pending'
+            'member.is_pending',
         }
     elif tag == 'TYPING_START':
         return {
@@ -665,7 +662,7 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             # https://discord.com/channels/110373943822540800/110373943822540800/870569320097411104
             'member.avatar',
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
-            'member.is_pending'
+            'member.is_pending',
         }
     elif tag == 'VOICE_STATE_UPDATE':
         return {
@@ -676,13 +673,15 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             # https://discord.com/channels/110373943822540800/110373943822540800/870569320097411104
             'member.avatar',
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
-            'member.is_pending'
+            'member.is_pending',
         }
     elif tag == 'GUILD_ROLE_UPDATE':
         return {
             # TODO: ask
             # (role icons?)
-            'role.icon'
+            'role.icon',
+            # role icons, I think.
+            'role.unicode_emoji',
         }
 
     return set()

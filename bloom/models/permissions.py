@@ -49,6 +49,7 @@ class BitwisePermissionFlags(IntFlag):
     CREATE_PRIVATE_THREADS = 1 << 36
     USE_EXTERNAL_STICKERS = 1 << 37
     SEND_MESSAGES_IN_THREADS = 1 << 38
+    START_EMBEDDED_ACTIVITIES = 1 << 39
 
 
 @attr.frozen(kw_only=True)

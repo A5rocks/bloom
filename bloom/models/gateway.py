@@ -6,7 +6,7 @@ from enum import Enum, IntFlag
 
 import attr
 
-from .application_commands import ApplicationCommand, MessageInteraction
+from .application_commands import MessageInteraction
 from .base import UNKNOWN, Snowflake, Unknownish
 from .channel import (Attachment, Channel, ChannelMention, ChannelTypes, Embed,
                       MessageActivity, MessageReference, Reaction,
@@ -253,7 +253,7 @@ class GuildMemberAddEvent(GuildMember):
     guild_id: Snowflake
 
 
-# TODO: is this an attrs or cattrs bug?
+# TODO: blocked on https://github.com/python-attrs/attrs/issues/842
 attr.resolve_types(GuildMemberAddEvent, globals(), locals())
 
 
@@ -739,24 +739,6 @@ class WebhooksUpdateEvent:
     guild_id: Snowflake
     #: id of the channel
     channel_id: Snowflake
-
-
-@attr.frozen(kw_only=True)
-class ApplicationCommandCreateEvent(ApplicationCommand):
-    #: id of the guild the command is in
-    guild_id: Unknownish[Snowflake] = UNKNOWN
-
-
-@attr.frozen(kw_only=True)
-class ApplicationCommandUpdateEvent(ApplicationCommand):
-    #: id of the guild the command is in
-    guild_id: Unknownish[Snowflake] = UNKNOWN
-
-
-@attr.frozen(kw_only=True)
-class ApplicationCommandDeleteEvent(ApplicationCommand):
-    #: id of the guild the command is in
-    guild_id: Unknownish[Snowflake] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)

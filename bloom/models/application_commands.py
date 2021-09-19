@@ -6,7 +6,7 @@ from enum import Enum
 import attr
 
 from .base import UNKNOWN, Snowflake, Unknownish
-from .channel import AllowedMentions, Embed
+from .channel import AllowedMentions, ChannelTypes, Embed
 from .message_components import Component
 from .user import User
 
@@ -22,6 +22,9 @@ class ApplicationCommand:
     name: str
     #: 1-100 character description
     description: str
+    #: autoincrementing version identifier updated during substantial record
+    #: changes
+    version: Snowflake
     #: guild id of the command, if not global
     guild_id: Unknownish[Snowflake] = UNKNOWN
     #: the parameters for the command (this is only on CHAT_INPUT commands)
@@ -59,6 +62,9 @@ class ApplicationCommandOption:
     #: if the option is a subcommand or subcommand group type, this nested
     #: options will be the parameters
     options: Unknownish[t.List[ApplicationCommandOption]] = UNKNOWN
+    #: if the option is a channel type, the channels shown will be restricted
+    #: to these types
+    channel_types: t.List[ChannelTypes]
 
 
 class ApplicationCommandOptionType(Enum):

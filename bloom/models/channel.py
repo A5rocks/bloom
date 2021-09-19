@@ -132,9 +132,10 @@ class MessageTypes(Enum):
     GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING = 17
     THREAD_CREATED = 18
     REPLY = 19
-    APPLICATION_COMMAND = 20
+    CHAT_INPUT_COMMAND = 20
     THREAD_STARTER_MESSAGE = 21
     GUILD_INVITE_REMINDER = 22
+    CONTEXT_MENU_COMMAND = 23
 
 
 @attr.frozen(kw_only=True)
@@ -247,7 +248,6 @@ class ThreadMember:
 
 @attr.frozen(kw_only=True)
 class Embed:
-
     #: title of embed
     title: Unknownish[str] = UNKNOWN
     #: type of embed (always "rich" for webhook embeds)
@@ -293,9 +293,8 @@ class EmbedTypes(Enum):
 
 @attr.frozen(kw_only=True)
 class EmbedThumbnail:
-
     #: source url of thumbnail (only supports http(s) and attachments)
-    url: Unknownish[str] = UNKNOWN
+    url: str
     #: a proxied url of the thumbnail
     proxy_url: Unknownish[str] = UNKNOWN
     #: height of thumbnail
@@ -306,7 +305,6 @@ class EmbedThumbnail:
 
 @attr.frozen(kw_only=True)
 class EmbedVideo:
-
     #: source url of video
     url: Unknownish[str] = UNKNOWN
     #: a proxied url of the video
@@ -319,9 +317,8 @@ class EmbedVideo:
 
 @attr.frozen(kw_only=True)
 class EmbedImage:
-
     #: source url of image (only supports http(s) and attachments)
-    url: Unknownish[str] = UNKNOWN
+    url: str
     #: a proxied url of the image
     proxy_url: Unknownish[str] = UNKNOWN
     #: height of image
@@ -332,7 +329,6 @@ class EmbedImage:
 
 @attr.frozen(kw_only=True)
 class EmbedProvider:
-
     #: name of provider
     name: Unknownish[str] = UNKNOWN
     #: url of provider
@@ -341,9 +337,8 @@ class EmbedProvider:
 
 @attr.frozen(kw_only=True)
 class EmbedAuthor:
-
     #: name of author
-    name: Unknownish[str] = UNKNOWN
+    name: str
     #: url of author
     url: Unknownish[str] = UNKNOWN
     #: url of author icon (only supports http(s) and attachments)
@@ -390,6 +385,11 @@ class Attachment:
     height: Unknownish[t.Optional[int]] = UNKNOWN
     #: width of file (if image)
     width: Unknownish[t.Optional[int]] = UNKNOWN
+    #: whether this attachment is ephemeral. Ephemeral attachments will
+    #: automatically be removed after a set period of time. Ephemeral
+    #: attachments on messages are guaranteed to be available as long as the
+    #: message itself exists.
+    ephemeral: Unknownish[bool] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)
@@ -438,5 +438,5 @@ class ResponseBody:
     has_more: bool
 
 
-# TODO: is this an attrs or cattrs bug?
+# TODO: blocked on https://github.com/python-attrs/attrs/issues/842
 attr.resolve_types(Channel, globals(), locals())
