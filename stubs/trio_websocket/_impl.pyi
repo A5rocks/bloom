@@ -6,7 +6,7 @@ from typing import (Any, AsyncContextManager, Iterator, List, Optional, Tuple,
                     Union)
 
 from trio import Nursery
-from trio.abc import Stream
+from trio.abc import Stream, AsyncResource
 
 def open_websocket_url(
     url: str,
@@ -66,9 +66,7 @@ class CloseReason:
     def reason(self) -> str: ...
 
 
-class WebSocketConnection:
-    # TODO: re-inherit from `trio.abc.AsyncResource`
-    #   blocked on https://github.com/python/mypy/issues/10400
+class WebSocketConnection(AsyncResource):
     CONNECTION_ID: Iterator[int] = ...
     @property
     def closed(self) -> Optional[CloseReason]: ...

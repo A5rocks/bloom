@@ -65,7 +65,7 @@ tags_to_model = {
     'USER_UPDATE': gateway_models.UserUpdateEvent,
     'VOICE_STATE_UPDATE': gateway_models.VoiceStateUpdateEvent,
     'VOICE_SERVER_UPDATE': gateway_models.VoiceServerUpdateEvent,
-    'WEBHOOKS_UPDATE': gateway_models.WebhooksUpdateEvent,  # TODO: update docs
+    'WEBHOOKS_UPDATE': gateway_models.WebhooksUpdateEvent,
     'INTERACTION_CREATE': gateway_models.InteractionCreateEvent,
     'STAGE_INSTANCE_CREATE': gateway_models.StageInstanceCreateEvent,
     'STAGE_INSTANCE_UPDATE': gateway_models.StageInstanceUpdateEvent,
