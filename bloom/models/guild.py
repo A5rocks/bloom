@@ -329,7 +329,7 @@ class Integration:
     #: has this integration been revoked
     revoked: Unknownish[bool] = UNKNOWN
     #: The bot/OAuth2 application for discord integrations
-    application: Unknownish[IntegrationAccount] = UNKNOWN
+    application: Unknownish[IntegrationApplication] = UNKNOWN
 
 
 class IntegrationExpireBehaviors(Enum):
