@@ -40,3 +40,8 @@ ipython = "^7.26.0"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+strict = true
+python_version = 3.7
+mypy_path = "stubs"
