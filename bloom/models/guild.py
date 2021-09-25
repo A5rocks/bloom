@@ -429,3 +429,42 @@ class WidgetStyleOptions(Enum):
     #: online count in the middle portion of the widget and a "JOIN MY SERVER"
     #: button at the bottom
     BANNER4 = "banner4"
+
+
+@attr.frozen(kw_only=True)
+class PruneCount:
+    #: the number of members that would be removed in a prune operation. Will
+    #: be ``None`` if ``compute_prune_count`` is ``False`` when beginning a
+    #: prune.
+    pruned: t.Optional[int]
+
+
+# this is in here because otherwise circular imports.
+@attr.frozen(kw_only=True)
+class UserConnection:
+    #: id of the connection account
+    id: str
+    #: the username of the connection account
+    name: str
+    #: the service of the connection (twitch, youtube)
+    type: str
+    #: whether the connection is revoked
+    revoked: Unknownish[bool] = UNKNOWN
+    #: an array of partial server integrations
+    integrations: Unknownish[t.List[Integration]] = UNKNOWN
+    #: whether the connection is verified
+    verified: bool
+    #: whether friend sync is enabled for this connection
+    friend_sync: bool
+    #: whether activities related to this connection will be shown in presence
+    #: updates
+    show_activity: bool
+    #: visibility of this connection
+    visibility: UserConnectionVisibility
+
+
+class UserConnectionVisibility(Enum):
+    #: invisible to everyone except the user themselves
+    NONE = 0
+    #: visible to everyone
+    EVERYONE = 1

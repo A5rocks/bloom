@@ -78,3 +78,9 @@ class StickerPack:
     banner_asset_id: Snowflake
     #: id of a sticker in the pack which is shown as the pack's icon
     cover_sticker_id: Unknownish[Snowflake] = UNKNOWN
+
+
+@attr.frozen(kw_only=True)
+class NitroStickerPacks:
+    #: the sticker packs included with nitro
+    sticker_packs: t.List[StickerPack]

@@ -771,3 +771,15 @@ class SessionStartLimit:
     reset_after: int
     #: The number of identify requests allowed per 5 seconds
     max_concurrency: int
+
+
+@attr.frozen(kw_only=True)
+class GatewayResponse:
+    url: str
+
+
+@attr.frozen(kw_only=True)
+class DetailedGatewayResponse:
+    url: str
+    shards: int
+    session_start_limit: SessionStartLimit

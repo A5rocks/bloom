@@ -61,7 +61,7 @@ async def test_makes_a_request() -> None:
     client = Client([Response({'a': 'header'}, {})])
     state = bloom.ratelimits.RatelimitingState(client)
 
-    req = bloom.rest.models.Request(method='GET', route='/blah', args={})
+    req = bloom.rest.models.Request[None](method='GET', route='/blah', args={})
 
     await state.request(req)
 
@@ -87,7 +87,7 @@ async def test_ratelimits_once(autojump_clock: object) -> None:
 
     start = trio.current_time()
 
-    req = bloom.rest.models.Request(method='GET', route='/blah', args={})
+    req = bloom.rest.models.Request[None](method='GET', route='/blah', args={})
 
     await state.request(req)
     await state.request(req)
@@ -109,7 +109,7 @@ async def test_ratelimits_twice(autojump_clock: object) -> None:
 
     start = trio.current_time()
 
-    req = bloom.rest.models.Request(method='GET', route='/blah', args={})
+    req = bloom.rest.models.Request[None](method='GET', route='/blah', args={})
 
     await state.request(req)
     await state.request(req)
@@ -144,7 +144,7 @@ async def test_respects_remaining(autojump_clock: object) -> None:
 
     start = trio.current_time()
 
-    req = bloom.rest.models.Request(method='GET', route='/blah', args={})
+    req = bloom.rest.models.Request[None](method='GET', route='/blah', args={})
 
     await state.request(req)
     await state.request(req)
@@ -167,7 +167,7 @@ async def test_respects_endless_remaining(autojump_clock: object) -> None:
 
     start = trio.current_time()
 
-    req = bloom.rest.models.Request(method='GET', route='/blah', args={})
+    req = bloom.rest.models.Request[None](method='GET', route='/blah', args={})
 
     await state.request(req)
     await state.request(req)

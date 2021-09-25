@@ -88,9 +88,6 @@ class HttpClientProto(typing.Protocol):
         ...
 
 
-HttpClientT = typing.TypeVar('HttpClientT', bound=HttpClientProto)
-
-
 @attr.define()
 class Bucket:
     remaining: int
@@ -102,8 +99,8 @@ class Bucket:
 
 
 @attr.frozen()
-class RatelimitingState(typing.Generic[HttpClientT]):
-    http: HttpClientT
+class RatelimitingState:
+    http: HttpClientProto
 
     # XXX: *technically* this is a leak but... who cares.
     locks: typing.Dict[
@@ -123,8 +120,8 @@ class RatelimitingState(typing.Generic[HttpClientT]):
         typing.Dict[typing.Optional[typing.Union[int, str]], Bucket]
     ] = attr.Factory(lambda: collections.defaultdict(lambda: {}))
 
-    async def request(self, req: Request) -> typing.Any:
-        # this code makes the assumption of only a single param.
+    async def request(self, req: Request[typing.Any]) -> typing.Any:
+        # this code makes the assumption of only a single major param.
         major_parameter = req.args.get('channel_id') or req.args.get('guild_id')
 
         # the routes with only webhook_id and not webhook_token are not
@@ -183,6 +180,7 @@ class RatelimitingState(typing.Generic[HttpClientT]):
                 # ?? no ratelimit?
                 pass
 
+            # TODO: not json, ReturnT ...
             return result.json()
 
     @classmethod
@@ -190,7 +188,7 @@ class RatelimitingState(typing.Generic[HttpClientT]):
     async def with_httpx(
             cls,
             token: str
-    ) -> typing.AsyncIterator[RatelimitingState[httpx.AsyncClient]]:
+    ) -> typing.AsyncIterator[RatelimitingState]:
         async with httpx.AsyncClient(
                 base_url=API_BASE_URL,
                 headers={'Authorization': f'Bot {token}'},

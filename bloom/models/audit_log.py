@@ -6,6 +6,24 @@ from enum import Enum
 import attr
 
 from .base import UNKNOWN, Snowflake, Unknownish
+from .channel import Channel
+from .user import User
+from .webhook import Webhook
+
+
+@attr.frozen(kw_only=True)
+class AuditLog:
+    #: list of webhooks found in the audit log
+    webhooks: t.List[Webhook]
+    #: list of users found in the audit log
+    users: t.List[User]
+    #: list of audit log entries
+    audit_log_entries: t.List[AuditLogEntry]
+    # TODO: investigate this partial
+    #: list of partial integration objects
+    integrations: t.List[t.Dict[str, t.Any]]
+    #: list of threads in the audit log
+    threads: t.List[Channel]
 
 
 @attr.frozen(kw_only=True)

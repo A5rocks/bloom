@@ -7,9 +7,11 @@ import attr
 
 from bloom._compat import Literal
 
+ReturnT = typing.TypeVar('ReturnT')
+
 
 @attr.frozen()
-class Request:
+class Request(typing.Generic[ReturnT]):
     method: Literal['GET', 'POST', 'PATCH', 'DELETE', 'PUT']
     route: str
     args: typing.Dict[str, typing.Union[int, str]]

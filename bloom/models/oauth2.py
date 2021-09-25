@@ -10,7 +10,8 @@ from .user import User
 
 
 @attr.frozen(kw_only=True)
-class Response:
+class AuthorizationInformation:
+    # TODO: what does partial mean in this context?
     #: the current application
     application: t.Dict[str, t.Any]
     #: the scopes the user has authorized the application for

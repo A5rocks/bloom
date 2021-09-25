@@ -6,7 +6,7 @@ from typing import (Any, AsyncContextManager, Iterator, List, Optional, Tuple,
                     Union)
 
 from trio import Nursery
-from trio.abc import Stream, AsyncResource
+from trio.abc import AsyncResource, Stream
 
 def open_websocket_url(
     url: str,

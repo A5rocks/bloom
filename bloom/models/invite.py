@@ -47,7 +47,7 @@ class InviteTargetTypes(Enum):
 
 
 @attr.frozen(kw_only=True)
-class InviteMetadata:
+class InviteMetadata(Invite):
     #: number of times this invite has been used
     uses: int
     #: max number of times this invite can be used
