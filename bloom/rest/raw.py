@@ -66,7 +66,7 @@ class RawRest:
             before: Snowflake,
             limit: int
     ) -> Request[AuditLog]:
-        return Request(
+        return Request[AuditLog](
             'GET',
             '/guilds/{guild_id}/audit-logs',
             {'guild_id': guild_id},
@@ -79,7 +79,7 @@ class RawRest:
         )
 
     def get_channel(self, channel_id: Snowflake) -> Request[Channel]:
-        return Request('GET', '/channels/{channel_id}', {'channel_id': channel_id})
+        return Request[Channel]('GET', '/channels/{channel_id}', {'channel_id': channel_id})
 
     def modify_channel(
             self,
@@ -108,7 +108,7 @@ class RawRest:
             # audit log
             reason: Unknownish[str] = UNKNOWN,
     ) -> Request[Channel]:
-        return Request(
+        return Request[Channel](
             'PATCH',
             '/channels/{channel_id}',
             {'channel_id': channel_id},
@@ -143,7 +143,7 @@ class RawRest:
             *,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[Channel]:
-        return Request(
+        return Request[Channel](
             'DELETE',
             '/channels/{channel_id}',
             {'channel_id': channel_id},
@@ -161,7 +161,7 @@ class RawRest:
             after: Unknownish[Snowflake] = UNKNOWN,
             limit: Unknownish[int] = UNKNOWN,
     ) -> Request[typing.List[Message]]:
-        return Request(
+        return Request[typing.List[Message]](
             'GET',
             '/channels/{channel_id}/messages',
             {'channel_id': channel_id},
@@ -178,7 +178,7 @@ class RawRest:
             channel_id: Snowflake,
             message_id: Snowflake
     ) -> Request[Message]:
-        return Request('GET', '/channels/{channel.id}/messages/{message.id}', {
+        return Request[Message]('GET', '/channels/{channel.id}/messages/{message.id}', {
             'channel_id': channel_id,
             'message_id': message_id
         })
@@ -208,7 +208,7 @@ class RawRest:
             'components': components,
         })
 
-        return Request(
+        return Request[Message](
             'POST',
             '/channels/{channel_id}/messages',
             {'channel_id': channel_id},
@@ -217,7 +217,7 @@ class RawRest:
         )
 
     def crosspost_message(self, channel_id: Snowflake, message_id: Snowflake) -> Request[Message]:
-        return Request(
+        return Request[Message](
             'POST',
             '/channels/{channel_id}/messages/{message_id}/crosspost',
             {'channel_id': channel_id, 'message_id': message_id}
@@ -232,7 +232,7 @@ class RawRest:
             *,
             emoji: str
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'PUT',
             '/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me',
             {'channel_id': channel_id, 'message_id': message_id, 'emoji': emoji}
@@ -245,7 +245,7 @@ class RawRest:
             *,
             emoji: str
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me',
             {'channel_id': channel_id, 'message_id': message_id, 'emoji': emoji}
@@ -259,7 +259,7 @@ class RawRest:
             emoji: str,
             user_id: Snowflake
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/{user_id}',
             {
@@ -279,7 +279,7 @@ class RawRest:
             after: Unknownish[Snowflake] = UNKNOWN,
             limit: Unknownish[int] = UNKNOWN
     ) -> Request[typing.List[User]]:
-        return Request(
+        return Request[typing.List[User]](
             'GET',
             '/channels/{channel_id}/messages/{message_id}/reactions/{emoji}',
             {'channel_id': channel_id, 'message_id': message_id, 'emoji': emoji},
@@ -288,7 +288,7 @@ class RawRest:
 
     # TODO: what does this actually return??
     def delete_all_reactions(self, channel_id: Snowflake, message_id: Snowflake) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/channels/{channel_id}/messages/{message_id}/reactions',
             {'channel_id': channel_id, 'message_id': message_id}
@@ -302,7 +302,7 @@ class RawRest:
             *,
             emoji: str
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/channels/{channel_id}/messages/{message_id}/reactions/{emoji}',
             {'channel_id': channel_id, 'message_id': message_id, 'emoji': emoji}
@@ -331,7 +331,7 @@ class RawRest:
             'components': components,
         })
 
-        return Request(
+        return Request[Message](
             'POST',
             '/channels/{channel_id}/messages',
             {'channel_id': channel_id},
@@ -340,7 +340,7 @@ class RawRest:
         )
 
     def delete_message(self, channel_id: Snowflake, message_id: Snowflake) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/channels/{channel_id}/messages/{message_id}',
             {'channel_id': channel_id, 'message_id': message_id}
@@ -353,7 +353,7 @@ class RawRest:
             messages: typing.List[Snowflake],
             reason: Unknownish[str] = UNKNOWN,
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'POST',
             '/channels/{channel_id}/messages/bulk-delete',
             {'channel_id': channel_id},
@@ -373,7 +373,7 @@ class RawRest:
             type: Literal[0, 1],
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'PUT',
             '/channels/{channel_id}/permissions/{overwrite_id}',
             {'channel_id': channel_id, 'overwrite_id': overwrite_id},
@@ -384,7 +384,11 @@ class RawRest:
         )
 
     def get_channel_invites(self, channel_id: Snowflake) -> Request[typing.List[InviteMetadata]]:
-        return Request('GET', '/channels/{channel_id}/invites', {'channel_id': channel_id})
+        return Request[typing.List[InviteMetadata]](
+            'GET',
+            '/channels/{channel_id}/invites',
+            {'channel_id': channel_id}
+        )
 
     def create_channel_invite(
             self,
@@ -399,7 +403,7 @@ class RawRest:
             target_application_id: Unknownish[Snowflake] = UNKNOWN,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[Invite]:
-        return Request(
+        return Request[Invite](
             'POST',
             '/channels/{channel_id}/invites',
             {'channel_id': channel_id},
@@ -424,7 +428,7 @@ class RawRest:
             *,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/channels/{channel_id}/permissions/{overwrite_id}',
             {'channel_id': channel_id, 'overwrite_id': overwrite_id},
@@ -439,7 +443,7 @@ class RawRest:
             *,
             webhook_channel_id: Snowflake
     ) -> Request[FollowedChannel]:
-        return Request(
+        return Request[FollowedChannel](
             'POST',
             '/channels/{channel_id}/followers',
             {'channel_id': channel_id},
@@ -447,10 +451,14 @@ class RawRest:
         )
 
     def trigger_typing_indicator(self, channel_id: Snowflake) -> Request[None]:
-        return Request('POST', '/channels/{channel_id}/typing', {'channel_id': channel_id})
+        return Request[None]('POST', '/channels/{channel_id}/typing', {'channel_id': channel_id})
 
     def get_pinned_messages(self, channel_id: Snowflake) -> Request[typing.List[Message]]:
-        return Request('GET', '/channels/{channel_id}/pins', {'channel_id': channel_id})
+        return Request[typing.List[Message]](
+            'GET',
+            '/channels/{channel_id}/pins',
+            {'channel_id': channel_id}
+        )
 
     def pin_message(
             self,
@@ -459,7 +467,7 @@ class RawRest:
             *,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'PUT',
             '/channels/{channel_id}/pins/{message_id}',
             {'channel_id': channel_id, 'message_id': message_id},
@@ -475,7 +483,7 @@ class RawRest:
             *,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/channels/{channel_id}/pins/{message_id}',
             {'channel_id': channel_id, 'message_id': message_id},
@@ -495,7 +503,7 @@ class RawRest:
         # TODO: test.
         nick: str
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'PUT',
             '/channels/{channel_id}/recipients/{user_id}',
             {'channel_id': channel_id, 'user_id': user_id},
@@ -508,7 +516,7 @@ class RawRest:
             channel_id: Snowflake,
             user_id: Snowflake
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/channels/{channel_id}/recipients/{user_id}',
             {'channel_id': channel_id, 'user_id': user_id},
@@ -524,7 +532,7 @@ class RawRest:
             auto_archive_duration: int,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[Channel]:
-        return Request(
+        return Request[Channel](
             'POST',
             '/channels/{channel_id}/messages/{message_id}/threads',
             {'channel_id': channel_id, 'message_id': message_id},
@@ -544,7 +552,7 @@ class RawRest:
             type: ChannelTypes,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[Channel]:
-        return Request(
+        return Request[Channel](
             'POST',
             '/channels/{channel_id}/threads',
             {'channel_id': channel_id},
@@ -559,35 +567,39 @@ class RawRest:
         )
 
     def join_thread(self, channel_id: Snowflake) -> Request[None]:
-        return Request(
+        return Request[None](
             'PUT',
             '/channels/{channel_id}/thread-members/@me',
             {'channel_id': channel_id}
         )
 
     def add_thread_member(self, channel_id: Snowflake, user_id: Snowflake) -> Request[None]:
-        return Request(
+        return Request[None](
             'PUT',
             '/channels/{channel_id}/thread-members/{user_id}',
             {'channel_id': channel_id, 'user_id': user_id}
         )
 
     def leave_thread(self, channel_id: Snowflake) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/channels/{channel_id}/thread-members/@me',
             {'channel_id': channel_id}
         )
 
     def remove_thread_member(self, channel_id: Snowflake, user_id: Snowflake) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/channels/{channel_id}/thread-members/{user_id}',
             {'channel_id': channel_id, 'user_id': user_id}
         )
 
     def list_thread_members(self, channel_id: Snowflake) -> Request[typing.List[ThreadMember]]:
-        return Request('GET', '/channels/{channel_id}/thread-members', {'channel_id': channel_id})
+        return Request[typing.List[ThreadMember]](
+            'GET',
+            '/channels/{channel_id}/thread-members',
+            {'channel_id': channel_id}
+        )
 
     # TODO: this doesn't return a channel, this returns a thread...
     #  ADT?
@@ -598,7 +610,7 @@ class RawRest:
             before: Unknownish[datetime.datetime] = UNKNOWN,
             limit: Unknownish[int] = UNKNOWN
     ) -> Request[typing.List[Channel]]:
-        return Request(
+        return Request[typing.List[Channel]](
             'GET',
             '/channels/{channel.id}/threads/archived/public',
             {'channel_id': channel_id},
@@ -614,7 +626,7 @@ class RawRest:
             before: Unknownish[datetime.datetime] = UNKNOWN,
             limit: Unknownish[int] = UNKNOWN
     ) -> Request[typing.List[Channel]]:
-        return Request(
+        return Request[typing.List[Channel]](
             'GET',
             '/channels/{channel.id}/threads/archived/private',
             {'channel_id': channel_id},
@@ -631,7 +643,7 @@ class RawRest:
             before: Unknownish[Snowflake] = UNKNOWN,
             limit: Unknownish[int] = UNKNOWN
     ) -> Request[typing.List[Channel]]:
-        return Request(
+        return Request[typing.List[Channel]](
             'GET',
             '/channels/{channel_id}/users/@me/threads/archived/private',
             {'channel_id': channel_id},
@@ -639,10 +651,14 @@ class RawRest:
         )
 
     def list_guild_emojis(self, guild_id: Snowflake) -> Request[typing.List[Emoji]]:
-        return Request('GET', '/guilds/{guild_id}/emojis', {'guild_id': guild_id})
+        return Request[typing.List[Emoji]](
+            'GET',
+            '/guilds/{guild_id}/emojis',
+            {'guild_id': guild_id}
+        )
 
     def get_guild_emoji(self, guild_id: Snowflake, emoji_id: Snowflake) -> Request[Emoji]:
-        return Request(
+        return Request[Emoji](
             'GET',
             '/guilds/{guild_id}/emojis/{emoji_id}',
             {'guild_id': guild_id, 'emoji_id': emoji_id}
@@ -659,7 +675,7 @@ class RawRest:
             roles: typing.List[Snowflake],
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[Emoji]:
-        return Request(
+        return Request[Emoji](
             'POST',
             '/guilds/{guild_id}/emojis',
             {'guild_id': guild_id},
@@ -678,7 +694,7 @@ class RawRest:
             roles: Unknownish[typing.Optional[typing.List[Snowflake]]] = UNKNOWN,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[Emoji]:
-        return Request(
+        return Request[Emoji](
             'PATCH',
             '/guilds/{guild_id}/emojis/{emoji_id}',
             {'guild_id': guild_id, 'emoji_id': emoji_id},
@@ -695,7 +711,7 @@ class RawRest:
             *,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/guilds/{guild_id}/emojis/{emoji_id}',
             {'guild_id': guild_id, 'emoji_id': emoji_id},
@@ -723,7 +739,7 @@ class RawRest:
             system_channel_id: Unknownish[Snowflake] = UNKNOWN,
             system_channel_flags: Unknownish[int] = UNKNOWN
     ) -> Request[Guild]:
-        return Request(
+        return Request[Guild](
             'POST',
             '/guilds',
             {},
@@ -744,7 +760,7 @@ class RawRest:
         )
 
     def get_guild(self, guild_id: Snowflake, *, with_counts: bool) -> Request[Guild]:
-        return Request(
+        return Request[Guild](
             'GET',
             '/guilds/{guild_id}',
             {'guild_id': guild_id},
@@ -752,7 +768,7 @@ class RawRest:
         )
 
     def get_guild_preview(self, guild_id: Snowflake) -> Request[GuildPreview]:
-        return Request('GET', '/guilds/{guild_id}/preview', {'guild_id': guild_id})
+        return Request[GuildPreview]('GET', '/guilds/{guild_id}/preview', {'guild_id': guild_id})
 
     def modify_guild(
             self,
@@ -785,7 +801,7 @@ class RawRest:
             description: Unknownish[typing.Optional[str]] = UNKNOWN,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[Guild]:
-        return Request(
+        return Request[Guild](
             'PATCH',
             '/guilds/{guild_id}',
             {'guild_id': guild_id},
@@ -816,10 +832,14 @@ class RawRest:
         )
 
     def delete_guild(self, guild_id: Snowflake) -> Request[None]:
-        return Request('DELETE', '/guilds/{guild_id}', {'guild_id': guild_id})
+        return Request[None]('DELETE', '/guilds/{guild_id}', {'guild_id': guild_id})
 
     def get_guild_channels(self, guild_id: Snowflake) -> Request[typing.List[Channel]]:
-        return Request('GET', '/guilds/{guild_id}/channels', {'guild_id': guild_id})
+        return Request[typing.List[Channel]](
+            'GET',
+            '/guilds/{guild_id}/channels',
+            {'guild_id': guild_id}
+        )
 
     def create_guild_channel(
             self,
@@ -838,7 +858,7 @@ class RawRest:
             user_limit: Unknownish[int] = UNKNOWN,
             reason: Unknownish[str] = UNKNOWN,
     ) -> Request[Channel]:
-        return Request(
+        return Request[Channel](
             'POST',
             '/guilds/{guild_id}/channels',
             {'guild_id': guild_id},
@@ -865,7 +885,7 @@ class RawRest:
         params: typing.List[ModifyGuildChannelPositionsParameters],
         reason: Unknownish[str] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'PATCH',
             '/guilds/{guild_id}/channels',
             {'guild_id': guild_id},
@@ -877,17 +897,25 @@ class RawRest:
 
     # TODO: this returns threads not channels... ADT?
     def list_active_threads(self, guild_id: Snowflake) -> Request[typing.List[Channel]]:
-        return Request('GET', '/guilds/{guild_id}/threads/active', {'guild_id': guild_id})
+        return Request[typing.List[Channel]](
+            'GET',
+            '/guilds/{guild_id}/threads/active',
+            {'guild_id': guild_id}
+        )
 
     def get_guild_member(self, guild_id: Snowflake, user_id: Snowflake) -> Request[GuildMember]:
-        return Request(
+        return Request[GuildMember](
             'GET',
             '/guilds/{guild_id}/members/{user_id}',
             {'guild_id': guild_id, 'user_id': user_id}
         )
 
     def list_guild_members(self, guild_id: Snowflake) -> Request[typing.List[GuildMember]]:
-        return Request('GET', '/guilds/{guild_id}/members', {'guild_id': guild_id})
+        return Request[typing.List[GuildMember]](
+            'GET',
+            '/guilds/{guild_id}/members',
+            {'guild_id': guild_id}
+        )
 
     def search_guild_members(
             self,
@@ -896,7 +924,7 @@ class RawRest:
             query: str,
             limit: Unknownish[int] = UNKNOWN
     ) -> Request[typing.List[GuildMember]]:
-        return Request(
+        return Request[typing.List[GuildMember]](
             'GET',
             '/guilds/{guild_id}/members/search',
             {'guild_id': guild_id},
@@ -919,7 +947,7 @@ class RawRest:
             # requires `DEAFEN_MEMBERS`
             deaf: Unknownish[bool] = UNKNOWN
     ) -> Request[typing.Optional[GuildMember]]:
-        return Request(
+        return Request[typing.Optional[GuildMember]](
             'PUT',
             '/guilds/{guild_id}/members/{user_id}',
             {'guild_id': guild_id, 'user_id': user_id},
@@ -944,7 +972,7 @@ class RawRest:
             channel_id: Unknownish[typing.Optional[Snowflake]] = UNKNOWN,
             reason: Unknownish[str] = UNKNOWN,
     ) -> Request[GuildMember]:
-        return Request(
+        return Request[GuildMember](
             'PATCH',
             '/guilds/{guild_id}/members/{user_id}',
             {'guild_id': guild_id, 'user_id': user_id},
@@ -969,7 +997,7 @@ class RawRest:
             nick: Unknownish[typing.Optional[str]] = UNKNOWN,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[str]:
-        return Request(
+        return Request[str](
             'PATCH',
             '/guilds/{guild_id}/members/@me/nick',
             {'guild_id': guild_id},
@@ -987,7 +1015,7 @@ class RawRest:
             *,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'PUT',
             '/guilds/{guild_id}/members/{user_id}/roles/{role_id}',
             {'guild_id': guild_id, 'user_id': user_id, 'role_id': role_id},
@@ -1004,7 +1032,7 @@ class RawRest:
             *,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/guilds/{guild_id}/members/{user_id}/roles/{role_id}',
             {'guild_id': guild_id, 'user_id': user_id, 'role_id': role_id},
@@ -1020,7 +1048,7 @@ class RawRest:
             *,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/guilds/{guild_id}/members/{user_id}',
             {'guild_id': guild_id, 'user_id': user_id},
@@ -1030,10 +1058,10 @@ class RawRest:
         )
 
     def get_guild_bans(self, guild_id: Snowflake) -> Request[typing.List[Ban]]:
-        return Request('GET', '/guilds/{guild_id}/bans', {'guild_id': guild_id})
+        return Request[typing.List[Ban]]('GET', '/guilds/{guild_id}/bans', {'guild_id': guild_id})
 
     def get_guild_ban(self, guild_id: Snowflake, user_id: Snowflake) -> Request[Ban]:
-        return Request(
+        return Request[Ban](
             'GET',
             '/guilds/{guild_id}/bans/{user_id}',
             {'guild_id': guild_id, 'user_id': user_id}
@@ -1047,7 +1075,7 @@ class RawRest:
             delete_message_days: Unknownish[int] = UNKNOWN,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'PUT',
             '/guilds/{guild_id}/bans/{user_id}',
             {'guild_id': guild_id, 'user_id': user_id},
@@ -1064,7 +1092,7 @@ class RawRest:
         *,
         reason: Unknownish[str] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/guilds/{guild_id}/bans/{user_id}',
             {'guild_id': guild_id, 'user_id': user_id},
@@ -1074,7 +1102,11 @@ class RawRest:
         )
 
     def get_guild_roles(self, guild_id: Snowflake) -> Request[typing.List[Role]]:
-        return Request('GET', '/guilds/{guild_id}/roles', {'guild_id': guild_id})
+        return Request[typing.List[Role]](
+            'GET',
+            '/guilds/{guild_id}/roles',
+            {'guild_id': guild_id}
+        )
 
     def create_guild_role(
             self,
@@ -1087,7 +1119,7 @@ class RawRest:
             mentionable: Unknownish[bool] = UNKNOWN,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[Role]:
-        return Request(
+        return Request[Role](
             'POST',
             '/guilds/{guild_id}/roles',
             {'guild_id': guild_id},
@@ -1110,7 +1142,7 @@ class RawRest:
             parameters: typing.List[ModifyGuildRolePositionsParameters],
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[typing.List[Role]]:
-        return Request(
+        return Request[typing.List[Role]](
             'PATCH',
             '/guilds/{guild_id}/roles',
             {'guild_id': guild_id},
@@ -1132,7 +1164,7 @@ class RawRest:
             mentionable: Unknownish[typing.Optional[bool]] = UNKNOWN,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[Role]:
-        return Request(
+        return Request[Role](
             'PATCH',
             '/guilds/{guild_role}/roles/{role_id}',
             {'guild_id': guild_id, 'role_id': role_id},
@@ -1155,7 +1187,7 @@ class RawRest:
             *,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/guilds/{guild_id}/roles/{role_id}',
             {'guild_id': guild_id, 'role_id': role_id},
@@ -1172,7 +1204,7 @@ class RawRest:
             days: Unknownish[int] = UNKNOWN,
             include_roles: Unknownish[typing.List[Snowflake]] = UNKNOWN
     ) -> Request[PruneCount]:
-        return Request(
+        return Request[PruneCount](
             'GET',
             '/guilds/{guild_id}/prune',
             {'guild_id': guild_id},
@@ -1194,7 +1226,7 @@ class RawRest:
             include_roles: Unknownish[typing.List[Snowflake]] = UNKNOWN,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[PruneCount]:
-        return Request(
+        return Request[PruneCount](
             'POST',
             '/guilds/{guild_id}/prune',
             {'guild_id': guild_id},
@@ -1212,13 +1244,25 @@ class RawRest:
         )
 
     def get_guild_voice_regions(self, guild_id: Snowflake) -> Request[typing.List[VoiceRegion]]:
-        return Request('GET', '/guilds/{guild_id}/regions', {'guild_id': guild_id})
+        return Request[typing.List[VoiceRegion]](
+            'GET',
+            '/guilds/{guild_id}/regions',
+            {'guild_id': guild_id}
+        )
 
     def get_guild_invites(self, guild_id: Snowflake) -> Request[typing.List[InviteMetadata]]:
-        return Request('GET', '/guilds/{guild_id}/invites', {'guild_id': guild_id})
+        return Request[typing.List[InviteMetadata]](
+            'GET',
+            '/guilds/{guild_id}/invites',
+            {'guild_id': guild_id}
+        )
 
     def get_guild_integrations(self, guild_id: Snowflake) -> Request[typing.List[Integration]]:
-        return Request('GET', '/guilds/{guild_id}/integrations', {'guild_id': guild_id})
+        return Request[typing.List[Integration]](
+            'GET',
+            '/guilds/{guild_id}/integrations',
+            {'guild_id': guild_id}
+        )
 
     def delete_guild_integration(
         self,
@@ -1227,7 +1271,7 @@ class RawRest:
         *,
         reason: Unknownish[str] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/guilds/{guild_id}/integrations/{integration_id}',
             {'guild_id': guild_id, 'integration_id': integration_id},
@@ -1237,7 +1281,7 @@ class RawRest:
         )
 
     def get_guild_widget_settings(self, guild_id: Snowflake) -> Request[GuildWidget]:
-        return Request('GET', '/guilds/{guild_id}/widget', {'guild_id': guild_id})
+        return Request[GuildWidget]('GET', '/guilds/{guild_id}/widget', {'guild_id': guild_id})
 
     def modify_guild_widget(
         self,
@@ -1248,7 +1292,7 @@ class RawRest:
         channel_id: Unknownish[typing.Optional[Snowflake]] = UNKNOWN,
         reason: Unknownish[str] = UNKNOWN
     ) -> Request[GuildWidget]:
-        return Request(
+        return Request[GuildWidget](
             'PATCH',
             '/guilds/{guild_id}/widget',
             {'guild_id': guild_id},
@@ -1259,11 +1303,19 @@ class RawRest:
 
     # TODO: is it even worth making a model for this one route?
     def get_guild_widget(self, guild_id: Snowflake) -> Request[typing.Dict[str, typing.Any]]:
-        return Request('GET', '/guilds/{guild_id}/widget.json', {'guild_id': guild_id})
+        return Request[typing.Dict[str, typing.Any]](
+            'GET',
+            '/guilds/{guild_id}/widget.json',
+            {'guild_id': guild_id}
+        )
 
     # TODO: check this partial out.
     def get_guild_vanity_url(self, guild_id: Snowflake) -> Request[typing.Dict[str, typing.Any]]:
-        return Request('GET', '/guilds/{guild_id}/vanity-url', {'guild_id': guild_id})
+        return Request[typing.Dict[str, typing.Any]](
+            'GET',
+            '/guilds/{guild_id}/vanity-url',
+            {'guild_id': guild_id}
+        )
 
     # ... I guess it's a string? it's an image though :thinking:
     # TODO: is there a better way to type this?
@@ -1273,7 +1325,7 @@ class RawRest:
             *,
             style: Unknownish[WidgetStyleOptions] = UNKNOWN
     ) -> Request[str]:
-        return Request(
+        return Request[str](
             'GET',
             '/guilds/{guild_id}/widget.png',
             {'guild_id': guild_id},
@@ -1281,7 +1333,11 @@ class RawRest:
         )
 
     def get_guild_welcome_screen(self, guild_id: Snowflake) -> Request[WelcomeScreen]:
-        return Request('GET', '/guilds/{guild_id}/welcome-screen', {'guild_id': guild_id})
+        return Request[WelcomeScreen](
+            'GET',
+            '/guilds/{guild_id}/welcome-screen',
+            {'guild_id': guild_id}
+        )
 
     def modify_guild_welcome_screen(
         self,
@@ -1292,7 +1348,7 @@ class RawRest:
         description: Unknownish[typing.Optional[str]] = UNKNOWN,
         reason: Unknownish[str] = UNKNOWN
     ) -> Request[WelcomeScreen]:
-        return Request(
+        return Request[WelcomeScreen](
             'PATCH',
             '/guilds/{guild_id}/welcome-screen',
             {'guild_id': guild_id},
@@ -1315,7 +1371,7 @@ class RawRest:
         suppress: Unknownish[bool] = UNKNOWN,
         request_to_speak_timestamp: Unknownish[typing.Optional[datetime.datetime]] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'PATCH',
             '/guilds/{guild_id}/voice-states/@me',
             {'guild_id': guild_id},
@@ -1335,7 +1391,7 @@ class RawRest:
         channel_id: Snowflake,
         suppress: Unknownish[bool] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'PATCH',
             '/guilds/{guild_id}/voice-states/{user_id}',
             {'guild_id': guild_id, 'user_id': user_id},
@@ -1343,7 +1399,11 @@ class RawRest:
         )
 
     def get_guild_template(self, template_code: str) -> Request[GuildTemplate]:
-        return Request('GET', '/guilds/template/{template_code}', {'template_code': template_code})
+        return Request[GuildTemplate](
+            'GET',
+            '/guilds/template/{template_code}',
+            {'template_code': template_code}
+        )
 
     def create_guild_from_guild_template(
             self,
@@ -1353,7 +1413,7 @@ class RawRest:
             # https://discord.com/developers/docs/reference#image-data
             icon: Unknownish[str] = UNKNOWN
     ) -> Request[Guild]:
-        return Request(
+        return Request[Guild](
             'POST',
             '/guilds/templates/{template_code}',
             {'template_code': template_code},
@@ -1361,7 +1421,11 @@ class RawRest:
         )
 
     def get_guild_templates(self, guild_id: Snowflake) -> Request[typing.List[GuildTemplate]]:
-        return Request('GET', '/guilds/{guild_id}/templates', {'guild_id': guild_id})
+        return Request[typing.List[GuildTemplate]](
+            'GET',
+            '/guilds/{guild_id}/templates',
+            {'guild_id': guild_id}
+        )
 
     def create_guild_template(
             self,
@@ -1370,7 +1434,7 @@ class RawRest:
             name: str,
             description: Unknownish[typing.Optional[str]] = UNKNOWN
     ) -> Request[GuildTemplate]:
-        return Request(
+        return Request[GuildTemplate](
             'POST',
             '/guilds/{guild_id}/templates',
             {'guild_id': guild_id},
@@ -1382,7 +1446,7 @@ class RawRest:
             guild_id: Snowflake,
             template_code: str
     ) -> Request[GuildTemplate]:
-        return Request(
+        return Request[GuildTemplate](
             'PUT',
             '/guilds/{guild_id}/templates/{template_code}',
             {'guild_id': guild_id, 'template_code': template_code}
@@ -1396,7 +1460,7 @@ class RawRest:
             name: Unknownish[str] = UNKNOWN,
             description: Unknownish[typing.Optional[str]] = UNKNOWN
     ) -> Request[GuildTemplate]:
-        return Request(
+        return Request[GuildTemplate](
             'PUT',
             '/guilds/{guild_id}/templates/{template_code}',
             {'guild_id': guild_id, 'template_code': template_code},
@@ -1408,14 +1472,14 @@ class RawRest:
             guild_id: Snowflake,
             template_code: str
     ) -> Request[GuildTemplate]:
-        return Request(
+        return Request[GuildTemplate](
             'DELETE',
             '/guilds/{guild_id}/templates/{template_code}',
             {'guild_id': guild_id, 'template_code': template_code}
         )
 
     def get_invite(self, invite_code: str) -> Request[Invite]:
-        return Request('GET', '/invites/{invite_code}', {'invite_code': invite_code})
+        return Request[Invite]('GET', '/invites/{invite_code}', {'invite_code': invite_code})
 
     def delete_invite(
             self,
@@ -1423,7 +1487,7 @@ class RawRest:
             *,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[Invite]:
-        return Request(
+        return Request[Invite](
             'DELETE',
             '/invites/{invite_code}',
             {'invite_code': invite_code},
@@ -1441,7 +1505,7 @@ class RawRest:
         privacy_level: Unknownish[PrivacyLevel] = UNKNOWN,
         reason: Unknownish[str] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'POST',
             '/stage-instances',
             {},
@@ -1456,7 +1520,11 @@ class RawRest:
         )
 
     def get_stage_instance(self, channel_id: Snowflake) -> Request[StageInstance]:
-        return Request('GET', '/stage-instances/{channel_id}', {'channel_id': channel_id})
+        return Request[StageInstance](
+            'GET',
+            '/stage-instances/{channel_id}',
+            {'channel_id': channel_id}
+        )
 
     # TODO: what does this return?
     def modify_stage_instance(
@@ -1467,7 +1535,7 @@ class RawRest:
             privacy_level: Unknownish[PrivacyLevel] = UNKNOWN,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'PATCH',
             '/stage-instances/{channel_id}',
             {'channel_id': channel_id},
@@ -1484,7 +1552,7 @@ class RawRest:
             *,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/stage-instances/{channel_id}',
             {'channel_id': channel_id},
@@ -1494,16 +1562,20 @@ class RawRest:
         )
 
     def get_sticker(self, sticker_id: Snowflake) -> Request[Sticker]:
-        return Request('GET', '/stickers/{sticker_id}', {'sticker_id': sticker_id})
+        return Request[Sticker]('GET', '/stickers/{sticker_id}', {'sticker_id': sticker_id})
 
     def list_nitro_sticker_packs(self) -> Request[NitroStickerPacks]:
-        return Request('GET', '/sticker-packs', {})
+        return Request[NitroStickerPacks]('GET', '/sticker-packs', {})
 
     def list_guild_sickers(self, guild_id: Snowflake) -> Request[typing.List[Sticker]]:
-        return Request('GET', '/guilds/{guild_id}/stickers', {'guild_id': guild_id})
+        return Request[typing.List[Sticker]](
+            'GET',
+            '/guilds/{guild_id}/stickers',
+            {'guild_id': guild_id}
+        )
 
     def get_guild_sticker(self, guild_id: Snowflake, sticker_id: Snowflake) -> Request[Sticker]:
-        return Request(
+        return Request[Sticker](
             'GET',
             '/guilds/{guild_id}/stickers/{sticker_id}',
             {'guild_id': guild_id, 'sticker_id': sticker_id}
@@ -1521,7 +1593,7 @@ class RawRest:
             file: object,
             reason: Unknownish[str] = UNKNOWN,
     ) -> Request[Sticker]:
-        return Request(
+        return Request[Sticker](
             'POST',
             '/guilds/{guild_id}/stickers',
             {'guild_id': guild_id},
@@ -1542,7 +1614,7 @@ class RawRest:
             tags: Unknownish[str] = UNKNOWN,
             reason: Unknownish[str] = UNKNOWN,
     ) -> Request[Sticker]:
-        return Request(
+        return Request[Sticker](
             'PATCH',
             '/guilds/{guild_id}/stickers/{sticker_id}',
             {'guild_id': guild_id, 'sticker_id': sticker_id},
@@ -1559,7 +1631,7 @@ class RawRest:
             *,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/guilds/{guild_id}/stickers/{sticker_id}',
             {'guild_id': guild_id, 'sticker_id': sticker_id},
@@ -1569,10 +1641,10 @@ class RawRest:
         )
 
     def get_current_user(self) -> Request[User]:
-        return Request('GET', '/users/@me', {})
+        return Request[User]('GET', '/users/@me', {})
 
     def get_user(self, user_id: Snowflake) -> Request[User]:
-        return Request('GET', '/users/{user_id}', {'user_id': user_id})
+        return Request[User]('GET', '/users/{user_id}', {'user_id': user_id})
 
     def modify_current_user(
             self,
@@ -1581,7 +1653,7 @@ class RawRest:
             # https://discord.com/developers/docs/reference#image-data
             avatar: Unknownish[typing.Optional[str]] = UNKNOWN,
     ) -> Request[User]:
-        return Request(
+        return Request[User](
             'PATCH',
             '/users/@me',
             {},
@@ -1590,13 +1662,13 @@ class RawRest:
 
     # TODO: partial guild object?
     def get_current_user_guilds(self) -> Request[typing.List[typing.Dict[str, typing.Any]]]:
-        return Request('GET', '/users/@me/guilds', {})
+        return Request[typing.List[typing.Dict[str, typing.Any]]]('GET', '/users/@me/guilds', {})
 
     def leave_guild(self, guild_id: Snowflake) -> Request[None]:
-        return Request('DELETE', '/users/@me/guilds/{guild_id}', {'guild_id': guild_id})
+        return Request[None]('DELETE', '/users/@me/guilds/{guild_id}', {'guild_id': guild_id})
 
     def create_dm(self, *, recipient_id: Snowflake) -> Request[Channel]:
-        return Request(
+        return Request[Channel](
             'POST',
             '/users/@me/channels',
             {},
@@ -1610,7 +1682,7 @@ class RawRest:
             access_tokens: typing.List[str],
             nicks: typing.Dict[Snowflake, str]
     ) -> Request[Channel]:
-        return Request(
+        return Request[Channel](
             'POST',
             '/users/@me/channels',
             {},
@@ -1618,10 +1690,10 @@ class RawRest:
         )
 
     def get_user_connections(self) -> Request[typing.List[UserConnection]]:
-        return Request('GET', '/users/@me/connections', {})
+        return Request[typing.List[UserConnection]]('GET', '/users/@me/connections', {})
 
     def list_voice_regions(self) -> Request[typing.List[VoiceRegion]]:
-        return Request('GET', '/voice/regions', {})
+        return Request[typing.List[VoiceRegion]]('GET', '/voice/regions', {})
 
     # TODO: does this really not support audit log reason?
     def create_webhook(
@@ -1632,7 +1704,7 @@ class RawRest:
             # https://discord.com/developers/docs/reference#image-data
             avatar: Unknownish[typing.Optional[str]] = UNKNOWN
     ) -> Request[Webhook]:
-        return Request(
+        return Request[Webhook](
             'POST',
             '/channels/{channel_id}/webhooks',
             {'channel_id': channel_id},
@@ -1640,20 +1712,28 @@ class RawRest:
         )
 
     def get_channel_webhooks(self, channel_id: Snowflake) -> Request[typing.List[Webhook]]:
-        return Request('GET', '/channels/{channel_id}/webhooks', {'channel_id': channel_id})
+        return Request[typing.List[Webhook]](
+            'GET',
+            '/channels/{channel_id}/webhooks',
+            {'channel_id': channel_id}
+        )
 
     def get_guild_webhooks(self, guild_id: Snowflake) -> Request[typing.List[Webhook]]:
-        return Request('GET', '/guilds/{guild_id}/webhooks', {'guild_id': guild_id})
+        return Request[typing.List[Webhook]](
+            'GET',
+            '/guilds/{guild_id}/webhooks',
+            {'guild_id': guild_id}
+        )
 
     def get_webhook(self, webhook_id: Snowflake) -> Request[Webhook]:
-        return Request('GET', '/webhooks/{webhook_id}', {'webhook_id': webhook_id})
+        return Request[Webhook]('GET', '/webhooks/{webhook_id}', {'webhook_id': webhook_id})
 
     def get_webhook_with_token(
             self,
             webhook_id: Snowflake,
             webhook_token: str
     ) -> Request[Webhook]:
-        return Request(
+        return Request[Webhook](
             'GET',
             '/webhooks/{webhook_id}/{webhook_token}',
             {'webhook_id': webhook_id, 'webhook_token': webhook_token}
@@ -1668,7 +1748,7 @@ class RawRest:
             # https://discord.com/developers/docs/reference#image-data
             channel_id: Unknownish[Snowflake] = UNKNOWN,
     ) -> Request[Webhook]:
-        return Request(
+        return Request[Webhook](
             'PATCH',
             '/webhooks/{webhook_id}',
             {'webhook_id': webhook_id},
@@ -1685,7 +1765,7 @@ class RawRest:
             # https://discord.com/developers/docs/reference#image-data
             channel_id: Unknownish[Snowflake] = UNKNOWN,
     ) -> Request[Webhook]:
-        return Request(
+        return Request[Webhook](
             'PATCH',
             '/webhooks/{webhook_id}/{webhook_token}',
             {'webhook_id': webhook_id, 'webhook_token': webhook_token},
@@ -1693,14 +1773,14 @@ class RawRest:
         )
 
     def delete_webhook(self, webhook_id: Snowflake) -> Request[None]:
-        return Request('DELETE', '/webhooks/{webhook_id}', {'webhook_id': webhook_id})
+        return Request[None]('DELETE', '/webhooks/{webhook_id}', {'webhook_id': webhook_id})
 
     def delete_webhook_with_token(
             self,
             webhook_id: Snowflake,
             webhook_token: str
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/webhooks/{webhook_id}/{webhook_token}',
             {'webhook_id': webhook_id, 'webhook_token': webhook_token}
@@ -1738,7 +1818,7 @@ class RawRest:
             'components': components,
         })
 
-        return Request(
+        return Request[None](
             'POST',
             '/webhooks/{webhook_id}/{webhook_token}',
             {'webhook_id': webhook_id, 'webhook_token': webhook_token},
@@ -1753,7 +1833,7 @@ class RawRest:
             webhook_token: str,
             message_id: Snowflake
     ) -> Request[Message]:
-        return Request(
+        return Request[Message](
             'GET',
             '/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}',
             {'webhook_id': webhook_id, 'webhook_token': webhook_token, 'message_id': message_id}
@@ -1781,7 +1861,7 @@ class RawRest:
             'attachments': attachments
         })
 
-        return Request(
+        return Request[Message](
             'PATCH',
             '/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}',
             {'webhook_id': webhook_id, 'webhook_token': webhook_token, 'message_id': message_id},
@@ -1795,29 +1875,33 @@ class RawRest:
             webhook_token: str,
             message_id: Snowflake
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}',
             {'webhook_id': webhook_id, 'webhook_token': webhook_token, 'message_id': message_id}
         )
 
     def get_gateway(self) -> Request[GatewayResponse]:
-        return Request('GET', '/gateway', {})
+        return Request[GatewayResponse]('GET', '/gateway', {})
 
     def get_gateway_bot(self) -> Request[DetailedGatewayResponse]:
-        return Request('GET', '/gateway/bot', {})
+        return Request[DetailedGatewayResponse]('GET', '/gateway/bot', {})
 
     def get_current_bot_application_information(self) -> Request[Application]:
-        return Request('GET', '/oauth2/applications/@me', {})
+        return Request[Application]('GET', '/oauth2/applications/@me', {})
 
     def get_current_authorization_information(self) -> Request[AuthorizationInformation]:
-        return Request('GET', '/oauth2/@me', {})
+        return Request[AuthorizationInformation]('GET', '/oauth2/@me', {})
 
     def get_global_application_commands(
             self,
             application_id: Snowflake
     ) -> Request[typing.List[ApplicationCommand]]:
-        return Request('GET', '/applications/{application_id}', {'application_id': application_id})
+        return Request[typing.List[ApplicationCommand]](
+            'GET',
+            '/applications/{application_id}',
+            {'application_id': application_id}
+        )
 
     def create_global_application_command(
             self,
@@ -1829,7 +1913,7 @@ class RawRest:
             default: Unknownish[bool] = UNKNOWN,
             type: Unknownish[CommandTypes] = UNKNOWN
     ) -> Request[ApplicationCommand]:
-        return Request(
+        return Request[ApplicationCommand](
             'POST',
             '/applications/{application_id}/commands',
             {'application_id': application_id},
@@ -1847,7 +1931,7 @@ class RawRest:
             application_id: Snowflake,
             command_id: Snowflake
     ) -> Request[ApplicationCommand]:
-        return Request(
+        return Request[ApplicationCommand](
             'GET',
             '/applications/{application_id}/{command_id}',
             {'application_id': application_id, 'command_id': command_id}
@@ -1863,7 +1947,7 @@ class RawRest:
             options: Unknownish[typing.List[ApplicationCommandOption]] = UNKNOWN,
             default_permission: Unknownish[bool] = UNKNOWN
     ) -> Request[ApplicationCommand]:
-        return Request(
+        return Request[ApplicationCommand](
             'PATCH',
             '/applications/{application_id}/commands/{command_id}',
             {'application_id': application_id, 'command_id': command_id},
@@ -1880,7 +1964,7 @@ class RawRest:
             application_id: Snowflake,
             command_id: Snowflake
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/applications/{application_id}/commands/{command_id}',
             {'application_id': application_id, 'command_id': command_id}
@@ -1892,7 +1976,7 @@ class RawRest:
             *,
             commands: typing.List[ApplicationCommand]
     ) -> Request[typing.List[ApplicationCommand]]:
-        return Request(
+        return Request[typing.List[ApplicationCommand]](
             'PUT',
             '/applications/{application_id}/commands',
             {'application_id': application_id},
@@ -1921,7 +2005,7 @@ class RawRest:
             default: Unknownish[bool] = UNKNOWN,
             type: Unknownish[CommandTypes] = UNKNOWN
     ) -> Request[ApplicationCommand]:
-        return Request(
+        return Request[ApplicationCommand](
             'POST',
             '/applications/{application_id}/commands',
             {'application_id': application_id},
@@ -1940,7 +2024,7 @@ class RawRest:
             guild_id: Snowflake,
             command_id: Snowflake
     ) -> Request[ApplicationCommand]:
-        return Request(
+        return Request[ApplicationCommand](
             'GET',
             '/applications/{application_id}/guilds/{guild_id}/commands/{command_id}',
             {'application_id': application_id, 'guild_id': guild_id, 'command_id': command_id}
@@ -1957,7 +2041,7 @@ class RawRest:
             options: Unknownish[typing.List[ApplicationCommandOption]] = UNKNOWN,
             default_permission: Unknownish[bool] = UNKNOWN
     ) -> Request[ApplicationCommand]:
-        return Request(
+        return Request[ApplicationCommand](
             'PATCH',
             '/applications/{application_id}/guilds/{guild_id}/commands/{command_id}',
             {'application_id': application_id, 'guild_id': guild_id, 'command_id': command_id},
@@ -1975,7 +2059,7 @@ class RawRest:
             guild_id: Snowflake,
             command_id: Snowflake
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/applications/{application_id}/guilds/{guild_id}/commands/{command_id}',
             {'application_id': application_id, 'guild_id': guild_id, 'command_id': command_id}
@@ -1988,7 +2072,7 @@ class RawRest:
             *,
             commands: typing.List[ApplicationCommand]
     ) -> Request[typing.List[ApplicationCommand]]:
-        return Request(
+        return Request[typing.List[ApplicationCommand]](
             'PUT',
             '/applications/{application_id}/guilds/{guild_id}/commands',
             {'application_id': application_id, 'guild_id': guild_id},
@@ -2000,7 +2084,7 @@ class RawRest:
             application_id: Snowflake,
             guild_id: Snowflake,
     ) -> Request[typing.List[GuildApplicationCommandPermissions]]:
-        return Request(
+        return Request[typing.List[GuildApplicationCommandPermissions]](
             'GET',
             '/applications/{application_id}/guilds/{guild_id}/commands/permissions',
             {'application_id': application_id, 'guild_id': guild_id}
@@ -2012,7 +2096,7 @@ class RawRest:
             guild_id: Snowflake,
             command_id: Snowflake
     ) -> Request[typing.List[ApplicationCommandPermissions]]:
-        return Request(
+        return Request[typing.List[ApplicationCommandPermissions]](
             'GET',
             '/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/permissions',
             {'application_id': application_id, 'guild_id': guild_id, 'command_id': command_id}
@@ -2026,7 +2110,7 @@ class RawRest:
             *,
             permissions: typing.List[ApplicationCommandPermissions]
     ) -> Request[GuildApplicationCommandPermissions]:
-        return Request(
+        return Request[GuildApplicationCommandPermissions](
             'PUT',
             '/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/permissions',
             {'application_id': application_id, 'guild_id': guild_id, 'command_id': command_id},
@@ -2041,7 +2125,7 @@ class RawRest:
             # TODO: partial GuildApplicationCommandPermissions
             new_permissions: typing.Dict[typing.Any, typing.Any]
     ) -> Request[typing.List[GuildApplicationCommandPermissions]]:
-        return Request(
+        return Request[typing.List[GuildApplicationCommandPermissions]](
             'PUT',
             '/applications/{application_id}/guilds/{guild_id}/commands/permissions',
             {'application_id': application_id, 'guild_id': guild_id},
@@ -2056,7 +2140,7 @@ class RawRest:
             *,
             response: InteractionResponse
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'POST',
             # this ratelimits on webhook
             '/interactions/{webhook_id}/{webhook_token}/callback',
@@ -2069,7 +2153,7 @@ class RawRest:
             application_id: Snowflake,
             interaction_token: str,
     ) -> Request[Message]:
-        return Request(
+        return Request[Message](
             'GET',
             # this ratelimits on webhook
             '/webhooks/{webhook_id}/{webhook_token}/messages/@original',
@@ -2097,7 +2181,7 @@ class RawRest:
             'attachments': attachments
         })
 
-        return Request(
+        return Request[Message](
             'PATCH',
             # this ratelimits on webhook
             '/webhooks/{webhook_id}/{webhook_token}/messages/@original',
@@ -2111,7 +2195,7 @@ class RawRest:
             application_id: Snowflake,
             interaction_token: str
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             # this ratelimits on webhook
             '/webhooks/{webhook_id}/{webhook_token}/messages/@original',
@@ -2150,7 +2234,7 @@ class RawRest:
             'components': components,
         })
 
-        return Request(
+        return Request[None](
             'POST',
             # this ratelimits on webhook
             '/webhooks/{webhook_id}/{webhook_token}',
@@ -2165,7 +2249,7 @@ class RawRest:
             interaction_token: str,
             message_id: Snowflake
     ) -> Request[Message]:
-        return Request(
+        return Request[Message](
             'GET',
             # this ratelimits on webhook
             '/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}',
@@ -2198,7 +2282,7 @@ class RawRest:
             'attachments': attachments
         })
 
-        return Request(
+        return Request[Message](
             'PATCH',
             '/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}',
             {
@@ -2216,7 +2300,7 @@ class RawRest:
             interaction_token: str,
             message_id: Snowflake
     ) -> Request[None]:
-        return Request(
+        return Request[None](
             'DELETE',
             '/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}',
             {
