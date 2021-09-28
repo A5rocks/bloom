@@ -167,6 +167,7 @@ class _NonMonotonicHeartbeat(ShardException):
 @attr.define()
 class _MissingKey(ShardException):
     tag: str
+    data: typing.Dict[str, typing.Any]
     unexpected: object
 
 
@@ -294,7 +295,7 @@ async def _shared_logic(
                     # https://github.com/discord/discord-api-docs/issues/1789
                     differences = differences - {'guild_hashes'}
                     if differences:
-                        raise _MissingKey(message['t'], differences)
+                        raise _MissingKey(message['t'], message['d'], differences)
             except Exception as e:
                 _LOGGER.exception('improper payload', exc_info=e)
 
@@ -591,6 +592,8 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'nsfw',
             # https://github.com/discord/discord-api-docs/issues/582
             'guild_id',
+            # TODO: this seems to be guild hubs related but is nullable and undoc-ed
+            'hub_type',
         }
     elif tag == 'THREAD_UPDATE':
         return {
@@ -629,7 +632,9 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             # https://discord.com/channels/110373943822540800/110373943822540800/870569320097411104
             'member.avatar',
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
-            'member.is_pending'
+            'member.is_pending',
+            # TODO: seems to be a partial member object? (same partial as on message)
+            'interaction.member',
         }
     elif tag == 'MESSAGE_UPDATE':
         return {
@@ -641,6 +646,8 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'member.avatar',
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
             'member.is_pending',
+            # TODO: seems to be a partial member object? (same partial as on message)
+            'interaction.member',
         }
     elif tag == 'MESSAGE_REACTION_ADD':
         return {
