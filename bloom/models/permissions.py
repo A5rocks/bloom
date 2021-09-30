@@ -62,6 +62,10 @@ class Role:
     color: int
     #: if this role is pinned in the user listing
     hoist: bool
+    #: role icon hash
+    icon: typing.Optional[str]
+    #: role unicode emoji
+    unicode_emoji: typing.Optional[str]
     #: position of this role
     position: int
     #: permission bit set

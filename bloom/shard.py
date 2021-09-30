@@ -558,19 +558,11 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'hoisted_role',
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
             'is_pending',
-            # for per-guild avatars
-            # in discord bots
-            # https://discord.com/channels/110373943822540800/110373943822540800/870569320097411104
-            'avatar',
         }
     elif tag == 'GUILD_MEMBER_ADD':
         return {
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
             'is_pending',
-            # for per-guild avatars
-            # in discord bots
-            # https://discord.com/channels/110373943822540800/110373943822540800/870569320097411104
-            'avatar',
         }
     elif tag == 'GUILD_CREATE':
         return {
@@ -627,10 +619,6 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
         return {
             # https://github.com/discord/discord-api-docs/pull/1610
             'member.hoisted_role',
-            # for per-guild avatars
-            # in discord bots
-            # https://discord.com/channels/110373943822540800/110373943822540800/870569320097411104
-            'member.avatar',
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
             'member.is_pending',
             # TODO: seems to be a partial member object? (same partial as on message)
@@ -640,10 +628,6 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
         return {
             # https://github.com/discord/discord-api-docs/pull/1610
             'member.hoisted_role',
-            # for per-guild avatars
-            # in discord bots
-            # https://discord.com/channels/110373943822540800/110373943822540800/870569320097411104
-            'member.avatar',
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
             'member.is_pending',
             # TODO: seems to be a partial member object? (same partial as on message)
@@ -653,10 +637,6 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
         return {
             # https://github.com/discord/discord-api-docs/pull/1610
             'member.hoisted_role',
-            # for per-guild avatars
-            # in discord bots
-            # https://discord.com/channels/110373943822540800/110373943822540800/870569320097411104
-            'member.avatar',
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
             'member.is_pending',
         }
@@ -664,10 +644,6 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
         return {
             # https://github.com/discord/discord-api-docs/pull/1610
             'member.hoisted_role',
-            # for per-guild avatars
-            # in discord bots
-            # https://discord.com/channels/110373943822540800/110373943822540800/870569320097411104
-            'member.avatar',
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
             'member.is_pending',
         }
@@ -675,20 +651,21 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
         return {
             # https://github.com/discord/discord-api-docs/pull/1610
             'member.hoisted_role',
-            # for per-guild avatars
-            # in discord bots
-            # https://discord.com/channels/110373943822540800/110373943822540800/870569320097411104
-            'member.avatar',
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
             'member.is_pending',
         }
-    elif tag == 'GUILD_ROLE_UPDATE':
+    elif tag == 'THREAD_MEMBERS_UPDATE':
         return {
-            # TODO: ask
-            # (role icons?)
-            'role.icon',
-            # role icons, I think.
-            'role.unicode_emoji',
+            # SHOULD be removed soon.
+            'audience'
+        }
+    elif tag == 'THREAD_MEMBER_UPDATE':
+        return {
+            # only meaningful for users
+            'mute_config',
+            'muted',
+            # TODO: document this on the documentation.
+            'guild_id'
         }
 
     return set()

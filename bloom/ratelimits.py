@@ -181,7 +181,11 @@ class RatelimitingState:
                 pass
 
             # TODO: not json, ReturnT ...
-            return result.json()
+            if result.status_code == 204:
+                # FIXME: this is a hack.
+                return None  # type: ignore
+            else:
+                return result.json()
 
     @classmethod
     @contextlib.asynccontextmanager

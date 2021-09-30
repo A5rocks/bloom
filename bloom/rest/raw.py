@@ -988,6 +988,23 @@ class RawRest:
             })
         )
 
+    def modify_current_member(
+        self,
+        guild_id: Snowflake,
+        *,
+        nick: Unknownish[typing.Optional[str]] = UNKNOWN
+    ) -> Request[GuildMember]:
+        return Request[str](
+            'PATCH',
+            '/guilds/{guild_id}/members/@me',
+            {'guild_id': guild_id},
+            json=prepare(self, {'nick': nick}),
+            # TODO: this probably supports audit log
+            # headers=prepare(self, {
+            #     'X-Audit-Log-Reason': reason
+            # })
+        )
+
     # TODO: does this actually return a str of the nickname?
     def modify_current_user_nick(
             self,
@@ -997,6 +1014,7 @@ class RawRest:
             nick: Unknownish[typing.Optional[str]] = UNKNOWN,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[str]:
+        # deprecated for modify current member
         return Request[str](
             'PATCH',
             '/guilds/{guild_id}/members/@me/nick',
@@ -1116,6 +1134,10 @@ class RawRest:
             permissions: Unknownish[BitwisePermissionFlags] = UNKNOWN,
             color: Unknownish[int] = UNKNOWN,
             hoist: Unknownish[bool] = UNKNOWN,
+            # https://discord.com/developers/docs/reference#image-data
+            # TODO: are these nullable
+            icon: Unknownish[str] = UNKNOWN,
+            unicode_emoji: Unknownish[str] = UNKNOWN,
             mentionable: Unknownish[bool] = UNKNOWN,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[Role]:
@@ -1161,6 +1183,9 @@ class RawRest:
             permissions: Unknownish[typing.Optional[BitwisePermissionFlags]] = UNKNOWN,
             color: Unknownish[typing.Optional[int]] = UNKNOWN,
             hoist: Unknownish[typing.Optional[bool]] = UNKNOWN,
+            # https://discord.com/developers/docs/reference#image-data
+            icon: Unknownish[typing.Optional[str]] = UNKNOWN,
+            unicode_emoji: Unknownish[typing.Optional[str]] = UNKNOWN,
             mentionable: Unknownish[typing.Optional[bool]] = UNKNOWN,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[Role]:

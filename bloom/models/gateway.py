@@ -159,6 +159,8 @@ class ThreadListSyncEvent:
     #: that data.
     channel_ids: Unknownish[t.List[Snowflake]] = UNKNOWN
 
+# TODO: blocked on https://github.com/python-attrs/attrs/issues/842
+attr.resolve_types(ThreadMember)
 
 @attr.frozen(kw_only=True)
 class ThreadMemberUpdateEvent(ThreadMember):
@@ -274,6 +276,8 @@ class GuildMemberUpdateEvent:
     roles: t.List[Snowflake]
     #: the user
     user: User
+    #: the member's guild avatar hash
+    avatar: t.Optional[str]
     # TODO: when can this be null?
     #: when the user joined the guild
     joined_at: t.Optional[dt.datetime]

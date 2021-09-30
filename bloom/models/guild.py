@@ -239,6 +239,8 @@ class GuildFeatures(Enum):
     SEVEN_DAY_THREAD_ARCHIVE = 'SEVEN_DAY_THREAD_ARCHIVE'
     #: guild has access to create private threads
     PRIVATE_THREADS = 'PRIVATE_THREADS'
+    #: guild is able to set role icons
+    ROLE_ICONS = 'ROLE_ICONS'
 
 
 @attr.frozen(kw_only=True)
@@ -287,6 +289,8 @@ class GuildMember:
     user: Unknownish[User] = UNKNOWN
     #: this users guild nickname
     nick: Unknownish[t.Optional[str]] = UNKNOWN
+    #: the member's guild avatar hash
+    avatar: t.Optional[str]
     #: when the user started boosting the guild
     premium_since: Unknownish[t.Optional[dt.datetime]] = UNKNOWN
     #: whether the user has not yet passed the guild's Membership Screening
