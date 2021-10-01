@@ -55,6 +55,10 @@ class HttpResponseProto(typing.Protocol):
     def headers(self) -> httpx.Headers:
         ...
 
+    @property
+    def status_code(self) -> int:
+        ...
+
     def json(self) -> typing.Any:
         ...
 
@@ -183,7 +187,7 @@ class RatelimitingState:
             # TODO: not json, ReturnT ...
             if result.status_code == 204:
                 # FIXME: this is a hack.
-                return None  # type: ignore
+                return None
             else:
                 return result.json()
 

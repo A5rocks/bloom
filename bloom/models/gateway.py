@@ -159,8 +159,10 @@ class ThreadListSyncEvent:
     #: that data.
     channel_ids: Unknownish[t.List[Snowflake]] = UNKNOWN
 
+
 # TODO: blocked on https://github.com/python-attrs/attrs/issues/842
 attr.resolve_types(ThreadMember)
+
 
 @attr.frozen(kw_only=True)
 class ThreadMemberUpdateEvent(ThreadMember):

@@ -994,7 +994,7 @@ class RawRest:
         *,
         nick: Unknownish[typing.Optional[str]] = UNKNOWN
     ) -> Request[GuildMember]:
-        return Request[str](
+        return Request[GuildMember](
             'PATCH',
             '/guilds/{guild_id}/members/@me',
             {'guild_id': guild_id},
