@@ -278,8 +278,9 @@ class GuildMemberUpdateEvent:
     roles: t.List[Snowflake]
     #: the user
     user: User
+    # TODO: does this get sent at all?
     #: the member's guild avatar hash
-    avatar: t.Optional[str]
+    avatar: Unknownish[t.Optional[str]] = UNKNOWN
     # TODO: when can this be null?
     #: when the user joined the guild
     joined_at: t.Optional[dt.datetime]

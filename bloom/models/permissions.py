@@ -63,9 +63,9 @@ class Role:
     #: if this role is pinned in the user listing
     hoist: bool
     #: role icon hash
-    icon: t.Optional[str]
+    icon: Unknownish[t.Optional[str]] = UNKNOWN
     #: role unicode emoji
-    unicode_emoji: t.Optional[str]
+    unicode_emoji: Unknownish[t.Optional[str]] = UNKNOWN
     #: position of this role
     position: int
     #: permission bit set

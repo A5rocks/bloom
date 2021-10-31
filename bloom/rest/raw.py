@@ -189,7 +189,7 @@ class RawRest:
             *,
             # one of these is required:
             content: Unknownish[str] = UNKNOWN,
-            file: Unknownish[object] = UNKNOWN,  # TODO: better file type?
+            files: Unknownish[typing.List[object]] = UNKNOWN,  # TODO: better file type?
             embeds: Unknownish[typing.List[Embed]] = UNKNOWN,
             sticker_ids: Unknownish[typing.List[Snowflake]] = UNKNOWN,
             # optional
@@ -197,6 +197,8 @@ class RawRest:
             allowed_mentions: Unknownish[AllowedMentions] = UNKNOWN,
             message_reference: Unknownish[MessageReference] = UNKNOWN,
             components: Unknownish[typing.List[Component]] = UNKNOWN,
+            # TODO: partial attachments
+            attachments: Unknownish[typing.List[typing.Dict[str, typing.Any]]] = UNKNOWN,
     ) -> Request[Message]:
         json_payload = prepare(self, {
             'content': content,
@@ -206,6 +208,7 @@ class RawRest:
             'allowed_mentions': allowed_mentions,
             'message_reference': message_reference,
             'components': components,
+            'attachments': attachments,
         })
 
         return Request[Message](
@@ -213,7 +216,10 @@ class RawRest:
             '/channels/{channel_id}/messages',
             {'channel_id': channel_id},
             data={'payload_json': json.dumps(json_payload)} if json_payload else None,
-            files={'file': file} if file != UNKNOWN else None
+            files={
+                f'files[{i}]': file
+                for i, file in enumerate(files)
+            } if not isinstance(files, UNKNOWN_TYPE) else None
         )
 
     def crosspost_message(self, channel_id: Snowflake, message_id: Snowflake) -> Request[Message]:
@@ -317,8 +323,9 @@ class RawRest:
             embeds: Unknownish[typing.Optional[typing.List[Embed]]] = UNKNOWN,
             flags: Unknownish[typing.Optional[MessageFlags]] = UNKNOWN,
             # TODO: better file type
-            file: Unknownish[typing.Optional[object]] = UNKNOWN,
+            files: Unknownish[typing.List[object]] = UNKNOWN,
             allowed_mentions: Unknownish[typing.Optional[AllowedMentions]] = UNKNOWN,
+            # TODO: are partial attachments allowed?
             attachments: Unknownish[typing.Optional[typing.List[Attachment]]] = UNKNOWN,
             components: Unknownish[typing.Optional[typing.List[Component]]] = UNKNOWN
     ) -> Request[Message]:
@@ -336,7 +343,10 @@ class RawRest:
             '/channels/{channel_id}/messages',
             {'channel_id': channel_id},
             data={'payload_json': json.dumps(json_payload)} if json_payload else None,
-            files={'file': file} if file != UNKNOWN else None
+            files={
+                f'files[{i}]': file
+                for i, file in enumerate(files)
+            } if not isinstance(files, UNKNOWN_TYPE) else None
         )
 
     def delete_message(self, channel_id: Snowflake, message_id: Snowflake) -> Request[None]:
@@ -528,8 +538,7 @@ class RawRest:
             message_id: Snowflake,
             *,
             name: str,
-            # TODO: is `auto_archive_duration` really required?
-            auto_archive_duration: int,
+            auto_archive_duration: Unknownish[int] = UNKNOWN,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[Channel]:
         return Request[Channel](
@@ -547,8 +556,7 @@ class RawRest:
             channel_id: Snowflake,
             *,
             name: str,
-            # TODO: is `auto_archive_duration` really required?
-            auto_archive_duration: int,
+            auto_archive_duration: Unknownish[int],
             type: ChannelTypes,
             reason: Unknownish[str] = UNKNOWN
     ) -> Request[Channel]:
@@ -590,6 +598,17 @@ class RawRest:
     def remove_thread_member(self, channel_id: Snowflake, user_id: Snowflake) -> Request[None]:
         return Request[None](
             'DELETE',
+            '/channels/{channel_id}/thread-members/{user_id}',
+            {'channel_id': channel_id, 'user_id': user_id}
+        )
+
+    def get_thread_member(
+            self,
+            channel_id: Snowflake,
+            user_id: Snowflake
+    ) -> Request[ThreadMember]:
+        return Request[ThreadMember](
+            'GET',
             '/channels/{channel_id}/thread-members/{user_id}',
             {'channel_id': channel_id, 'user_id': user_id}
         )
@@ -992,17 +1011,17 @@ class RawRest:
         self,
         guild_id: Snowflake,
         *,
-        nick: Unknownish[typing.Optional[str]] = UNKNOWN
+        nick: Unknownish[typing.Optional[str]] = UNKNOWN,
+        reason: Unknownish[str] = UNKNOWN,
     ) -> Request[GuildMember]:
         return Request[GuildMember](
             'PATCH',
             '/guilds/{guild_id}/members/@me',
             {'guild_id': guild_id},
             json=prepare(self, {'nick': nick}),
-            # TODO: this probably supports audit log
-            # headers=prepare(self, {
-            #     'X-Audit-Log-Reason': reason
-            # })
+            headers=prepare(self, {
+                'X-Audit-Log-Reason': reason
+            })
         )
 
     # TODO: does this actually return a str of the nickname?
@@ -1820,7 +1839,7 @@ class RawRest:
             *,
             # one of these is required:
             content: Unknownish[str] = UNKNOWN,
-            file: Unknownish[object] = UNKNOWN,  # TODO: better file type?
+            files: Unknownish[typing.List[object]] = UNKNOWN,  # TODO: better file type?
             embeds: Unknownish[typing.List[Embed]] = UNKNOWN,
             # optional
             wait: Unknownish[bool] = UNKNOWN,
@@ -1831,6 +1850,8 @@ class RawRest:
             allowed_mentions: Unknownish[AllowedMentions] = UNKNOWN,
             message_reference: Unknownish[MessageReference] = UNKNOWN,
             components: Unknownish[typing.List[Component]] = UNKNOWN,
+            # TODO: partial attachments
+            attachments: Unknownish[typing.List[typing.Dict[str, typing.Any]]] = UNKNOWN,
     ) -> Request[None]:
         json_payload = prepare(self, {
             'content': content,
@@ -1849,19 +1870,25 @@ class RawRest:
             {'webhook_id': webhook_id, 'webhook_token': webhook_token},
             params=prepare(self, {'wait': wait, 'thread_id': thread_id}),
             data={'payload_json': json.dumps(json_payload)} if json_payload else None,
-            files={'file': file} if file != UNKNOWN else None
+            files={
+                f'files[{i}]': file
+                for i, file in enumerate(files)
+            } if not isinstance(files, UNKNOWN_TYPE) else None
         )
 
     def get_webhook_message(
             self,
             webhook_id: Snowflake,
             webhook_token: str,
-            message_id: Snowflake
+            message_id: Snowflake,
+            *,
+            thread_id: Unknownish[Snowflake] = UNKNOWN,
     ) -> Request[Message]:
         return Request[Message](
             'GET',
             '/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}',
-            {'webhook_id': webhook_id, 'webhook_token': webhook_token, 'message_id': message_id}
+            {'webhook_id': webhook_id, 'webhook_token': webhook_token, 'message_id': message_id},
+            params=prepare(self, {'thread_id': thread_id})
         )
 
     def edit_webhook_message(
@@ -1870,12 +1897,16 @@ class RawRest:
             webhook_token: str,
             message_id: Snowflake,
             *,
+            thread_id: Unknownish[Snowflake] = UNKNOWN,
             content: Unknownish[typing.Optional[str]] = UNKNOWN,
             embeds: Unknownish[typing.Optional[typing.List[Embed]]] = UNKNOWN,
             # TODO: better file type
-            file: Unknownish[typing.Optional[object]] = UNKNOWN,
+            files: Unknownish[typing.List[object]] = UNKNOWN,
             allowed_mentions: Unknownish[typing.Optional[AllowedMentions]] = UNKNOWN,
-            attachments: Unknownish[typing.Optional[typing.List[Attachment]]] = UNKNOWN,
+            # TODO: partial attachments type
+            attachments: Unknownish[
+                typing.Optional[typing.List[typing.Dict[str, typing.Any]]]
+            ] = UNKNOWN,
             components: Unknownish[typing.Optional[typing.List[Component]]] = UNKNOWN,
     ) -> Request[Message]:
         json_payload = prepare(self, {
@@ -1890,20 +1921,27 @@ class RawRest:
             'PATCH',
             '/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}',
             {'webhook_id': webhook_id, 'webhook_token': webhook_token, 'message_id': message_id},
+            params=prepare(self, {'thread_id': thread_id}),
             data={'payload_json': json.dumps(json_payload)} if json_payload else None,
-            files={'file': file} if file != UNKNOWN else None
+            files={
+                f'files[{i}]': file
+                for i, file in enumerate(files)
+            } if not isinstance(files, UNKNOWN_TYPE) else None
         )
 
     def delete_webhook_message(
             self,
             webhook_id: Snowflake,
             webhook_token: str,
-            message_id: Snowflake
+            message_id: Snowflake,
+            *,
+            thread_id: Unknownish[Snowflake]
     ) -> Request[None]:
         return Request[None](
             'DELETE',
             '/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}',
-            {'webhook_id': webhook_id, 'webhook_token': webhook_token, 'message_id': message_id}
+            {'webhook_id': webhook_id, 'webhook_token': webhook_token, 'message_id': message_id},
+            params=prepare(self, {'thread_id': thread_id})
         )
 
     def get_gateway(self) -> Request[GatewayResponse]:
@@ -2163,14 +2201,20 @@ class RawRest:
             application_id: Snowflake,
             interaction_token: str,
             *,
-            response: InteractionResponse
+            response: InteractionResponse,
+            # TODO: narrow file type
+            files: Unknownish[typing.List[object]] = UNKNOWN,
     ) -> Request[None]:
         return Request[None](
             'POST',
             # this ratelimits on webhook
             '/interactions/{webhook_id}/{webhook_token}/callback',
             {'webhook_id': application_id, 'webhook_token': interaction_token},
-            json=self.conv.unstructure(response)
+            data={'payload_json': json.dumps(self.conv.unstructure(response))},
+            files={
+                f'files[{i}]': file
+                for i, file in enumerate(files)
+            } if not isinstance(files, UNKNOWN_TYPE) else None
         )
 
     def get_original_interaction_response(

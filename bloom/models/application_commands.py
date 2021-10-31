@@ -59,6 +59,10 @@ class ApplicationCommandOption:
     required: Unknownish[bool] = UNKNOWN
     #: choices for STRING, INTEGER, and NUMBER types for the user to pick from
     choices: Unknownish[t.List[ApplicationCommandOptionChoice]] = UNKNOWN
+    #: enable autocomplete interactions for this option. Note that this cannot
+    #: be True if choices is present, and that options using autocomplete are
+    #: not confined to only use choices given by the application.
+    autocomplete: Unknownish[bool] = UNKNOWN
     #: if the option is a subcommand or subcommand group type, this nested
     #: options will be the parameters
     options: Unknownish[t.List[ApplicationCommandOption]] = UNKNOWN
@@ -123,6 +127,7 @@ class InteractionType(Enum):
     PING = 1
     APPLICATION_COMMAND = 2
     MESSAGE_COMPONENT = 3
+    APPLICATION_COMMAND_AUTOCOMPLETE = 4
 
 
 @attr.frozen(kw_only=True)
@@ -165,6 +170,8 @@ class ApplicationCommandInteractionDataOption:
     value: Unknownish[t.Any] = UNKNOWN
     #: present if this option is a group or subcommand
     options: Unknownish[t.List[ApplicationCommandInteractionDataOption]] = UNKNOWN
+    #: true if this option is the currently focused option for autocomplete
+    focused: Unknownish[bool] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)
@@ -188,11 +195,13 @@ class InteractionCallbackType(Enum):
     DEFERRED_UPDATE_MESSAGE = 6
     #: for components, edit the message the component was attached to
     UPDATE_MESSAGE = 7
+    #: respond to an autocomplete interaction with (up to 25) suggested
+    #: choices
+    APPLICATION_COMMAND_AUTOCOMPLETE_RESULT = 8
 
 
 @attr.frozen(kw_only=True)
 class InteractionApplicationCommandCallbackData:
-
     #: is the response TTS
     tts: Unknownish[bool] = UNKNOWN
     #: message content
@@ -205,6 +214,9 @@ class InteractionApplicationCommandCallbackData:
     flags: Unknownish[int] = UNKNOWN
     #: message components
     components: Unknownish[t.List[Component]] = UNKNOWN
+    # TODO: partial attachments
+    #: attachment objects with filename and description
+    attachments: Unknownish[t.List[t.Dict[str, t.Any]]]
 
 
 class InteractionApplicationCommandCallbackDataFlags(Enum):

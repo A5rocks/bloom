@@ -69,9 +69,9 @@ class Channel:
     #: thread member object for the current user, if they have joined the
     #: thread, only included on certain API endpoints
     member: Unknownish[ThreadMember] = UNKNOWN
-    #: default duration for newly created threads, in minutes, to
-    #: automatically archive the thread after recent activity, can be set to:
-    #: 60, 1440, 4320, 10080
+    #: default duration that the clients (not the API) will use for newly
+    #: created threads, in minutes, to automatically archive the thread after
+    #: recent activity, can be set to: 60, 1440, 4320, 10080
     default_auto_archive_duration: Unknownish[int] = UNKNOWN
     #: computed permissions for the invoking user in the channel, including
     #: overwrites, only included when part of the resolved data received on an
@@ -373,6 +373,8 @@ class Attachment:
     id: Snowflake
     #: name of file attached
     filename: str
+    #: description for the file
+    description: Unknownish[str] = UNKNOWN
     #: size of file in bytes
     size: int
     #: source url of file

@@ -45,8 +45,6 @@ class VoiceRegion:
     id: str
     #: name of the region
     name: str
-    #: true if this is a vip-only server
-    vip: bool
     #: true for a single server that is closest to the current user's client
     optimal: bool
     #: whether this is a deprecated voice region (avoid switching to these)

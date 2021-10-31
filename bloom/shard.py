@@ -577,6 +577,10 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'application_command_counts',
             # I asked in DDevs, no answer yet.
             'guild_scheduled_events',
+            # TODO: ??
+            'embedded_activities',
+            # https://github.com/discord/discord-api-docs/pull/4001
+            'premium_progress_bar_enabled',
         }
     elif tag == 'GUILD_UPDATE':
         return {

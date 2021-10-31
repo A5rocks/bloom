@@ -290,7 +290,7 @@ class GuildMember:
     #: this users guild nickname
     nick: Unknownish[t.Optional[str]] = UNKNOWN
     #: the member's guild avatar hash
-    avatar: t.Optional[str]
+    avatar: Unknownish[t.Optional[str]] = UNKNOWN
     #: when the user started boosting the guild
     premium_since: Unknownish[t.Optional[dt.datetime]] = UNKNOWN
     #: whether the user has not yet passed the guild's Membership Screening
