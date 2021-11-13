@@ -30,27 +30,27 @@ class Client:
     ] = attr.Factory(list)
 
     async def request(
-            self,
-            method: str,
-            url: str,
-            *,
-            params: typing.Optional[
-                typing.Mapping[
+        self,
+        method: str,
+        url: str,
+        *,
+        params: typing.Optional[
+            typing.Mapping[
+                str,
+                typing.Union[
                     str,
-                    typing.Union[
-                        str,
-                        int,
-                        float,
-                        bool,
-                        None,
-                        typing.Sequence[typing.Union[str, int, float, bool, None]]
-                    ]
-                ]
-            ] = None,
-            json: typing.Any = None,
-            headers: typing.Optional[typing.Dict[str, str]] = None,
-            data: typing.Optional[typing.Dict[str, str]] = None,
-            files: typing.Optional[typing.Dict[str, typing.Any]] = None,
+                    int,
+                    float,
+                    bool,
+                    None,
+                    typing.Sequence[typing.Union[str, int, float, bool, None]],
+                ],
+            ]
+        ] = None,
+        json: typing.Any = None,
+        headers: typing.Optional[typing.Dict[str, str]] = None,
+        data: typing.Optional[typing.Dict[str, str]] = None,
+        files: typing.Optional[typing.Dict[str, typing.Any]] = None,
     ) -> Response:
         self.storage.append((trio.current_time(), method, url, params, json, headers, data, files))
 
@@ -78,11 +78,19 @@ async def test_makes_a_request() -> None:
 async def test_ratelimits_once(autojump_clock: object) -> None:
     reset_in = 2
 
-    client = Client([Response({
-        'X-RateLimit-Bucket': 'a',
-        'X-RateLimit-Remaining': '0',
-        'X-RateLimit-Reset-After': str(reset_in)
-    }, {})]*2)
+    client = Client(
+        [
+            Response(
+                {
+                    'X-RateLimit-Bucket': 'a',
+                    'X-RateLimit-Remaining': '0',
+                    'X-RateLimit-Reset-After': str(reset_in),
+                },
+                {},
+            )
+        ]
+        * 2
+    )
     state = bloom.ratelimits.RatelimitingState(client)
 
     start = trio.current_time()
@@ -100,11 +108,19 @@ async def test_ratelimits_once(autojump_clock: object) -> None:
 async def test_ratelimits_twice(autojump_clock: object) -> None:
     reset_in = 2
 
-    client = Client([Response({
-        'X-RateLimit-Bucket': 'a',
-        'X-RateLimit-Remaining': '0',
-        'X-RateLimit-Reset-After': str(reset_in)
-    }, {})]*3)
+    client = Client(
+        [
+            Response(
+                {
+                    'X-RateLimit-Bucket': 'a',
+                    'X-RateLimit-Remaining': '0',
+                    'X-RateLimit-Reset-After': str(reset_in),
+                },
+                {},
+            )
+        ]
+        * 3
+    )
     state = bloom.ratelimits.RatelimitingState(client)
 
     start = trio.current_time()
@@ -123,23 +139,34 @@ async def test_ratelimits_twice(autojump_clock: object) -> None:
 async def test_respects_remaining(autojump_clock: object) -> None:
     reset_in = 2
 
-    client = Client([
-        Response({
-            'X-RateLimit-Bucket': 'a',
-            'X-RateLimit-Remaining': '1',
-            'X-RateLimit-Reset-After': str(reset_in)
-        }, {}),
-        Response({
-            'X-RateLimit-Bucket': 'a',
-            'X-RateLimit-Remaining': '0',
-            'X-RateLimit-Reset-After': str(reset_in)
-        }, {}),
-        Response({
-            'X-RateLimit-Bucket': 'a',
-            'X-RateLimit-Remaining': '1',
-            'X-RateLimit-Reset-After': str(reset_in)
-        }, {})
-    ])
+    client = Client(
+        [
+            Response(
+                {
+                    'X-RateLimit-Bucket': 'a',
+                    'X-RateLimit-Remaining': '1',
+                    'X-RateLimit-Reset-After': str(reset_in),
+                },
+                {},
+            ),
+            Response(
+                {
+                    'X-RateLimit-Bucket': 'a',
+                    'X-RateLimit-Remaining': '0',
+                    'X-RateLimit-Reset-After': str(reset_in),
+                },
+                {},
+            ),
+            Response(
+                {
+                    'X-RateLimit-Bucket': 'a',
+                    'X-RateLimit-Remaining': '1',
+                    'X-RateLimit-Reset-After': str(reset_in),
+                },
+                {},
+            ),
+        ]
+    )
     state = bloom.ratelimits.RatelimitingState(client)
 
     start = trio.current_time()
@@ -158,11 +185,19 @@ async def test_respects_remaining(autojump_clock: object) -> None:
 async def test_respects_endless_remaining(autojump_clock: object) -> None:
     reset_in = 2
 
-    client = Client([Response({
-        'X-RateLimit-Bucket': 'a',
-        'X-RateLimit-Remaining': '1',
-        'X-RateLimit-Reset-After': str(reset_in)
-    }, {})]*10)
+    client = Client(
+        [
+            Response(
+                {
+                    'X-RateLimit-Bucket': 'a',
+                    'X-RateLimit-Remaining': '1',
+                    'X-RateLimit-Reset-After': str(reset_in),
+                },
+                {},
+            )
+        ]
+        * 10
+    )
     state = bloom.ratelimits.RatelimitingState(client)
 
     start = trio.current_time()

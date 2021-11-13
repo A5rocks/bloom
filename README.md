@@ -21,5 +21,6 @@ Short reference for myself:
 - stylecheck (?) with `flake8 bloom` or `pylint bloom`
 - fix imports with `isort bloom`
 - test with `pytest`
+- autoformat with `black .`
 
 TODO: write more. or don't. that's a thing too.

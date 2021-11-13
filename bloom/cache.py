@@ -32,13 +32,8 @@ class CachedGuild(guild_models.Guild):
     @classmethod
     def from_guild(cls, guild: guild_models.Guild) -> CachedGuild:
         attributes = attr.asdict(guild, recurse=False)
-        attributes.update({
-            'members': base_models.UNKNOWN,
-            'presences': base_models.UNKNOWN
-        })
-        return cls(
-            **attributes
-        )
+        attributes.update({'members': base_models.UNKNOWN, 'presences': base_models.UNKNOWN})
+        return cls(**attributes)
 
 
 @attr.define()
@@ -46,39 +41,27 @@ class Cache:
     substrate: bloom.substrate.Substrate
     wants: CacheFlag = CacheFlag.NONE
 
-    _events: typing.Dict[
-        typing.Type[typing.Any],
-        typing.Callable[[typing.Any], None]
-    ] = attr.ib(init=False)
+    _events: typing.Dict[typing.Type[typing.Any], typing.Callable[[typing.Any], None]] = attr.ib(
+        init=False
+    )
 
     # resources
 
-    users: typing.MutableMapping[
-        base_models.Snowflake,
-        user_models.User
-    ] = attr.Factory(dict)
+    users: typing.MutableMapping[base_models.Snowflake, user_models.User] = attr.Factory(dict)
 
     members: typing.MutableMapping[
         base_models.Snowflake,
-        typing.MutableMapping[
-            base_models.Snowflake,
-            guild_models.GuildMember
-        ]
+        typing.MutableMapping[base_models.Snowflake, guild_models.GuildMember],
     ] = attr.Factory(lambda: collections.defaultdict(dict))
 
-    guilds: typing.MutableMapping[
-        base_models.Snowflake,
-        CachedGuild
-    ] = attr.Factory(dict)
+    guilds: typing.MutableMapping[base_models.Snowflake, CachedGuild] = attr.Factory(dict)
 
     # lowpowered `Member` for association
     _guilds_to_users: typing.MutableMapping[
-        base_models.Snowflake,
-        typing.List[base_models.Snowflake]
+        base_models.Snowflake, typing.List[base_models.Snowflake]
     ] = attr.Factory(dict)
     _users_to_guilds: typing.MutableMapping[
-        base_models.Snowflake,
-        typing.List[base_models.Snowflake]
+        base_models.Snowflake, typing.List[base_models.Snowflake]
     ] = attr.Factory(lambda: collections.defaultdict(list))
 
     def __attrs_post_init__(self) -> None:
@@ -112,9 +95,8 @@ class Cache:
         if CacheFlag.GUILDS in self.wants:
             self.guilds[evt.id] = CachedGuild.from_guild(evt)
 
-        if (
-            CacheFlag.MEMBERS in self.wants
-            and not isinstance(evt.members, base_models.UNKNOWN_TYPE)
+        if CacheFlag.MEMBERS in self.wants and not isinstance(
+            evt.members, base_models.UNKNOWN_TYPE
         ):
             for member in evt.members:
                 # `Member#user` is not included on `MESSAGE_CREATE` /
@@ -193,8 +175,7 @@ class Cache:
             del attributes['guild_id']
             try:
                 self.members[evt.guild_id][user.id] = attr.evolve(
-                    self.members[evt.guild_id][user.id],
-                    **attributes
+                    self.members[evt.guild_id][user.id], **attributes
                 )
             except KeyError:
                 # offline member that was updated in a guild too large...

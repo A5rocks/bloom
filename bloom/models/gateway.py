@@ -8,9 +8,17 @@ import attr
 
 from .application_commands import MessageInteraction
 from .base import UNKNOWN, Snowflake, Unknownish
-from .channel import (Attachment, Channel, ChannelMention, ChannelTypes, Embed,
-                      MessageActivity, MessageReference, Reaction,
-                      ThreadMember)
+from .channel import (
+    Attachment,
+    Channel,
+    ChannelMention,
+    ChannelTypes,
+    Embed,
+    MessageActivity,
+    MessageReference,
+    Reaction,
+    ThreadMember,
+)
 from .emoji import Emoji
 from .guild import Guild, GuildMember, Integration
 from .interaction import Interaction

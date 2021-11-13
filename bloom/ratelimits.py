@@ -68,26 +68,26 @@ class HttpResponseProto(typing.Protocol):
 
 class HttpClientProto(typing.Protocol):
     async def request(
-            self,
-            method: str,
-            url: str,
-            *,
-            params: typing.Mapping[
+        self,
+        method: str,
+        url: str,
+        *,
+        params: typing.Mapping[
+            str,
+            typing.Union[
                 str,
-                typing.Union[
-                    str,
-                    int,
-                    float,
-                    bool,
-                    None,
-                    typing.Sequence[typing.Union[str, int, float, bool, None]]
-                ]
-            ] = ...,
-            json: typing.Any = ...,
-            headers: typing.Dict[str, str] = ...,
-            data: typing.Dict[str, str] = ...,
-            # TODO: narrow file type?
-            files: typing.Dict[str, typing.Any] = ...,
+                int,
+                float,
+                bool,
+                None,
+                typing.Sequence[typing.Union[str, int, float, bool, None]],
+            ],
+        ] = ...,
+        json: typing.Any = ...,
+        headers: typing.Dict[str, str] = ...,
+        data: typing.Dict[str, str] = ...,
+        # TODO: narrow file type?
+        files: typing.Dict[str, typing.Any] = ...,
     ) -> HttpResponseProto:
         ...
 
@@ -108,20 +108,17 @@ class RatelimitingState:
 
     # XXX: *technically* this is a leak but... who cares.
     locks: typing.Dict[
-        str,
-        typing.Dict[typing.Optional[typing.Union[int, str]], trio.Lock]
+        str, typing.Dict[typing.Optional[typing.Union[int, str]], trio.Lock]
     ] = attr.Factory(
         lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: trio.Lock()))
     )
 
     buckets: typing.Dict[
-        str,
-        typing.Dict[typing.Optional[typing.Union[int, str]], typing.List[Bucket]]
+        str, typing.Dict[typing.Optional[typing.Union[int, str]], typing.List[Bucket]]
     ] = attr.Factory(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: [])))
 
     buckets_by_hash: typing.Dict[
-        str,
-        typing.Dict[typing.Optional[typing.Union[int, str]], Bucket]
+        str, typing.Dict[typing.Optional[typing.Union[int, str]], Bucket]
     ] = attr.Factory(lambda: collections.defaultdict(lambda: {}))
 
     async def request(self, req: Request[typing.Any]) -> typing.Any:
@@ -174,7 +171,7 @@ class RatelimitingState:
             elif bucket_hash is not None:
                 bucket = Bucket(
                     int(headers['X-RateLimit-Remaining']),
-                    trio.current_time() + float(headers['X-RateLimit-Reset-After'])
+                    trio.current_time() + float(headers['X-RateLimit-Reset-After']),
                 )
 
                 self.buckets[req.route][major_parameter].append(bucket)
@@ -193,12 +190,9 @@ class RatelimitingState:
 
     @classmethod
     @contextlib.asynccontextmanager
-    async def with_httpx(
-            cls,
-            token: str
-    ) -> typing.AsyncIterator[RatelimitingState]:
+    async def with_httpx(cls, token: str) -> typing.AsyncIterator[RatelimitingState]:
         async with httpx.AsyncClient(
-                base_url=API_BASE_URL,
-                headers={'Authorization': f'Bot {token}'},
+            base_url=API_BASE_URL,
+            headers={'Authorization': f'Bot {token}'},
         ) as client:
             yield RatelimitingState(client)

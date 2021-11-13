@@ -2,8 +2,7 @@ from __future__ import annotations
 
 import attr
 
-from .application_commands import (ApplicationCommandInteractionData,
-                                   InteractionType)
+from .application_commands import ApplicationCommandInteractionData, InteractionType
 from .base import UNKNOWN, Snowflake, Unknownish
 from .guild import GuildMember
 from .message import Message

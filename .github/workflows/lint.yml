@@ -15,8 +15,12 @@ jobs:
       - uses: "actions/setup-python@v2"
         with:
           python-version: "3.x"
-      - uses: abatilo/actions-poetry@v2.0.0
-      - run: poetry install
+
+      - name: install poetry
+        run: pip install poetry
+
+      - name: install dependencies
+        run: poetry install
 
       - name: run mypy
         if: always()
@@ -29,3 +33,7 @@ jobs:
       - name: run flake8
         if: always()
         run: poetry run flake8 bloom/
+
+      - name: run black
+        if: always()
+        run: poetry run black bloom/ --diff

@@ -27,6 +27,7 @@ mypy = "^0.910"
 isort = "^5.9.2"
 flake8 = "^3.9.2"
 pylint = "^2.9.6"
+black = "^21.10b0"
 
 # stubs
 trio-typing = "^0.5.1"
@@ -45,3 +46,22 @@ build-backend = "poetry.core.masonry.api"
 strict = true
 python_version = 3.7
 mypy_path = "stubs"
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+line_length = 99
+
+[tool.pylint.messages_control]
+disable = "C0330, C0326"
+
+[tool.pylint.format]
+max-line-length = "99"
+
+[tool.black]
+skip-string-normalization = true
+target-version = ['py37', 'py38', 'py39']
+line-length = 99

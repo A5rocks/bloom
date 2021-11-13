@@ -136,7 +136,8 @@ class _Backoff:
             # exponential wait
             self.base ** self.repeats
             # random jitter (+- jitter)
-            + random.random() * 2 * self.jitter - self.jitter
+            + random.random() * 2 * self.jitter
+            - self.jitter
         )
 
     def reset(self) -> None:
@@ -190,21 +191,23 @@ class Intents(enum.IntFlag):
 
     @classmethod
     def all(cls) -> Intents:
-        return (cls.GUILDS
-                | cls.GUILD_MEMBERS
-                | cls.GUILD_BANS
-                | cls.GUILD_EMOJIS
-                | cls.GUILD_INTEGRATIONS
-                | cls.GUILD_WEBHOOKS
-                | cls.GUILD_INVITES
-                | cls.GUILD_VOICE_STATES
-                | cls.GUILD_PRESENCES
-                | cls.GUILD_MESSAGES
-                | cls.GUILD_MESSAGE_REACTIONS
-                | cls.GUILD_MESSAGE_TYPING
-                | cls.DIRECT_MESSAGES
-                | cls.DIRECT_MESSAGE_REACTIONS
-                | cls.DIRECT_MESSAGE_TYPING)
+        return (
+            cls.GUILDS
+            | cls.GUILD_MEMBERS
+            | cls.GUILD_BANS
+            | cls.GUILD_EMOJIS
+            | cls.GUILD_INTEGRATIONS
+            | cls.GUILD_WEBHOOKS
+            | cls.GUILD_INVITES
+            | cls.GUILD_VOICE_STATES
+            | cls.GUILD_PRESENCES
+            | cls.GUILD_MESSAGES
+            | cls.GUILD_MESSAGE_REACTIONS
+            | cls.GUILD_MESSAGE_TYPING
+            | cls.DIRECT_MESSAGES
+            | cls.DIRECT_MESSAGE_REACTIONS
+            | cls.DIRECT_MESSAGE_TYPING
+        )
 
     @classmethod
     def unprivileged(cls) -> Intents:
@@ -232,9 +235,7 @@ def _never(thing: typing.NoReturn) -> typing.NoReturn:
 
 
 async def _heartbeat(
-        websocket: trio_websocket.WebSocketConnection,
-        interval: float,
-        data: _ShardData
+    websocket: trio_websocket.WebSocketConnection, interval: float, data: _ShardData
 ) -> typing.NoReturn:
     while True:
         await trio.sleep(interval)
@@ -243,14 +244,11 @@ async def _heartbeat(
             raise _MissedHeartbeat()
 
         data.have_acked = False
-        await websocket.send_message(json.dumps({
-            'op': 1,
-            'd': data.seq
-        }))
+        await websocket.send_message(json.dumps({'op': 1, 'd': data.seq}))
 
 
 async def _stream(
-        websocket: trio_websocket.WebSocketConnection
+    websocket: trio_websocket.WebSocketConnection,
 ) -> typing.AsyncGenerator[_DiscordPayload, None]:
     while True:
         message = await websocket.get_message()
@@ -259,11 +257,11 @@ async def _stream(
 
 # TODO: figure out how to decrease the number of arguments this takes?
 async def _shared_logic(
-        websocket: trio_websocket.WebSocketConnection,
-        data: _ShardData,
-        nursery: trio.Nursery,
-        hello: typing.Dict[str, typing.Any],
-        after_start: typing.Callable[[], typing.Awaitable[None]]
+    websocket: trio_websocket.WebSocketConnection,
+    data: _ShardData,
+    nursery: trio.Nursery,
+    hello: typing.Dict[str, typing.Any],
+    after_start: typing.Callable[[], typing.Awaitable[None]],
 ) -> bool:
     # the return value is whether or not to resume next time.
 
@@ -288,9 +286,8 @@ async def _shared_logic(
                 reverse: typing.Dict[str, object] = data.converter.unstructure(model)
 
                 if not _skip_differences(message['t']):
-                    differences = (
-                        _diff_differences(reverse, message['d'])
-                        - _allowed_differences(message['t'])
+                    differences = _diff_differences(reverse, message['d']) - _allowed_differences(
+                        message['t']
                     )
                     # https://github.com/discord/discord-api-docs/issues/1789
                     differences = differences - {'guild_hashes'}
@@ -302,10 +299,7 @@ async def _shared_logic(
             await data.substrate.broadcast(model)
 
         elif message['op'] == 1:
-            await websocket.send_message(json.dumps({
-                'op': 1,
-                'd': data.seq
-            }))
+            await websocket.send_message(json.dumps({'op': 1, 'd': data.seq}))
 
         elif message['op'] == 7:
             return True
@@ -315,10 +309,7 @@ async def _shared_logic(
 
         elif message['op'] == 10:
             nursery.start_soon(
-                _heartbeat,
-                websocket,
-                message['d']['heartbeat_interval'] / 1000,
-                data
+                _heartbeat, websocket, message['d']['heartbeat_interval'] / 1000, data
             )
             await websocket.send_message(json.dumps(hello))
             nursery.start_soon(after_start)
@@ -335,11 +326,11 @@ async def _shared_logic(
 
 
 async def _run_once(
-        shard_data: _ShardData,
-        info: _ConnectionInfo,
-        nursery: trio.Nursery,
-        websocket: trio_websocket.WebSocketConnection,
-        resume: bool = False
+    shard_data: _ShardData,
+    info: _ConnectionInfo,
+    nursery: trio.Nursery,
+    websocket: trio_websocket.WebSocketConnection,
+    resume: bool = False,
 ) -> bool:
     # the return value is whether or not to resume next time.
 
@@ -349,11 +340,7 @@ async def _run_once(
     if resume:
         hello = {
             'op': 6,
-            'd': {
-                'token': info.token,
-                'session_id': shard_data.session_id,
-                'seq': shard_data.seq
-            }
+            'd': {'token': info.token, 'session_id': shard_data.session_id, 'seq': shard_data.seq},
         }
 
         async def setter() -> None:
@@ -368,12 +355,12 @@ async def _run_once(
                 'properties': {
                     '$os': platform.system().lower(),
                     '$browser': 'blinkenlights',
-                    '$device': 'bloom'
+                    '$device': 'bloom',
                 },
                 'large_threshold': 250,  # TODO: customizable?
                 'shard': [info.shard_id, info.shard_count],
                 # TODO: presence?
-            }
+            },
         }
         setter = info.bucket.set
 
@@ -381,7 +368,7 @@ async def _run_once(
 
 
 async def _run_shard(
-        info: _ConnectionInfo,
+    info: _ConnectionInfo,
 ) -> typing.NoReturn:
     data = _ShardData(info.converter, info.substrate)
 
@@ -413,8 +400,7 @@ async def _run_shard(
 
         # set a max message size of 10mb since guilds are HUGE
         async with trio_websocket.open_websocket_url(
-            url,
-            max_message_size=10 * 1024 * 1024
+            url, max_message_size=10 * 1024 * 1024
         ) as websocket:
             try:
                 # filter out cancelleds
@@ -423,11 +409,7 @@ async def _run_shard(
                 ):
                     async with trio.open_nursery() as nursery:
                         should_resume = await _run_once(
-                            data,
-                            info,
-                            nursery,
-                            websocket,
-                            should_resume
+                            data, info, nursery, websocket, should_resume
                         )
 
                         if should_resume:
@@ -437,8 +419,9 @@ async def _run_shard(
 
                         nursery.cancel_scope.cancel()
             except trio_websocket.ConnectionClosed as exc:
-                _LOGGER.warning('[%r] websocket closed due to %r',
-                                exc.reason.code, exc.reason.reason)
+                _LOGGER.warning(
+                    '[%r] websocket closed due to %r', exc.reason.code, exc.reason.reason
+                )
 
                 # TODO: have a more comprehensive set of close codes
                 should_resume = exc.reason.code not in [1000, 1001]
@@ -495,20 +478,18 @@ async def _run_shard(
 
 def _register_converter(converter: Converter) -> Converter:
     converter.register_structure_hook(
-        base_models.Snowflake,
-        lambda d, _: base_models.Snowflake(int(d))
+        base_models.Snowflake, lambda d, _: base_models.Snowflake(int(d))
     )
     converter.register_structure_hook(
         permission_models.BitwisePermissionFlags,
-        lambda d, _: permission_models.BitwisePermissionFlags(int(d))
+        lambda d, _: permission_models.BitwisePermissionFlags(int(d)),
     )
 
     def unstruct_permissions(d: permission_models.BitwisePermissionFlags) -> str:
         return str(d.value)
 
     converter.register_unstructure_hook(
-        permission_models.BitwisePermissionFlags,
-        unstruct_permissions
+        permission_models.BitwisePermissionFlags, unstruct_permissions
     )
 
     def struct_int_or_str(d: typing.Any, _: object) -> typing.Union[int, str]:
@@ -523,9 +504,7 @@ def _register_converter(converter: Converter) -> Converter:
 
     # TODO: use the new methods in `typing`
     def is_unknown(cls: type) -> bool:
-        if getattr(
-            cls, '__origin__'
-        ) is typing.Union and UNKNOWN_TYPE in getattr(cls, '__args__'):
+        if getattr(cls, '__origin__') is typing.Union and UNKNOWN_TYPE in getattr(cls, '__args__'):
             return True
         return False
 
@@ -685,7 +664,7 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'mute_config',
             'muted',
             # TODO: document this on the documentation.
-            'guild_id'
+            'guild_id',
         }
     elif tag == 'INTEGRATION_CREATE':
         return {
@@ -703,15 +682,15 @@ def _skip_differences(tag: str) -> bool:
 
 
 def _diff_differences(
-    one: typing.Dict[str, object],
-    two: typing.Dict[str, object]
+    one: typing.Dict[str, object], two: typing.Dict[str, object]
 ) -> typing.Set[str]:
     # TODO: remove in non-debug version
     keys = {k for k in two if k not in one}
     keys.update(
         {
             k + '.' + v
-            for k in set(one) if isinstance(one.get(k), dict) and isinstance(two.get(k), dict)
+            for k in set(one)
+            if isinstance(one.get(k), dict) and isinstance(two.get(k), dict)
             # this type ignore shouldn't be necessary due to narrowing, but oh well.
             for v in _diff_differences(one[k], two[k])  # type: ignore[arg-type]
         }
@@ -721,13 +700,13 @@ def _diff_differences(
 
 
 async def connect(
-        token: str,
-        intents: Intents,
-        substrate: subs.Substrate,
-        *,
-        shard_ids: typing.Sequence[int] = (0,),
-        shard_count: int = 1,
-        max_concurrency: int = 1
+    token: str,
+    intents: Intents,
+    substrate: subs.Substrate,
+    *,
+    shard_ids: typing.Sequence[int] = (0,),
+    shard_count: int = 1,
+    max_concurrency: int = 1,
 ) -> typing.NoReturn:
     """Connects to the gateway with a specified token."""
     converter = _register_converter(make_converter())
@@ -737,16 +716,11 @@ async def connect(
         for shard_id in shard_ids:
             bucket = buckets[shard_id % max_concurrency]
             info = _ConnectionInfo(
-                token,
-                intents,
-                shard_id,
-                shard_count,
-                bucket,
-                converter,
-                substrate
+                token, intents, shard_id, shard_count, bucket, converter, substrate
             )
             nursery.start_soon(_run_shard, info)
 
     raise RuntimeError('Should never get here.')
+
 
 __all__ = ('connect', 'Intents', 'ShardException', 'TooManyIdentifies')

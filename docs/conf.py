@@ -14,8 +14,10 @@ import typing
 if sys.version_info >= (3, 8):
     from importlib.metadata import version as v
 else:
+
     def v(pkg_name: str) -> str:
         return '0.0.0'
+
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -58,7 +60,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
     'sphinx.ext.napoleon',
-    'sphinxcontrib_trio'
+    'sphinxcontrib_trio',
 ]
 
 intersphinx_mapping = {

@@ -16,25 +16,19 @@ T = typing.TypeVar('T')
 @attr.define()
 class Substrate:
     _events: typing.Dict[
-        typing.Type[typing.Any],
-        typing.List[trio.abc.SendChannel[typing.Any]]
+        typing.Type[typing.Any], typing.List[trio.abc.SendChannel[typing.Any]]
     ] = attr.Factory(lambda: collections.defaultdict(lambda: []))
 
     _recv_to_send: typing.Dict[
         typing.Tuple[typing.Type[typing.Any], trio.abc.ReceiveChannel[typing.Any]],
-        trio.abc.SendChannel[typing.Any]
+        trio.abc.SendChannel[typing.Any],
     ] = attr.Factory(dict)
 
     # this cache makes event -> channels amortized O(1)
-    _cache: typing.Dict[
-        typing.Type[typing.Any],
-        typing.List[typing.Any]
-    ] = attr.Factory(dict)
+    _cache: typing.Dict[typing.Type[typing.Any], typing.List[typing.Any]] = attr.Factory(dict)
 
     def register(
-            self,
-            typ: typing.Type[T],
-            buffer_size: typing.Optional[int]
+        self, typ: typing.Type[T], buffer_size: typing.Optional[int]
     ) -> trio.abc.ReceiveChannel[T]:
         buffer_size_ = math.inf if buffer_size is None else buffer_size
 
