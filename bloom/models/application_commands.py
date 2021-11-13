@@ -68,7 +68,13 @@ class ApplicationCommandOption:
     options: Unknownish[t.List[ApplicationCommandOption]] = UNKNOWN
     #: if the option is a channel type, the channels shown will be restricted
     #: to these types
-    channel_types: t.List[ChannelTypes]
+    channel_types: Unknownish[t.List[ChannelTypes]] = UNKNOWN
+    #: if the option is an `INTEGER` or `NUMBER` type, the minimum value
+    #: permitted
+    min_value: Unknownish[float] = UNKNOWN
+    #: if the option is an `INTEGER` or `NUMBER` type, the maximum value
+    #: permitted
+    max_value: Unknownish[float] = UNKNOWN
 
 
 class ApplicationCommandOptionType(Enum):

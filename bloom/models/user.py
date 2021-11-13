@@ -45,20 +45,36 @@ class User:
 
 
 class UserFlags(IntFlag):
+    #: None
     NONE = 0
-    DISCORD_EMPLOYEE = 1
-    PARTNERED_SERVER_OWNER = 2
-    HYPESQUAD_EVENTS = 4
-    BUG_HUNTER_LEVEL_1 = 8
-    HOUSE_BRAVERY = 64
-    HOUSE_BRILLIANCE = 128
-    HOUSE_BALANCE = 256
-    EARLY_SUPPORTER = 512
-    TEAM_USER = 1024
-    BUG_HUNTER_LEVEL_2 = 16384
-    VERIFIED_BOT = 65536
-    EARLY_VERIFIED_BOT_DEVELOPER = 131072
-    DISCORD_CERTIFIED_MODERATOR = 262144
+    #: Discord Employee
+    STAFF = 1 << 0
+    #: Partnered Server Owner
+    PARTNER = 1 << 1
+    #: HypeSquad Events Coordinator
+    HYPESQUAD = 1 << 2
+    #: Bug Hunter Level 1
+    BUG_HUNTER_LEVEL_1 = 1 << 3
+    #: House Bravery Member
+    HYPESQUAD_ONLINE_HOUSE_1 = 1 << 6
+    #: House Brilliance Member
+    HYPESQUAD_ONLINE_HOUSE_2 = 1 << 7
+    #: House Balance Member
+    HYPESQUAD_ONLINE_HOUSE_3 = 1 << 8
+    #: Early Nitro Supporter
+    PREMIUM_EARLY_SUPPORTER = 1 << 9
+    #: User is a team
+    TEAM_PSEUDO_USER = 1 << 10
+    #: Bug Hunter Level 2
+    BUG_HUNTER_LEVEL_2 = 1 << 14
+    #: Verified Bot
+    VERIFIED_BOT = 1 << 16
+    #: Early Verified Bot Developer
+    VERIFIED_DEVELOPER = 1 << 17
+    #: Discord Certified Moderator
+    CERTIFIED_MODERATOR = 1 << 18
+    #: Bot uses only HTTP interactions and is shown in the online members list
+    BOT_HTTP_INTERACTIONS = 1 << 19
 
 
 class PremiumTypes(IntEnum):

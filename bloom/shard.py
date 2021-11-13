@@ -558,11 +558,15 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'hoisted_role',
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
             'is_pending',
+            # https://github.com/discord/discord-api-docs/pull/4075
+            'communication_disabled_until',
         }
     elif tag == 'GUILD_MEMBER_ADD':
         return {
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
             'is_pending',
+            # https://github.com/discord/discord-api-docs/pull/4075
+            'communication_disabled_until',
         }
     elif tag == 'GUILD_CREATE':
         return {
@@ -590,6 +594,8 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'guild_id',
             # TODO: this seems to be guild hubs related but is nullable and undoc-ed
             'hub_type',
+            # https://github.com/discord/discord-api-docs/pull/4001
+            'premium_progress_bar_enabled',
         }
     elif tag == 'THREAD_UPDATE':
         return {
@@ -670,6 +676,11 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'muted',
             # TODO: document this on the documentation.
             'guild_id'
+        }
+    elif tag == 'INTEGRATION_CREATE':
+        return {
+            # TODO: what's this?
+            'application.type'
         }
 
     return set()

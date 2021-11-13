@@ -689,12 +689,15 @@ class ActivitySecrets:
 
 
 class ActivityFlags(IntFlag):
-    INSTANCE = 1
-    JOIN = 2
-    SPECTATE = 4
-    JOIN_REQUEST = 8
-    SYNC = 16
-    PLAY = 32
+    INSTANCE = 1 << 0
+    JOIN = 1 << 1
+    SPECTATE = 1 << 2
+    JOIN_REQUEST = 1 << 3
+    SYNC = 1 << 4
+    PLAY = 1 << 5
+    PARTY_PRIVACY_FRIENDS = 1 << 6
+    PARTY_PRIVACY_VOICE_CHANNEL = 1 << 7
+    EMBEDDED = 1 << 8
 
 
 # TODO: this gets sent when setting activity, but is not recved

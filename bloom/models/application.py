@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import typing as t
-from enum import Enum
+from enum import IntFlag
 
 import attr
 
@@ -56,10 +56,12 @@ class Application:
     flags: Unknownish[int] = UNKNOWN
 
 
-class ApplicationFlags(Enum):
-    GATEWAY_PRESENCE = 4096
-    GATEWAY_PRESENCE_LIMITED = 8192
-    GATEWAY_GUILD_MEMBERS = 16384
-    GATEWAY_GUILD_MEMBERS_LIMITED = 32768
-    VERIFICATION_PENDING_GUILD_LIMIT = 65536
-    EMBEDDED = 131072
+class ApplicationFlags(IntFlag):
+    GATEWAY_PRESENCE = 1 << 12
+    GATEWAY_PRESENCE_LIMITED = 1 << 13
+    GATEWAY_GUILD_MEMBERS = 1 << 14
+    GATEWAY_GUILD_MEMBERS_LIMITED = 1 << 15
+    VERIFICATION_PENDING_GUILD_LIMIT = 1 << 16
+    EMBEDDED = 1 << 17
+    GATEWAY_MESSAGE_CONTENT = 1 << 18
+    GATEWAY_MESSAGE_CONTENT_LIMITED = 1 << 19
