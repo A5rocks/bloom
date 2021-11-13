@@ -417,15 +417,25 @@ async def _run_shard(
             max_message_size=10 * 1024 * 1024
         ) as websocket:
             try:
-                async with trio.open_nursery() as nursery:
-                    should_resume = await _run_once(data, info, nursery, websocket, should_resume)
+                # filter out cancelleds
+                with trio.MultiError.catch(
+                    lambda err: None if isinstance(err, trio.Cancelled) else err
+                ):
+                    async with trio.open_nursery() as nursery:
+                        should_resume = await _run_once(
+                            data,
+                            info,
+                            nursery,
+                            websocket,
+                            should_resume
+                        )
 
-                    if should_resume:
-                        await websocket.aclose(3000)
-                    else:
-                        await websocket.aclose(1000)
+                        if should_resume:
+                            await websocket.aclose(3000)
+                        else:
+                            await websocket.aclose(1000)
 
-                    nursery.cancel_scope.cancel()
+                        nursery.cancel_scope.cancel()
             except trio_websocket.ConnectionClosed as exc:
                 _LOGGER.warning('[%r] websocket closed due to %r',
                                 exc.reason.code, exc.reason.reason)
