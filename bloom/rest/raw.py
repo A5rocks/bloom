@@ -76,6 +76,21 @@ def prepare(rest: RawRest, input_dict: typing.Dict[str, object]) -> typing.Dict[
     return res
 
 
+T = typing.TypeVar('T')
+
+
+def tuple_(
+    it: Unknownish[typing.Optional[typing.Iterable[T]]],
+) -> Unknownish[typing.Optional[typing.Tuple[T, ...]]]:
+    if isinstance(it, UNKNOWN_TYPE):
+        return UNKNOWN
+    else:
+        if it is None:
+            return None
+        else:
+            return tuple(it)
+
+
 @attr.define()
 class RawRest:
     # every single API method.
@@ -123,7 +138,7 @@ class RawRest:
         rate_limit_per_user: Unknownish[typing.Optional[int]] = UNKNOWN,
         bitrate: Unknownish[typing.Optional[int]] = UNKNOWN,
         user_limit: Unknownish[typing.Optional[int]] = UNKNOWN,
-        permission_overwrites: Unknownish[typing.Optional[typing.List[Overwrite]]] = UNKNOWN,
+        permission_overwrites: Unknownish[typing.Optional[typing.Iterable[Overwrite]]] = UNKNOWN,
         parent_id: Unknownish[typing.Optional[Snowflake]] = UNKNOWN,
         rtc_region: Unknownish[typing.Optional[str]] = UNKNOWN,
         video_quality_mode: Unknownish[typing.Optional[VideoQualityModes]] = UNKNOWN,
@@ -151,7 +166,7 @@ class RawRest:
                     'rate_limit_per_user': rate_limit_per_user,
                     'bitrate': bitrate,
                     'user_limit': user_limit,
-                    'permission_overwrites': permission_overwrites,
+                    'permission_overwrites': tuple_(permission_overwrites),
                     'parent_id': parent_id,
                     'rtc_region': rtc_region,
                     'video_quality_mode': video_quality_mode,
@@ -183,8 +198,8 @@ class RawRest:
         before: Unknownish[Snowflake] = UNKNOWN,
         after: Unknownish[Snowflake] = UNKNOWN,
         limit: Unknownish[int] = UNKNOWN,
-    ) -> Request[typing.List[Message]]:
-        return Request[typing.List[Message]](
+    ) -> Request[typing.Tuple[Message]]:
+        return Request[typing.Tuple[Message]](
             'GET',
             '/channels/{channel_id}/messages',
             {'channel_id': channel_id},
@@ -214,28 +229,28 @@ class RawRest:
         *,
         # one of these is required:
         content: Unknownish[str] = UNKNOWN,
-        files: Unknownish[typing.List[object]] = UNKNOWN,  # TODO: better file type?
-        embeds: Unknownish[typing.List[Embed]] = UNKNOWN,
-        sticker_ids: Unknownish[typing.List[Snowflake]] = UNKNOWN,
+        files: Unknownish[typing.Iterable[object]] = UNKNOWN,  # TODO: better file type?
+        embeds: Unknownish[typing.Iterable[Embed]] = UNKNOWN,
+        sticker_ids: Unknownish[typing.Iterable[Snowflake]] = UNKNOWN,
         # optional
         tts: Unknownish[bool] = UNKNOWN,
         allowed_mentions: Unknownish[AllowedMentions] = UNKNOWN,
         message_reference: Unknownish[MessageReference] = UNKNOWN,
-        components: Unknownish[typing.List[Component]] = UNKNOWN,
+        components: Unknownish[typing.Iterable[Component]] = UNKNOWN,
         # TODO: partial attachments
-        attachments: Unknownish[typing.List[typing.Dict[str, typing.Any]]] = UNKNOWN,
+        attachments: Unknownish[typing.Iterable[typing.Dict[str, typing.Any]]] = UNKNOWN,
     ) -> Request[Message]:
         json_payload = prepare(
             self,
             {
                 'content': content,
-                'embeds': embeds,
-                'sticker_ids': sticker_ids,
+                'embeds': tuple_(embeds),
+                'sticker_ids': tuple_(sticker_ids),
                 'tts': tts,
                 'allowed_mentions': allowed_mentions,
                 'message_reference': message_reference,
-                'components': components,
-                'attachments': attachments,
+                'components': tuple_(components),
+                'attachments': tuple_(attachments),
             },
         )
 
@@ -298,8 +313,8 @@ class RawRest:
         emoji: str,
         after: Unknownish[Snowflake] = UNKNOWN,
         limit: Unknownish[int] = UNKNOWN,
-    ) -> Request[typing.List[User]]:
-        return Request[typing.List[User]](
+    ) -> Request[typing.Tuple[User]]:
+        return Request[typing.Tuple[User]](
             'GET',
             '/channels/{channel_id}/messages/{message_id}/reactions/{emoji}',
             {'channel_id': channel_id, 'message_id': message_id, 'emoji': emoji},
@@ -330,24 +345,24 @@ class RawRest:
         message_id: Snowflake,
         *,
         content: Unknownish[typing.Optional[str]] = UNKNOWN,
-        embeds: Unknownish[typing.Optional[typing.List[Embed]]] = UNKNOWN,
+        embeds: Unknownish[typing.Optional[typing.Iterable[Embed]]] = UNKNOWN,
         flags: Unknownish[typing.Optional[MessageFlags]] = UNKNOWN,
         # TODO: better file type
-        files: Unknownish[typing.List[object]] = UNKNOWN,
+        files: Unknownish[typing.Iterable[object]] = UNKNOWN,
         allowed_mentions: Unknownish[typing.Optional[AllowedMentions]] = UNKNOWN,
         # TODO: are partial attachments allowed?
-        attachments: Unknownish[typing.Optional[typing.List[Attachment]]] = UNKNOWN,
-        components: Unknownish[typing.Optional[typing.List[Component]]] = UNKNOWN,
+        attachments: Unknownish[typing.Optional[typing.Iterable[Attachment]]] = UNKNOWN,
+        components: Unknownish[typing.Optional[typing.Iterable[Component]]] = UNKNOWN,
     ) -> Request[Message]:
         json_payload = prepare(
             self,
             {
                 'content': content,
-                'embeds': embeds,
+                'embeds': tuple_(embeds),
                 'flags': flags,
                 'allowed_mentions': allowed_mentions,
-                'attachments': attachments,
-                'components': components,
+                'attachments': tuple_(attachments),
+                'components': tuple_(components),
             },
         )
 
@@ -372,14 +387,14 @@ class RawRest:
         self,
         channel_id: Snowflake,
         *,
-        messages: typing.List[Snowflake],
+        messages: typing.Iterable[Snowflake],
         reason: Unknownish[str] = UNKNOWN,
     ) -> Request[None]:
         return Request[None](
             'POST',
             '/channels/{channel_id}/messages/bulk-delete',
             {'channel_id': channel_id},
-            json=prepare(self, {'messages': messages}),
+            json=prepare(self, {'messages': tuple_(messages)}),
             headers=prepare(self, {'X-Audit-Log-Reason': reason}),
         )
 
@@ -401,8 +416,8 @@ class RawRest:
             headers=prepare(self, {'X-Audit-Log-Reason': reason}),
         )
 
-    def get_channel_invites(self, channel_id: Snowflake) -> Request[typing.List[InviteMetadata]]:
-        return Request[typing.List[InviteMetadata]](
+    def get_channel_invites(self, channel_id: Snowflake) -> Request[typing.Tuple[InviteMetadata]]:
+        return Request[typing.Tuple[InviteMetadata]](
             'GET', '/channels/{channel_id}/invites', {'channel_id': channel_id}
         )
 
@@ -461,8 +476,8 @@ class RawRest:
     def trigger_typing_indicator(self, channel_id: Snowflake) -> Request[None]:
         return Request[None]('POST', '/channels/{channel_id}/typing', {'channel_id': channel_id})
 
-    def get_pinned_messages(self, channel_id: Snowflake) -> Request[typing.List[Message]]:
-        return Request[typing.List[Message]](
+    def get_pinned_messages(self, channel_id: Snowflake) -> Request[typing.Tuple[Message]]:
+        return Request[typing.Tuple[Message]](
             'GET', '/channels/{channel_id}/pins', {'channel_id': channel_id}
         )
 
@@ -583,8 +598,8 @@ class RawRest:
             {'channel_id': channel_id, 'user_id': user_id},
         )
 
-    def list_thread_members(self, channel_id: Snowflake) -> Request[typing.List[ThreadMember]]:
-        return Request[typing.List[ThreadMember]](
+    def list_thread_members(self, channel_id: Snowflake) -> Request[typing.Tuple[ThreadMember]]:
+        return Request[typing.Tuple[ThreadMember]](
             'GET', '/channels/{channel_id}/thread-members', {'channel_id': channel_id}
         )
 
@@ -596,8 +611,8 @@ class RawRest:
         *,
         before: Unknownish[datetime.datetime] = UNKNOWN,
         limit: Unknownish[int] = UNKNOWN,
-    ) -> Request[typing.List[Channel]]:
-        return Request[typing.List[Channel]](
+    ) -> Request[typing.Tuple[Channel]]:
+        return Request[typing.Tuple[Channel]](
             'GET',
             '/channels/{channel.id}/threads/archived/public',
             {'channel_id': channel_id},
@@ -612,8 +627,8 @@ class RawRest:
         *,
         before: Unknownish[datetime.datetime] = UNKNOWN,
         limit: Unknownish[int] = UNKNOWN,
-    ) -> Request[typing.List[Channel]]:
-        return Request[typing.List[Channel]](
+    ) -> Request[typing.Tuple[Channel]]:
+        return Request[typing.Tuple[Channel]](
             'GET',
             '/channels/{channel.id}/threads/archived/private',
             {'channel_id': channel_id},
@@ -629,16 +644,16 @@ class RawRest:
         # TODO: why is this a snowflake???
         before: Unknownish[Snowflake] = UNKNOWN,
         limit: Unknownish[int] = UNKNOWN,
-    ) -> Request[typing.List[Channel]]:
-        return Request[typing.List[Channel]](
+    ) -> Request[typing.Tuple[Channel]]:
+        return Request[typing.Tuple[Channel]](
             'GET',
             '/channels/{channel_id}/users/@me/threads/archived/private',
             {'channel_id': channel_id},
             params=prepare(self, {'before': before, 'limit': limit}),
         )
 
-    def list_guild_emojis(self, guild_id: Snowflake) -> Request[typing.List[Emoji]]:
-        return Request[typing.List[Emoji]](
+    def list_guild_emojis(self, guild_id: Snowflake) -> Request[typing.Tuple[Emoji]]:
+        return Request[typing.Tuple[Emoji]](
             'GET', '/guilds/{guild_id}/emojis', {'guild_id': guild_id}
         )
 
@@ -657,14 +672,14 @@ class RawRest:
         # https://discord.com/developers/docs/reference#image-data
         image: str,
         # TODO: is `roles` optional?
-        roles: typing.List[Snowflake],
+        roles: typing.Iterable[Snowflake],
         reason: Unknownish[str] = UNKNOWN,
     ) -> Request[Emoji]:
         return Request[Emoji](
             'POST',
             '/guilds/{guild_id}/emojis',
             {'guild_id': guild_id},
-            json=prepare(self, {'name': name, 'image': image, 'roles': roles}),
+            json=prepare(self, {'name': name, 'image': image, 'roles': tuple_(roles)}),
             headers=prepare(self, {'X-Audit-Log-Reason': reason}),
         )
 
@@ -674,14 +689,14 @@ class RawRest:
         emoji_id: Snowflake,
         *,
         name: Unknownish[str] = UNKNOWN,
-        roles: Unknownish[typing.Optional[typing.List[Snowflake]]] = UNKNOWN,
+        roles: Unknownish[typing.Optional[typing.Iterable[Snowflake]]] = UNKNOWN,
         reason: Unknownish[str] = UNKNOWN,
     ) -> Request[Emoji]:
         return Request[Emoji](
             'PATCH',
             '/guilds/{guild_id}/emojis/{emoji_id}',
             {'guild_id': guild_id, 'emoji_id': emoji_id},
-            json=prepare(self, {'name': name, 'roles': roles}),
+            json=prepare(self, {'name': name, 'roles': tuple_(roles)}),
             headers=prepare(self, {'X-Audit-Log-Reason': reason}),
         )
 
@@ -706,9 +721,9 @@ class RawRest:
         verification_level: Unknownish[VerificationLevel] = UNKNOWN,
         default_message_notifications: Unknownish[DefaultMessageNotificationLevel] = UNKNOWN,
         explicit_content_filter: Unknownish[ExplicitContentFilterLevel] = UNKNOWN,
-        roles: Unknownish[typing.List[Role]] = UNKNOWN,
+        roles: Unknownish[typing.Iterable[Role]] = UNKNOWN,
         # TODO: partial channel objects
-        channels: Unknownish[typing.List[object]] = UNKNOWN,
+        channels: Unknownish[typing.Iterable[object]] = UNKNOWN,
         afk_channel_id: Unknownish[Snowflake] = UNKNOWN,
         afk_timeout: Unknownish[int] = UNKNOWN,
         system_channel_id: Unknownish[Snowflake] = UNKNOWN,
@@ -727,8 +742,8 @@ class RawRest:
                     'verification_level': verification_level,
                     'default_message_notifications': default_message_notifications,
                     'explicit_content_filter': explicit_content_filter,
-                    'roles': roles,
-                    'channels': channels,
+                    'roles': tuple_(roles),
+                    'channels': tuple_(channels),
                     'afk_channel_id': afk_channel_id,
                     'afk_timeout': afk_timeout,
                     'system_channel_id': system_channel_id,
@@ -773,7 +788,7 @@ class RawRest:
         rules_channel_id: Unknownish[typing.Optional[Snowflake]] = UNKNOWN,
         public_updates_channel_id: Unknownish[typing.Optional[Snowflake]] = UNKNOWN,
         preferred_locale: Unknownish[typing.Optional[str]] = UNKNOWN,
-        features: Unknownish[typing.List[GuildFeatures]] = UNKNOWN,
+        features: Unknownish[typing.Iterable[GuildFeatures]] = UNKNOWN,
         description: Unknownish[typing.Optional[str]] = UNKNOWN,
         reason: Unknownish[str] = UNKNOWN,
     ) -> Request[Guild]:
@@ -801,7 +816,7 @@ class RawRest:
                     'rules_channel_id': rules_channel_id,
                     'public_updates_channel_id': public_updates_channel_id,
                     'preferred_locale': preferred_locale,
-                    'features': features,
+                    'features': tuple_(features),
                     'description': description,
                 },
             ),
@@ -811,8 +826,8 @@ class RawRest:
     def delete_guild(self, guild_id: Snowflake) -> Request[None]:
         return Request[None]('DELETE', '/guilds/{guild_id}', {'guild_id': guild_id})
 
-    def get_guild_channels(self, guild_id: Snowflake) -> Request[typing.List[Channel]]:
-        return Request[typing.List[Channel]](
+    def get_guild_channels(self, guild_id: Snowflake) -> Request[typing.Tuple[Channel]]:
+        return Request[typing.Tuple[Channel]](
             'GET', '/guilds/{guild_id}/channels', {'guild_id': guild_id}
         )
 
@@ -825,7 +840,7 @@ class RawRest:
         topic: Unknownish[str] = UNKNOWN,
         rate_limit_per_user: Unknownish[int] = UNKNOWN,
         position: Unknownish[int] = UNKNOWN,
-        permission_overwrites: Unknownish[typing.List[Overwrite]] = UNKNOWN,
+        permission_overwrites: Unknownish[typing.Iterable[Overwrite]] = UNKNOWN,
         parent_id: Unknownish[Snowflake] = UNKNOWN,
         nsfw: Unknownish[bool] = UNKNOWN,
         # voice only (TODO: typing override)
@@ -847,7 +862,7 @@ class RawRest:
                     'user_limit': user_limit,
                     'rate_limit_per_user': rate_limit_per_user,
                     'position': position,
-                    'permission_overwrites': permission_overwrites,
+                    'permission_overwrites': tuple_(permission_overwrites),
                     'parent_id': parent_id,
                 },
             ),
@@ -858,20 +873,20 @@ class RawRest:
         self,
         guild_id: Snowflake,
         *,
-        params: typing.List[ModifyGuildChannelPositionsParameters],
+        params: typing.Iterable[ModifyGuildChannelPositionsParameters],
         reason: Unknownish[str] = UNKNOWN,
     ) -> Request[None]:
         return Request[None](
             'PATCH',
             '/guilds/{guild_id}/channels',
             {'guild_id': guild_id},
-            json=self.conv.unstructure(params),
+            json=self.conv.unstructure(tuple_(params)),
             headers=prepare(self, {'X-Audit-Log-Reason': reason}),
         )
 
     # TODO: this returns threads not channels... ADT?
-    def list_active_threads(self, guild_id: Snowflake) -> Request[typing.List[Channel]]:
-        return Request[typing.List[Channel]](
+    def list_active_threads(self, guild_id: Snowflake) -> Request[typing.Tuple[Channel]]:
+        return Request[typing.Tuple[Channel]](
             'GET', '/guilds/{guild_id}/threads/active', {'guild_id': guild_id}
         )
 
@@ -882,15 +897,15 @@ class RawRest:
             {'guild_id': guild_id, 'user_id': user_id},
         )
 
-    def list_guild_members(self, guild_id: Snowflake) -> Request[typing.List[GuildMember]]:
-        return Request[typing.List[GuildMember]](
+    def list_guild_members(self, guild_id: Snowflake) -> Request[typing.Tuple[GuildMember]]:
+        return Request[typing.Tuple[GuildMember]](
             'GET', '/guilds/{guild_id}/members', {'guild_id': guild_id}
         )
 
     def search_guild_members(
         self, guild_id: Snowflake, *, query: str, limit: Unknownish[int] = UNKNOWN
-    ) -> Request[typing.List[GuildMember]]:
-        return Request[typing.List[GuildMember]](
+    ) -> Request[typing.Tuple[GuildMember]]:
+        return Request[typing.Tuple[GuildMember]](
             'GET',
             '/guilds/{guild_id}/members/search',
             {'guild_id': guild_id},
@@ -907,7 +922,7 @@ class RawRest:
         # requires `MANAGE_NICKNAMES`
         nick: Unknownish[str] = UNKNOWN,
         # requires `MANAGE_ROLES`
-        roles: Unknownish[typing.List[Snowflake]] = UNKNOWN,
+        roles: Unknownish[typing.Tuple[Snowflake]] = UNKNOWN,
         # requires `MUTE_MEMBERS`
         mute: Unknownish[bool] = UNKNOWN,
         # requires `DEAFEN_MEMBERS`
@@ -935,7 +950,7 @@ class RawRest:
         user_id: Snowflake,
         *,
         nick: Unknownish[typing.Optional[str]] = UNKNOWN,
-        roles: Unknownish[typing.Optional[typing.List[Snowflake]]] = UNKNOWN,
+        roles: Unknownish[typing.Optional[typing.Tuple[Snowflake]]] = UNKNOWN,
         mute: Unknownish[typing.Optional[bool]] = UNKNOWN,
         deaf: Unknownish[typing.Optional[bool]] = UNKNOWN,
         channel_id: Unknownish[typing.Optional[Snowflake]] = UNKNOWN,
@@ -1031,8 +1046,8 @@ class RawRest:
             headers=prepare(self, {'X-Audit-Log-Reason': reason}),
         )
 
-    def get_guild_bans(self, guild_id: Snowflake) -> Request[typing.List[Ban]]:
-        return Request[typing.List[Ban]]('GET', '/guilds/{guild_id}/bans', {'guild_id': guild_id})
+    def get_guild_bans(self, guild_id: Snowflake) -> Request[typing.Tuple[Ban]]:
+        return Request[typing.Tuple[Ban]]('GET', '/guilds/{guild_id}/bans', {'guild_id': guild_id})
 
     def get_guild_ban(self, guild_id: Snowflake, user_id: Snowflake) -> Request[Ban]:
         return Request[Ban](
@@ -1065,8 +1080,8 @@ class RawRest:
             headers=prepare(self, {'X-Audit-Log-Reason': reason}),
         )
 
-    def get_guild_roles(self, guild_id: Snowflake) -> Request[typing.List[Role]]:
-        return Request[typing.List[Role]](
+    def get_guild_roles(self, guild_id: Snowflake) -> Request[typing.Tuple[Role]]:
+        return Request[typing.Tuple[Role]](
             'GET', '/guilds/{guild_id}/roles', {'guild_id': guild_id}
         )
 
@@ -1106,10 +1121,10 @@ class RawRest:
         self,
         guild_id: Snowflake,
         *,
-        parameters: typing.List[ModifyGuildRolePositionsParameters],
+        parameters: typing.Tuple[ModifyGuildRolePositionsParameters],
         reason: Unknownish[str] = UNKNOWN,
-    ) -> Request[typing.List[Role]]:
-        return Request[typing.List[Role]](
+    ) -> Request[typing.Tuple[Role]]:
+        return Request[typing.Tuple[Role]](
             'PATCH',
             '/guilds/{guild_id}/roles',
             {'guild_id': guild_id},
@@ -1165,7 +1180,7 @@ class RawRest:
         guild_id: Snowflake,
         *,
         days: Unknownish[int] = UNKNOWN,
-        include_roles: Unknownish[typing.List[Snowflake]] = UNKNOWN,
+        include_roles: Unknownish[typing.Iterable[Snowflake]] = UNKNOWN,
     ) -> Request[PruneCount]:
         return Request[PruneCount](
             'GET',
@@ -1190,7 +1205,7 @@ class RawRest:
         *,
         days: Unknownish[int] = UNKNOWN,
         compute_prune_count: Unknownish[bool] = UNKNOWN,
-        include_roles: Unknownish[typing.List[Snowflake]] = UNKNOWN,
+        include_roles: Unknownish[typing.Iterable[Snowflake]] = UNKNOWN,
         reason: Unknownish[str] = UNKNOWN,
     ) -> Request[PruneCount]:
         return Request[PruneCount](
@@ -1212,18 +1227,18 @@ class RawRest:
             headers=prepare(self, {'X-Audit-Log-Reason': reason}),
         )
 
-    def get_guild_voice_regions(self, guild_id: Snowflake) -> Request[typing.List[VoiceRegion]]:
-        return Request[typing.List[VoiceRegion]](
+    def get_guild_voice_regions(self, guild_id: Snowflake) -> Request[typing.Tuple[VoiceRegion]]:
+        return Request[typing.Tuple[VoiceRegion]](
             'GET', '/guilds/{guild_id}/regions', {'guild_id': guild_id}
         )
 
-    def get_guild_invites(self, guild_id: Snowflake) -> Request[typing.List[InviteMetadata]]:
-        return Request[typing.List[InviteMetadata]](
+    def get_guild_invites(self, guild_id: Snowflake) -> Request[typing.Tuple[InviteMetadata]]:
+        return Request[typing.Tuple[InviteMetadata]](
             'GET', '/guilds/{guild_id}/invites', {'guild_id': guild_id}
         )
 
-    def get_guild_integrations(self, guild_id: Snowflake) -> Request[typing.List[Integration]]:
-        return Request[typing.List[Integration]](
+    def get_guild_integrations(self, guild_id: Snowflake) -> Request[typing.Tuple[Integration]]:
+        return Request[typing.Tuple[Integration]](
             'GET', '/guilds/{guild_id}/integrations', {'guild_id': guild_id}
         )
 
@@ -1290,7 +1305,9 @@ class RawRest:
         guild_id: Snowflake,
         *,
         enabled: Unknownish[typing.Optional[bool]] = UNKNOWN,
-        welcome_channels: Unknownish[typing.Optional[typing.List[WelcomeScreenChannel]]] = UNKNOWN,
+        welcome_channels: Unknownish[
+            typing.Optional[typing.Iterable[WelcomeScreenChannel]]
+        ] = UNKNOWN,
         description: Unknownish[typing.Optional[str]] = UNKNOWN,
         reason: Unknownish[str] = UNKNOWN,
     ) -> Request[WelcomeScreen]:
@@ -1302,7 +1319,7 @@ class RawRest:
                 self,
                 {
                     'enabled': enabled,
-                    'welcome_channels': welcome_channels,
+                    'welcome_channels': tuple_(welcome_channels),
                     'description': description,
                 },
             ),
@@ -1368,8 +1385,8 @@ class RawRest:
             json=prepare(self, {'name': name, 'icon': icon}),
         )
 
-    def get_guild_templates(self, guild_id: Snowflake) -> Request[typing.List[GuildTemplate]]:
-        return Request[typing.List[GuildTemplate]](
+    def get_guild_templates(self, guild_id: Snowflake) -> Request[typing.Tuple[GuildTemplate]]:
+        return Request[typing.Tuple[GuildTemplate]](
             'GET', '/guilds/{guild_id}/templates', {'guild_id': guild_id}
         )
 
@@ -1491,8 +1508,8 @@ class RawRest:
     def list_nitro_sticker_packs(self) -> Request[NitroStickerPacks]:
         return Request[NitroStickerPacks]('GET', '/sticker-packs', {})
 
-    def list_guild_sickers(self, guild_id: Snowflake) -> Request[typing.List[Sticker]]:
-        return Request[typing.List[Sticker]](
+    def list_guild_sickers(self, guild_id: Snowflake) -> Request[typing.Tuple[Sticker]]:
+        return Request[typing.Tuple[Sticker]](
             'GET', '/guilds/{guild_id}/stickers', {'guild_id': guild_id}
         )
 
@@ -1570,8 +1587,8 @@ class RawRest:
         )
 
     # TODO: partial guild object?
-    def get_current_user_guilds(self) -> Request[typing.List[typing.Dict[str, typing.Any]]]:
-        return Request[typing.List[typing.Dict[str, typing.Any]]]('GET', '/users/@me/guilds', {})
+    def get_current_user_guilds(self) -> Request[typing.Tuple[typing.Dict[str, typing.Any]]]:
+        return Request[typing.Tuple[typing.Dict[str, typing.Any]]]('GET', '/users/@me/guilds', {})
 
     def leave_guild(self, guild_id: Snowflake) -> Request[None]:
         return Request[None]('DELETE', '/users/@me/guilds/{guild_id}', {'guild_id': guild_id})
@@ -1583,20 +1600,20 @@ class RawRest:
 
     # TODO: do DMs created with this really not show up in client?
     def create_group_dm(
-        self, *, access_tokens: typing.List[str], nicks: typing.Dict[Snowflake, str]
+        self, *, access_tokens: typing.Iterable[str], nicks: typing.Dict[Snowflake, str]
     ) -> Request[Channel]:
         return Request[Channel](
             'POST',
             '/users/@me/channels',
             {},
-            json=prepare(self, {'access_tokens': access_tokens, 'nicks': nicks}),
+            json=prepare(self, {'access_tokens': tuple_(access_tokens), 'nicks': nicks}),
         )
 
-    def get_user_connections(self) -> Request[typing.List[UserConnection]]:
-        return Request[typing.List[UserConnection]]('GET', '/users/@me/connections', {})
+    def get_user_connections(self) -> Request[typing.Tuple[UserConnection]]:
+        return Request[typing.Tuple[UserConnection]]('GET', '/users/@me/connections', {})
 
-    def list_voice_regions(self) -> Request[typing.List[VoiceRegion]]:
-        return Request[typing.List[VoiceRegion]]('GET', '/voice/regions', {})
+    def list_voice_regions(self) -> Request[typing.Tuple[VoiceRegion]]:
+        return Request[typing.Tuple[VoiceRegion]]('GET', '/voice/regions', {})
 
     # TODO: does this really not support audit log reason?
     def create_webhook(
@@ -1614,13 +1631,13 @@ class RawRest:
             json=prepare(self, {'name': name, 'avatar': avatar}),
         )
 
-    def get_channel_webhooks(self, channel_id: Snowflake) -> Request[typing.List[Webhook]]:
-        return Request[typing.List[Webhook]](
+    def get_channel_webhooks(self, channel_id: Snowflake) -> Request[typing.Tuple[Webhook]]:
+        return Request[typing.Tuple[Webhook]](
             'GET', '/channels/{channel_id}/webhooks', {'channel_id': channel_id}
         )
 
-    def get_guild_webhooks(self, guild_id: Snowflake) -> Request[typing.List[Webhook]]:
-        return Request[typing.List[Webhook]](
+    def get_guild_webhooks(self, guild_id: Snowflake) -> Request[typing.Tuple[Webhook]]:
+        return Request[typing.Tuple[Webhook]](
             'GET', '/guilds/{guild_id}/webhooks', {'guild_id': guild_id}
         )
 
@@ -1690,8 +1707,8 @@ class RawRest:
         *,
         # one of these is required:
         content: Unknownish[str] = UNKNOWN,
-        files: Unknownish[typing.List[object]] = UNKNOWN,  # TODO: better file type?
-        embeds: Unknownish[typing.List[Embed]] = UNKNOWN,
+        files: Unknownish[typing.Iterable[object]] = UNKNOWN,  # TODO: better file type?
+        embeds: Unknownish[typing.Iterable[Embed]] = UNKNOWN,
         # optional
         wait: Unknownish[bool] = UNKNOWN,
         thread_id: Unknownish[Snowflake] = UNKNOWN,
@@ -1700,21 +1717,22 @@ class RawRest:
         tts: Unknownish[bool] = UNKNOWN,
         allowed_mentions: Unknownish[AllowedMentions] = UNKNOWN,
         message_reference: Unknownish[MessageReference] = UNKNOWN,
-        components: Unknownish[typing.List[Component]] = UNKNOWN,
+        components: Unknownish[typing.Iterable[Component]] = UNKNOWN,
         # TODO: partial attachments
-        attachments: Unknownish[typing.List[typing.Dict[str, typing.Any]]] = UNKNOWN,
+        attachments: Unknownish[typing.Iterable[typing.Dict[str, typing.Any]]] = UNKNOWN,
     ) -> Request[None]:
         json_payload = prepare(
             self,
             {
                 'content': content,
-                'embeds': embeds,
+                'embeds': tuple_(embeds),
                 'username': username,
                 'avatar_url': avatar_url,
                 'tts': tts,
                 'allowed_mentions': allowed_mentions,
                 'message_reference': message_reference,
-                'components': components,
+                'components': tuple_(components),
+                'attachments': tuple_(attachments),
             },
         )
 
@@ -1752,24 +1770,24 @@ class RawRest:
         *,
         thread_id: Unknownish[Snowflake] = UNKNOWN,
         content: Unknownish[typing.Optional[str]] = UNKNOWN,
-        embeds: Unknownish[typing.Optional[typing.List[Embed]]] = UNKNOWN,
+        embeds: Unknownish[typing.Optional[typing.Iterable[Embed]]] = UNKNOWN,
         # TODO: better file type
-        files: Unknownish[typing.List[object]] = UNKNOWN,
+        files: Unknownish[typing.Iterable[object]] = UNKNOWN,
         allowed_mentions: Unknownish[typing.Optional[AllowedMentions]] = UNKNOWN,
         # TODO: partial attachments type
         attachments: Unknownish[
-            typing.Optional[typing.List[typing.Dict[str, typing.Any]]]
+            typing.Optional[typing.Iterable[typing.Dict[str, typing.Any]]]
         ] = UNKNOWN,
-        components: Unknownish[typing.Optional[typing.List[Component]]] = UNKNOWN,
+        components: Unknownish[typing.Optional[typing.Iterable[Component]]] = UNKNOWN,
     ) -> Request[Message]:
         json_payload = prepare(
             self,
             {
                 'content': content,
-                'embeds': embeds,
+                'embeds': tuple_(embeds),
                 'allowed_mentions': allowed_mentions,
-                'components': components,
-                'attachments': attachments,
+                'components': tuple_(components),
+                'attachments': tuple_(attachments),
             },
         )
 
@@ -1813,8 +1831,8 @@ class RawRest:
 
     def get_global_application_commands(
         self, application_id: Snowflake
-    ) -> Request[typing.List[ApplicationCommand]]:
-        return Request[typing.List[ApplicationCommand]](
+    ) -> Request[typing.Tuple[ApplicationCommand]]:
+        return Request[typing.Tuple[ApplicationCommand]](
             'GET', '/applications/{application_id}', {'application_id': application_id}
         )
 
@@ -1824,7 +1842,7 @@ class RawRest:
         *,
         name: str,
         description: str,
-        options: Unknownish[typing.List[ApplicationCommandOption]] = UNKNOWN,
+        options: Unknownish[typing.Iterable[ApplicationCommandOption]] = UNKNOWN,
         default: Unknownish[bool] = UNKNOWN,
         type: Unknownish[CommandTypes] = UNKNOWN,
     ) -> Request[ApplicationCommand]:
@@ -1837,7 +1855,7 @@ class RawRest:
                 {
                     'name': name,
                     'description': description,
-                    'options': options,
+                    'options': tuple_(options),
                     'default': default,
                     'type': type,
                 },
@@ -1860,7 +1878,7 @@ class RawRest:
         *,
         name: Unknownish[str] = UNKNOWN,
         description: Unknownish[str] = UNKNOWN,
-        options: Unknownish[typing.List[ApplicationCommandOption]] = UNKNOWN,
+        options: Unknownish[typing.Iterable[ApplicationCommandOption]] = UNKNOWN,
         default_permission: Unknownish[bool] = UNKNOWN,
     ) -> Request[ApplicationCommand]:
         return Request[ApplicationCommand](
@@ -1872,7 +1890,7 @@ class RawRest:
                 {
                     'name': name,
                     'description': description,
-                    'options': options,
+                    'options': tuple_(options),
                     'default_permission': default_permission,
                 },
             ),
@@ -1888,19 +1906,19 @@ class RawRest:
         )
 
     def bulk_overwrite_global_application_commands(
-        self, application_id: Snowflake, *, commands: typing.List[ApplicationCommand]
-    ) -> Request[typing.List[ApplicationCommand]]:
-        return Request[typing.List[ApplicationCommand]](
+        self, application_id: Snowflake, *, commands: typing.Iterable[ApplicationCommand]
+    ) -> Request[typing.Tuple[ApplicationCommand]]:
+        return Request[typing.Tuple[ApplicationCommand]](
             'PUT',
             '/applications/{application_id}/commands',
             {'application_id': application_id},
-            json=self.conv.unstructure(commands),
+            json=self.conv.unstructure(tuple_(commands)),
         )
 
     def get_guild_application_commands(
         self, application_id: Snowflake, guild_id: Snowflake
-    ) -> Request[typing.List[ApplicationCommand]]:
-        return Request(
+    ) -> Request[typing.Tuple[ApplicationCommand]]:
+        return Request[typing.Tuple[ApplicationCommand]](
             'GET',
             '/applications/{application_id}/guilds/{guild_id}/commands',
             {'application_id': application_id, 'guild_id': guild_id},
@@ -1913,7 +1931,7 @@ class RawRest:
         *,
         name: str,
         description: str,
-        options: Unknownish[typing.List[ApplicationCommandOption]] = UNKNOWN,
+        options: Unknownish[typing.Iterable[ApplicationCommandOption]] = UNKNOWN,
         default: Unknownish[bool] = UNKNOWN,
         type: Unknownish[CommandTypes] = UNKNOWN,
     ) -> Request[ApplicationCommand]:
@@ -1926,7 +1944,7 @@ class RawRest:
                 {
                     'name': name,
                     'description': description,
-                    'options': options,
+                    'options': tuple_(options),
                     'default': default,
                     'type': type,
                 },
@@ -1950,7 +1968,7 @@ class RawRest:
         *,
         name: Unknownish[str] = UNKNOWN,
         description: Unknownish[str] = UNKNOWN,
-        options: Unknownish[typing.List[ApplicationCommandOption]] = UNKNOWN,
+        options: Unknownish[typing.Iterable[ApplicationCommandOption]] = UNKNOWN,
         default_permission: Unknownish[bool] = UNKNOWN,
     ) -> Request[ApplicationCommand]:
         return Request[ApplicationCommand](
@@ -1962,7 +1980,7 @@ class RawRest:
                 {
                     'name': name,
                     'description': description,
-                    'options': options,
+                    'options': tuple_(options),
                     'default_permission': default_permission,
                 },
             ),
@@ -1982,21 +2000,21 @@ class RawRest:
         application_id: Snowflake,
         guild_id: Snowflake,
         *,
-        commands: typing.List[ApplicationCommand],
-    ) -> Request[typing.List[ApplicationCommand]]:
-        return Request[typing.List[ApplicationCommand]](
+        commands: typing.Iterable[ApplicationCommand],
+    ) -> Request[typing.Tuple[ApplicationCommand]]:
+        return Request[typing.Tuple[ApplicationCommand]](
             'PUT',
             '/applications/{application_id}/guilds/{guild_id}/commands',
             {'application_id': application_id, 'guild_id': guild_id},
-            json=self.conv.unstructure(commands),
+            json=self.conv.unstructure(tuple_(commands)),
         )
 
     def get_guild_application_command_permissions(
         self,
         application_id: Snowflake,
         guild_id: Snowflake,
-    ) -> Request[typing.List[GuildApplicationCommandPermissions]]:
-        return Request[typing.List[GuildApplicationCommandPermissions]](
+    ) -> Request[typing.Tuple[GuildApplicationCommandPermissions]]:
+        return Request[typing.Tuple[GuildApplicationCommandPermissions]](
             'GET',
             '/applications/{application_id}/guilds/{guild_id}/commands/permissions',
             {'application_id': application_id, 'guild_id': guild_id},
@@ -2004,8 +2022,8 @@ class RawRest:
 
     def get_application_command_permissions(
         self, application_id: Snowflake, guild_id: Snowflake, command_id: Snowflake
-    ) -> Request[typing.List[ApplicationCommandPermissions]]:
-        return Request[typing.List[ApplicationCommandPermissions]](
+    ) -> Request[typing.Tuple[ApplicationCommandPermissions]]:
+        return Request[typing.Tuple[ApplicationCommandPermissions]](
             'GET',
             '/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/permissions',
             {'application_id': application_id, 'guild_id': guild_id, 'command_id': command_id},
@@ -2017,13 +2035,13 @@ class RawRest:
         guild_id: Snowflake,
         command_id: Snowflake,
         *,
-        permissions: typing.List[ApplicationCommandPermissions],
+        permissions: typing.Iterable[ApplicationCommandPermissions],
     ) -> Request[GuildApplicationCommandPermissions]:
         return Request[GuildApplicationCommandPermissions](
             'PUT',
             '/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/permissions',
             {'application_id': application_id, 'guild_id': guild_id, 'command_id': command_id},
-            json=prepare(self, {'permissions': permissions}),
+            json=prepare(self, {'permissions': tuple_(permissions)}),
         )
 
     def batch_edit_application_command_permissions(
@@ -2033,8 +2051,8 @@ class RawRest:
         *,
         # TODO: partial GuildApplicationCommandPermissions
         new_permissions: typing.Dict[typing.Any, typing.Any],
-    ) -> Request[typing.List[GuildApplicationCommandPermissions]]:
-        return Request[typing.List[GuildApplicationCommandPermissions]](
+    ) -> Request[typing.Tuple[GuildApplicationCommandPermissions]]:
+        return Request[typing.Tuple[GuildApplicationCommandPermissions]](
             'PUT',
             '/applications/{application_id}/guilds/{guild_id}/commands/permissions',
             {'application_id': application_id, 'guild_id': guild_id},
@@ -2049,7 +2067,7 @@ class RawRest:
         *,
         response: InteractionResponse,
         # TODO: narrow file type
-        files: Unknownish[typing.List[object]] = UNKNOWN,
+        files: Unknownish[typing.Iterable[object]] = UNKNOWN,
     ) -> Request[None]:
         return Request[None](
             'POST',
@@ -2080,21 +2098,21 @@ class RawRest:
         interaction_token: str,
         *,
         content: Unknownish[typing.Optional[str]] = UNKNOWN,
-        embeds: Unknownish[typing.Optional[typing.List[Embed]]] = UNKNOWN,
-        # TODO: better file type
-        file: Unknownish[typing.Optional[object]] = UNKNOWN,
+        embeds: Unknownish[typing.Optional[typing.Iterable[Embed]]] = UNKNOWN,
+        # TODO: narrow file type
+        files: Unknownish[typing.Iterable[object]] = UNKNOWN,
         allowed_mentions: Unknownish[typing.Optional[AllowedMentions]] = UNKNOWN,
-        attachments: Unknownish[typing.Optional[typing.List[Attachment]]] = UNKNOWN,
-        components: Unknownish[typing.Optional[typing.List[Component]]] = UNKNOWN,
+        attachments: Unknownish[typing.Optional[typing.Iterable[Attachment]]] = UNKNOWN,
+        components: Unknownish[typing.Optional[typing.Iterable[Component]]] = UNKNOWN,
     ) -> Request[Message]:
         json_payload = prepare(
             self,
             {
                 'content': content,
-                'embeds': embeds,
+                'embeds': tuple_(embeds),
                 'allowed_mentions': allowed_mentions,
-                'components': components,
-                'attachments': attachments,
+                'components': tuple_(components),
+                'attachments': tuple_(attachments),
             },
         )
 
@@ -2104,7 +2122,9 @@ class RawRest:
             '/webhooks/{webhook_id}/{webhook_token}/messages/@original',
             {'webhook_id': application_id, 'webhook_token': interaction_token},
             data={'payload_json': json.dumps(json_payload)} if json_payload else None,
-            files={'file': file} if file != UNKNOWN else None,
+            files={f'files[{i}]': file for i, file in enumerate(files)}
+            if not isinstance(files, UNKNOWN_TYPE)
+            else None,
         )
 
     def delete_original_interaction_response(
@@ -2126,8 +2146,9 @@ class RawRest:
         *,
         # one of these is required:
         content: Unknownish[str] = UNKNOWN,
-        file: Unknownish[object] = UNKNOWN,  # TODO: better file type?
-        embeds: Unknownish[typing.List[Embed]] = UNKNOWN,
+        # TODO: narrow file type
+        files: Unknownish[typing.Iterable[object]] = UNKNOWN,
+        embeds: Unknownish[typing.Iterable[Embed]] = UNKNOWN,
         # optional
         flags: Unknownish[MessageFlags] = UNKNOWN,
         # TODO: interaction followups probably can't do these?
@@ -2136,19 +2157,19 @@ class RawRest:
         tts: Unknownish[bool] = UNKNOWN,
         allowed_mentions: Unknownish[AllowedMentions] = UNKNOWN,
         message_reference: Unknownish[MessageReference] = UNKNOWN,
-        components: Unknownish[typing.List[Component]] = UNKNOWN,
+        components: Unknownish[typing.Iterable[Component]] = UNKNOWN,
     ) -> Request[None]:
         json_payload = prepare(
             self,
             {
                 'content': content,
-                'embeds': embeds,
+                'embeds': tuple_(embeds),
                 'username': username,
                 'avatar_url': avatar_url,
                 'tts': tts,
                 'allowed_mentions': allowed_mentions,
                 'message_reference': message_reference,
-                'components': components,
+                'components': tuple_(components),
             },
         )
 
@@ -2158,7 +2179,9 @@ class RawRest:
             '/webhooks/{webhook_id}/{webhook_token}',
             {'webhook_id': application_id, 'webhook_token': interaction_token},
             data={'payload_json': json.dumps(json_payload)} if json_payload else None,
-            files={'file': file} if file != UNKNOWN else None,
+            files={f'files[{i}]': file for i, file in enumerate(files)}
+            if not isinstance(files, UNKNOWN_TYPE)
+            else None,
         )
 
     def get_followup_message(
@@ -2182,21 +2205,21 @@ class RawRest:
         message_id: Snowflake,
         *,
         content: Unknownish[typing.Optional[str]] = UNKNOWN,
-        embeds: Unknownish[typing.Optional[typing.List[Embed]]] = UNKNOWN,
+        embeds: Unknownish[typing.Optional[typing.Iterable[Embed]]] = UNKNOWN,
         # TODO: better file type
-        file: Unknownish[typing.Optional[object]] = UNKNOWN,
+        files: Unknownish[typing.Iterable[object]] = UNKNOWN,
         allowed_mentions: Unknownish[typing.Optional[AllowedMentions]] = UNKNOWN,
-        attachments: Unknownish[typing.Optional[typing.List[Attachment]]] = UNKNOWN,
-        components: Unknownish[typing.Optional[typing.List[Component]]] = UNKNOWN,
+        attachments: Unknownish[typing.Optional[typing.Iterable[Attachment]]] = UNKNOWN,
+        components: Unknownish[typing.Optional[typing.Iterable[Component]]] = UNKNOWN,
     ) -> Request[Message]:
         json_payload = prepare(
             self,
             {
                 'content': content,
-                'embeds': embeds,
+                'embeds': tuple_(embeds),
                 'allowed_mentions': allowed_mentions,
-                'components': components,
-                'attachments': attachments,
+                'components': tuple_(components),
+                'attachments': tuple_(attachments),
             },
         )
 
@@ -2209,7 +2232,9 @@ class RawRest:
                 'message_id': message_id,
             },
             data={'payload_json': json.dumps(json_payload)} if json_payload else None,
-            files={'file': file} if file != UNKNOWN else None,
+            files={f'files[{i}]': file for i, file in enumerate(files)}
+            if not isinstance(files, UNKNOWN_TYPE)
+            else None,
         )
 
     def delete_followup_message(
