@@ -1,7 +1,9 @@
 # http models for bloom
 from __future__ import annotations
 
+import functools
 import typing
+from typing import Generic
 
 import attr
 
@@ -9,9 +11,27 @@ from bloom._compat import Literal
 
 ReturnT = typing.TypeVar('ReturnT')
 
+if not typing.TYPE_CHECKING:
+    # I'M VERY SORRY
+    @attr.frozen()
+    class GenericHolder:
+        inner: object
+
+    class Generic:
+        __slots__ = ()
+
+        def __class_getitem__(cls, item):
+            if isinstance(item, typing.TypeVar):
+                return cls
+            else:
+                return functools.partial(cls, GenericHolder(item))
+
 
 @attr.frozen()
-class Request(typing.Generic[ReturnT]):
+class Request(Generic[ReturnT]):
+    if not typing.TYPE_CHECKING:
+        # ugh there has to be a better way
+        type_args: GenericHolder
     method: Literal['GET', 'POST', 'PATCH', 'DELETE', 'PUT']
     route: str
     args: typing.Dict[str, typing.Union[int, str]]
