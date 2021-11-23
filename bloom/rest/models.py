@@ -17,7 +17,7 @@ if not typing.TYPE_CHECKING:
     class GenericHolder:
         inner: object
 
-    class Generic:
+    class Generic:  # noqa: F811
         __slots__ = ()
 
         def __class_getitem__(cls, item):
