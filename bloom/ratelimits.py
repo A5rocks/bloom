@@ -161,6 +161,9 @@ class RatelimitingState:
             result = await self.http.request(req.method, req.url, **kw_args)
             headers = result.headers
 
+            if result.status_code == 400:
+                print('error:', result.json())
+
             # TODO: handle errors (429, ...) correctly (including decoding of error type)
             result.raise_for_status()
 

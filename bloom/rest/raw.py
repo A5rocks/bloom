@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 import json
 import typing
+import urllib.parse
 
 import attr
 from cattr import Converter
@@ -91,6 +92,23 @@ def tuple_(
             return tuple(it)
 
 
+@typing.overload
+def parse_reason(reason: str) -> str:
+    ...
+
+
+@typing.overload
+def parse_reason(reason: Unknownish[str]) -> Unknownish[str]:
+    ...
+
+
+def parse_reason(reason: Unknownish[str]) -> Unknownish[str]:
+    if isinstance(reason, UNKNOWN_TYPE):
+        return reason
+    else:
+        return urllib.parse.quote(reason, safe=":/?#[]@!$&'()*+,;=")
+
+
 @attr.define()
 class RawRest:
     # every single API method.
@@ -177,7 +195,7 @@ class RawRest:
                     'rate_limit_per_user': rate_limit_per_user,
                 },
             ),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def delete_channel(
@@ -187,7 +205,7 @@ class RawRest:
             'DELETE',
             '/channels/{channel_id}',
             {'channel_id': channel_id},
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def get_channel_messages(
@@ -272,7 +290,6 @@ class RawRest:
         )
 
     # TODO: better emoji type?
-    # TODO: don't forget to make None == 204 No Content.
     def create_reaction(
         self, channel_id: Snowflake, message_id: Snowflake, *, emoji: str
     ) -> Request[None]:
@@ -321,7 +338,6 @@ class RawRest:
             params=prepare(self, {'after': after, 'limit': limit}),
         )
 
-    # TODO: what does this actually return??
     def delete_all_reactions(self, channel_id: Snowflake, message_id: Snowflake) -> Request[None]:
         return Request[None](
             'DELETE',
@@ -329,7 +345,6 @@ class RawRest:
             {'channel_id': channel_id, 'message_id': message_id},
         )
 
-    # TODO: what does this actually return??
     def delete_all_reactions_for_emoji(
         self, channel_id: Snowflake, message_id: Snowflake, *, emoji: str
     ) -> Request[None]:
@@ -395,7 +410,7 @@ class RawRest:
             '/channels/{channel_id}/messages/bulk-delete',
             {'channel_id': channel_id},
             json=prepare(self, {'messages': tuple_(messages)}),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def edit_channel_permissions(
@@ -413,7 +428,7 @@ class RawRest:
             '/channels/{channel_id}/permissions/{overwrite_id}',
             {'channel_id': channel_id, 'overwrite_id': overwrite_id},
             json=prepare(self, {'allow': allow, 'deny': deny, 'type': type}),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def get_channel_invites(self, channel_id: Snowflake) -> Request[typing.Tuple[InviteMetadata]]:
@@ -450,7 +465,7 @@ class RawRest:
                     'target_application_id': target_application_id,
                 },
             ),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def delete_channel_permission(
@@ -460,7 +475,7 @@ class RawRest:
             'DELETE',
             '/channels/{channel_id}/permissions/{overwrite_id}',
             {'channel_id': channel_id, 'overwrite_id': overwrite_id},
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def follow_news_channel(
@@ -488,7 +503,7 @@ class RawRest:
             'PUT',
             '/channels/{channel_id}/pins/{message_id}',
             {'channel_id': channel_id, 'message_id': message_id},
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def unpin_message(
@@ -498,7 +513,7 @@ class RawRest:
             'DELETE',
             '/channels/{channel_id}/pins/{message_id}',
             {'channel_id': channel_id, 'message_id': message_id},
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     # TODO: what does this return?
@@ -543,7 +558,7 @@ class RawRest:
             '/channels/{channel_id}/messages/{message_id}/threads',
             {'channel_id': channel_id, 'message_id': message_id},
             json=prepare(self, {'name': name, 'auto_archive_duration': auto_archive_duration}),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def start_thread_without_message(
@@ -562,7 +577,7 @@ class RawRest:
             json=prepare(
                 self, {'name': name, 'auto_archive_duration': auto_archive_duration, 'type': type}
             ),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def join_thread(self, channel_id: Snowflake) -> Request[None]:
@@ -671,8 +686,7 @@ class RawRest:
         name: str,
         # https://discord.com/developers/docs/reference#image-data
         image: str,
-        # TODO: is `roles` optional?
-        roles: typing.Iterable[Snowflake],
+        roles: Unknownish[typing.Iterable[Snowflake]] = UNKNOWN,
         reason: Unknownish[str] = UNKNOWN,
     ) -> Request[Emoji]:
         return Request[Emoji](
@@ -680,7 +694,7 @@ class RawRest:
             '/guilds/{guild_id}/emojis',
             {'guild_id': guild_id},
             json=prepare(self, {'name': name, 'image': image, 'roles': tuple_(roles)}),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def modify_guild_emoji(
@@ -697,7 +711,7 @@ class RawRest:
             '/guilds/{guild_id}/emojis/{emoji_id}',
             {'guild_id': guild_id, 'emoji_id': emoji_id},
             json=prepare(self, {'name': name, 'roles': tuple_(roles)}),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def delete_guild_emoji(
@@ -707,7 +721,7 @@ class RawRest:
             'DELETE',
             '/guilds/{guild_id}/emojis/{emoji_id}',
             {'guild_id': guild_id, 'emoji_id': emoji_id},
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def create_guild(
@@ -820,7 +834,7 @@ class RawRest:
                     'description': description,
                 },
             ),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def delete_guild(self, guild_id: Snowflake) -> Request[None]:
@@ -866,7 +880,7 @@ class RawRest:
                     'parent_id': parent_id,
                 },
             ),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def modify_guild_channel_permissions(
@@ -881,7 +895,7 @@ class RawRest:
             '/guilds/{guild_id}/channels',
             {'guild_id': guild_id},
             json=self.conv.unstructure(tuple_(params)),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     # TODO: this returns threads not channels... ADT?
@@ -970,7 +984,7 @@ class RawRest:
                     'channel_id': channel_id,
                 },
             ),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def modify_current_member(
@@ -985,7 +999,7 @@ class RawRest:
             '/guilds/{guild_id}/members/@me',
             {'guild_id': guild_id},
             json=prepare(self, {'nick': nick}),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     # TODO: does this actually return a str of the nickname?
@@ -1003,7 +1017,7 @@ class RawRest:
             '/guilds/{guild_id}/members/@me/nick',
             {'guild_id': guild_id},
             json=prepare(self, {'nick': nick}),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def add_guild_member_role(
@@ -1018,7 +1032,7 @@ class RawRest:
             'PUT',
             '/guilds/{guild_id}/members/{user_id}/roles/{role_id}',
             {'guild_id': guild_id, 'user_id': user_id, 'role_id': role_id},
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def remove_guild_member_role(
@@ -1033,7 +1047,7 @@ class RawRest:
             'DELETE',
             '/guilds/{guild_id}/members/{user_id}/roles/{role_id}',
             {'guild_id': guild_id, 'user_id': user_id, 'role_id': role_id},
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def remove_guild_member(
@@ -1043,7 +1057,7 @@ class RawRest:
             'DELETE',
             '/guilds/{guild_id}/members/{user_id}',
             {'guild_id': guild_id, 'user_id': user_id},
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def get_guild_bans(self, guild_id: Snowflake) -> Request[typing.Tuple[Ban]]:
@@ -1067,7 +1081,7 @@ class RawRest:
             '/guilds/{guild_id}/bans/{user_id}',
             {'guild_id': guild_id, 'user_id': user_id},
             json=prepare(self, {'delete_message_days': delete_message_days}),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def remove_guild_ban(
@@ -1077,7 +1091,7 @@ class RawRest:
             'DELETE',
             '/guilds/{guild_id}/bans/{user_id}',
             {'guild_id': guild_id, 'user_id': user_id},
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def get_guild_roles(self, guild_id: Snowflake) -> Request[typing.Tuple[Role]]:
@@ -1114,7 +1128,7 @@ class RawRest:
                     'mentionable': mentionable,
                 },
             ),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def modify_guild_role_positions(
@@ -1129,7 +1143,7 @@ class RawRest:
             '/guilds/{guild_id}/roles',
             {'guild_id': guild_id},
             json=self.conv.unstructure(parameters),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def modify_guild_role(
@@ -1161,7 +1175,7 @@ class RawRest:
                     'mentionable': mentionable,
                 },
             ),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def delete_guild_role(
@@ -1171,7 +1185,7 @@ class RawRest:
             'DELETE',
             '/guilds/{guild_id}/roles/{role_id}',
             {'guild_id': guild_id, 'role_id': role_id},
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     # TODO: should this get a seperate object since thing inside cannot be None?
@@ -1224,7 +1238,7 @@ class RawRest:
                     ),
                 },
             ),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def get_guild_voice_regions(self, guild_id: Snowflake) -> Request[typing.Tuple[VoiceRegion]]:
@@ -1249,7 +1263,7 @@ class RawRest:
             'DELETE',
             '/guilds/{guild_id}/integrations/{integration_id}',
             {'guild_id': guild_id, 'integration_id': integration_id},
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def get_guild_widget_settings(self, guild_id: Snowflake) -> Request[GuildWidget]:
@@ -1268,7 +1282,7 @@ class RawRest:
             'PATCH',
             '/guilds/{guild_id}/widget',
             {'guild_id': guild_id},
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     # TODO: is it even worth making a model for this one route?
@@ -1323,7 +1337,7 @@ class RawRest:
                     'description': description,
                 },
             ),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     # TODO: what does this return?
@@ -1447,7 +1461,7 @@ class RawRest:
             'DELETE',
             '/invites/{invite_code}',
             {'invite_code': invite_code},
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     # TODO: what does this return?
@@ -1466,7 +1480,7 @@ class RawRest:
             json=prepare(
                 self, {'channel_id': channel_id, 'topic': topic, 'privacy_level': privacy_level}
             ),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def get_stage_instance(self, channel_id: Snowflake) -> Request[StageInstance]:
@@ -1488,7 +1502,7 @@ class RawRest:
             '/stage-instances/{channel_id}',
             {'channel_id': channel_id},
             json=prepare(self, {'topic': topic, 'privacy_level': privacy_level}),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     # TODO: what does this return?
@@ -1499,7 +1513,7 @@ class RawRest:
             'DELETE',
             '/stage-instances/{channel_id}',
             {'channel_id': channel_id},
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def get_sticker(self, sticker_id: Snowflake) -> Request[Sticker]:
@@ -1538,7 +1552,7 @@ class RawRest:
             {'guild_id': guild_id},
             data=prepare(self, {'name': name, 'description': description, 'tags': tags}),
             files={'file': file},
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def modify_guild_sticker(
@@ -1556,7 +1570,7 @@ class RawRest:
             '/guilds/{guild_id}/stickers/{sticker_id}',
             {'guild_id': guild_id, 'sticker_id': sticker_id},
             json=prepare(self, {'name': name, 'description': description, 'tags': tags}),
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def delete_guild_sticker(
@@ -1566,7 +1580,7 @@ class RawRest:
             'DELETE',
             '/guilds/{guild_id}/stickers/{sticker_id}',
             {'guild_id': guild_id, 'sticker_id': sticker_id},
-            headers=prepare(self, {'X-Audit-Log-Reason': reason}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def get_current_user(self) -> Request[User]:
