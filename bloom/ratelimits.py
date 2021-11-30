@@ -42,12 +42,15 @@ import contextlib
 import typing
 
 import attr
+import cattr
 import httpx
 import trio
 
+from bloom._compat import get_args
 from bloom.rest.models import Request
 
 API_BASE_URL = 'https://discord.com/api/v9'
+ReturnT = typing.TypeVar('ReturnT')
 
 
 class HttpResponseProto(typing.Protocol):
@@ -105,6 +108,7 @@ class Bucket:
 @attr.frozen()
 class RatelimitingState:
     http: HttpClientProto
+    converter: cattr.Converter
 
     # XXX: *technically* this is a leak but... who cares.
     locks: typing.Dict[
@@ -121,7 +125,7 @@ class RatelimitingState:
         str, typing.Dict[typing.Optional[typing.Union[int, str]], Bucket]
     ] = attr.Factory(lambda: collections.defaultdict(lambda: {}))
 
-    async def request(self, req: Request[typing.Any]) -> typing.Any:
+    async def request(self, req: Request[ReturnT]) -> ReturnT:
         # this code makes the assumption of only a single major param.
         major_parameter = req.args.get('channel_id') or req.args.get('guild_id')
 
@@ -156,6 +160,8 @@ class RatelimitingState:
 
             result = await self.http.request(req.method, req.url, **kw_args)
             headers = result.headers
+
+            # TODO: handle errors (429, ...) correctly (including decoding of error type)
             result.raise_for_status()
 
             # process the result
@@ -181,18 +187,27 @@ class RatelimitingState:
                 # ?? no ratelimit?
                 pass
 
-            # TODO: not json, ReturnT ...
-            if result.status_code == 204:
-                # FIXME: this is a hack.
-                return None
+            # runtime-only attribute :S
+            result_type = req.type_args.inner  # type: ignore[attr-defined]
+
+            # None == 204 == no body
+            if result_type is None or None in get_args(result_type):
+                if result.status_code == 204:
+                    return None  # type: ignore[return-value]  # trust me mypy :-)
+                else:
+                    # TODO: specialize error (?)
+                    raise Exception("Expected no body, got a body.")
             else:
-                return result.json()
+                return_val: ReturnT = self.converter.structure(result.json(), result_type)
+                return return_val
 
     @classmethod
     @contextlib.asynccontextmanager
-    async def with_httpx(cls, token: str) -> typing.AsyncIterator[RatelimitingState]:
+    async def with_httpx(
+        cls, token: str, converter: cattr.Converter
+    ) -> typing.AsyncIterator[RatelimitingState]:
         async with httpx.AsyncClient(
             base_url=API_BASE_URL,
             headers={'Authorization': f'Bot {token}'},
         ) as client:
-            yield RatelimitingState(client)
+            yield RatelimitingState(client, converter)

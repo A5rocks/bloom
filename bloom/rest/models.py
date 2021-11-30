@@ -31,7 +31,7 @@ if not typing.TYPE_CHECKING:
 class Request(Generic[ReturnT]):
     if not typing.TYPE_CHECKING:
         # ugh there has to be a better way
-        type_args: GenericHolder
+        type_args: GenericHolder = attr.field(validator=attr.validators.instance_of(GenericHolder))
     method: Literal['GET', 'POST', 'PATCH', 'DELETE', 'PUT']
     route: str
     args: typing.Dict[str, typing.Union[int, str]]
