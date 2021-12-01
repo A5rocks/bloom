@@ -709,7 +709,7 @@ async def connect(
     max_concurrency: int = 1,
 ) -> typing.NoReturn:
     """Connects to the gateway with a specified token."""
-    converter = _register_converter(make_converter())
+    converter = _register_converter(make_converter(omit_if_default=True))
     buckets = [_Bucket(trio.lowlevel.ParkingLot()) for _ in range(max_concurrency)]
 
     async with trio.open_nursery() as nursery:
