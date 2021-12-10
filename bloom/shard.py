@@ -47,6 +47,11 @@ tags_to_model = {
     'GUILD_ROLE_CREATE': gateway_models.GuildRoleCreateEvent,
     'GUILD_ROLE_UPDATE': gateway_models.GuildRoleUpdateEvent,
     'GUILD_ROLE_DELETE': gateway_models.GuildRoleDeleteEvent,
+    'GUILD_SCHEDULED_EVENT_CREATE': gateway_models.GuildScheduledEventCreateEvent,
+    'GUILD_SCHEDULED_EVENT_UPDATE': gateway_models.GuildScheduledEventUpdateEvent,
+    'GUILD_SCHEDULED_EVENT_DELETE': gateway_models.GuildScheduledEventDeleteEvent,
+    'GUILD_SCHEDULED_EVENT_USER_ADD': gateway_models.GuildScheduledEventUserAddEvent,
+    'GUILD_SCHEDULED_EVENT_USER_REMOVE': gateway_models.GuildScheduledEventUserRemoveEvent,
     'INTEGRATION_CREATE': gateway_models.IntegrationCreateEvent,
     'INTEGRATION_UPDATE': gateway_models.IntegrationUpdateEvent,
     'INTEGRATION_DELETE': gateway_models.IntegrationDeleteEvent,
@@ -188,6 +193,7 @@ class Intents(enum.IntFlag):
     DIRECT_MESSAGES = 1 << 12
     DIRECT_MESSAGE_REACTIONS = 1 << 13
     DIRECT_MESSAGE_TYPING = 1 << 14
+    GUILD_SCHEDULED_EVENTS = 1 << 16
 
     @classmethod
     def all(cls) -> Intents:

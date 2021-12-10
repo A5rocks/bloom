@@ -21,6 +21,7 @@ from .channel import (
 )
 from .emoji import Emoji
 from .guild import Guild, GuildMember, Integration
+from .guild_scheduled_events import GuildScheduledEvent
 from .interaction import Interaction
 from .message import Message
 from .message_components import Component
@@ -348,6 +349,35 @@ class GuildRoleDeleteEvent:
     guild_id: Snowflake
     #: id of the role
     role_id: Snowflake
+
+
+@attr.frozen(kw_only=True)
+class GuildScheduledEventCreateEvent(GuildScheduledEvent):
+    pass
+
+
+@attr.frozen(kw_only=True)
+class GuildScheduledEventUpdateEvent(GuildScheduledEvent):
+    pass
+
+
+@attr.frozen(kw_only=True)
+class GuildScheduledEventDeleteEvent(GuildScheduledEvent):
+    pass
+
+
+@attr.frozen(kw_only=True)
+class GuildScheduledEventUserAddEvent:
+    guild_scheduled_event_id: Snowflake
+    user_id: Snowflake
+    guild_id: Snowflake
+
+
+@attr.frozen(kw_only=True)
+class GuildScheduledEventUserRemoveEvent:
+    guild_scheduled_event_id: Snowflake
+    user_id: Snowflake
+    guild_id: Snowflake
 
 
 @attr.frozen(kw_only=True)

@@ -7,6 +7,7 @@ from enum import Enum
 import attr
 
 from .base import UNKNOWN, Unknownish
+from .guild_scheduled_events import GuildScheduledEvent
 from .user import User
 
 
@@ -15,7 +16,8 @@ class Invite:
     #: the invite code (unique ID)
     code: str
     #: the channel this invite is for
-    channel: t.Dict[str, t.Any]
+    # TODO: partial, investigate
+    channel: t.Optional[t.Dict[str, t.Any]]
     #: the guild this invite is for
     guild: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
     #: the user who created the invite
@@ -39,6 +41,9 @@ class Invite:
     #: stage instance data if there is a public Stage instance in the Stage
     #: channel this invite is for
     stage_instance: Unknownish[InviteStageInstance] = UNKNOWN
+    #: guild scheduled event data, only included if `guild_scheduled_event_id`
+    #: contains a valid guild scheduled event id
+    guild_scheduled_event: Unknownish[GuildScheduledEvent] = UNKNOWN
 
 
 class InviteTargetTypes(Enum):

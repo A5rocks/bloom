@@ -7,6 +7,7 @@ import attr
 
 from .base import UNKNOWN, Snowflake, Unknownish
 from .channel import Channel
+from .guild_scheduled_events import GuildScheduledEvent
 from .user import User
 from .webhook import Webhook
 
@@ -24,6 +25,8 @@ class AuditLog:
     integrations: t.List[t.Dict[str, t.Any]]
     #: list of threads in the audit log
     threads: t.List[Channel]
+    #: list of guild scheduled events found in the audit log
+    guild_scheduled_events: t.List[GuildScheduledEvent]
 
 
 @attr.frozen(kw_only=True)
@@ -86,6 +89,12 @@ class AuditLogEvents(Enum):
     STICKER_CREATE = 90
     STICKER_UPDATE = 91
     STICKER_DELETE = 92
+    GUILD_SCHEDULED_EVENT_CREATE = 100
+    GUILD_SCHEDULED_EVENT_UPDATE = 101
+    GUILD_SCHEDULED_EVENT_DELETE = 102
+    THREAD_CREATE = 110
+    THREAD_UPDATE = 111
+    THREAD_DELETE = 112
 
 
 @attr.frozen(kw_only=True)
@@ -153,8 +162,9 @@ class AuditLogChangeKey(Enum):
     #: a "channel" just changed. the values are of type integer
     #: description: voice channel bitrate changed
     BITRATE = 'bitrate'
-    #: a "invite" just changed. the values are of type snowflake
-    #: description: channel for invite code changed
+    #: a "invite or guild scheduled event" just changed. the values are of
+    #:   type snowflake
+    #: description: channel for invite code or guild scheduled event changed
     CHANNEL_ID = 'channel_id'
     #: a "invite" just changed. the values are of type string
     #: description: invite code changed
@@ -176,7 +186,8 @@ class AuditLogChangeKey(Enum):
     #: description: a permission on a text or voice channel was denied for a
     #:    role
     DENY = 'deny'
-    #: a "guild or sticker" just changed. the values are of type string
+    #: a " guild or sticker or guild scheduled event" just changed. the values
+    #:   are of type string
     #: description: description changed
     DESCRIPTION = 'description'
     #: a "guild" just changed. the values are of type string
@@ -185,6 +196,9 @@ class AuditLogChangeKey(Enum):
     #: a "integration" just changed. the values are of type boolean
     #: description: integration emoticons enabled/disabled
     ENABLE_EMOTICONS = 'enable_emoticons'
+    #: a "guild scheduled event" just changed. the values of type integer.
+    #: description: entity type of guild scheduled event was changed
+    ENTITY_TYPE = "entity_type"
     #: a "integration" just changed. the values are of type integer
     #: description: integration expiring subscriber behavior changed
     EXPIRE_BEHAVIOR = 'expire_behavior'
@@ -215,6 +229,9 @@ class AuditLogChangeKey(Enum):
     #: a "invite" just changed. the values are of type snowflake
     #: description: person who created invite code changed
     INVITER_ID = 'inviter_id'
+    #: a "guild scheduled event" just changed. the values are of type string
+    #: description: change in channel id for guild scheduled event
+    LOCATION = "location"
     #: a "thread" just changed. the values are of type bool
     #: description: thread is now locked/unlocked
     LOCKED = 'locked'
@@ -258,8 +275,8 @@ class AuditLogChangeKey(Enum):
     #: a "guild" just changed. the values are of type string
     #: description: preferred locale changed
     PREFERRED_LOCALE = 'preferred_locale'
-    #: a "stage instance" just changed. the values are of type integer
-    #:    (privacy level)
+    #: a "stage instance or guild scheduled event" just changed. the values
+    #:   are of type integer (privacy level)
     #: description: privacy level of the stage instance changed
     PRIVACY_LEVEL = 'privacy_level'
     #: a "guild" just changed. the values are of type integer
@@ -282,6 +299,9 @@ class AuditLogChangeKey(Enum):
     #: a "guild" just changed. the values are of type string
     #: description: invite splash page artwork changed
     SPLASH_HASH = 'splash_hash'
+    #: a "guild scheduled event" just changed. the values are of type integer
+    #:   (status)
+    #: description: status of guild scheduled event was changed
     #: a "guild" just changed. the values are of type snowflake
     #: description: id of the system channel changed
     SYSTEM_CHANNEL_ID = 'system_channel_id'

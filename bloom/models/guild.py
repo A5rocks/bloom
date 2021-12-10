@@ -9,6 +9,7 @@ import attr
 from .base import UNKNOWN, Snowflake, Unknownish
 from .channel import Channel
 from .emoji import Emoji
+from .guild_scheduled_events import GuildScheduledEvent
 from .permissions import Role
 from .stage_instance import StageInstance
 from .sticker import Sticker
@@ -130,6 +131,10 @@ class Guild:
     welcome_screen: Unknownish[WelcomeScreen] = UNKNOWN
     #: custom guild stickers
     stickers: Unknownish[t.List[Sticker]] = UNKNOWN
+    #: the scheduled events in the guild
+    guild_scheduled_events: Unknownish[t.List[GuildScheduledEvent]] = UNKNOWN
+    #: whether the guild has the boost progress bar enabled
+    premium_progress_bar_enabled: bool
 
 
 class DefaultMessageNotificationLevel(Enum):
@@ -477,3 +482,14 @@ class UserConnectionVisibility(Enum):
     NONE = 0
     #: visible to everyone
     EVERYONE = 1
+
+
+@attr.frozen(kw_only=True)
+class GuildScheduledEventUser:
+    #: the scheduled event id which the user subscribed to
+    guild_scheduled_event_id: Snowflake
+    #: user which subscribed to an event
+    user: User
+    #: guild member data for this user for the guild which this event belongs
+    #: to, if any
+    member: Unknownish[GuildMember] = UNKNOWN

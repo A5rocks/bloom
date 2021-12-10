@@ -43,6 +43,7 @@ from bloom.models.guild import (
     GuildFeatures,
     GuildMember,
     GuildPreview,
+    GuildScheduledEventUser,
     GuildWidget,
     Integration,
     ModifyGuildChannelPositionsParameters,
@@ -54,6 +55,13 @@ from bloom.models.guild import (
     WelcomeScreen,
     WelcomeScreenChannel,
     WidgetStyleOptions,
+)
+from bloom.models.guild_scheduled_events import (
+    EventStatus,
+    GuildScheduledEvent,
+    GuildScheduledEventEntityMetadata,
+    GuildScheduledEventEntityType,
+    GuildScheduledEventPrivacyLevel,
 )
 from bloom.models.guild_template import GuildTemplate
 from bloom.models.invite import Invite, InviteMetadata, InviteTargetTypes
@@ -551,6 +559,7 @@ class RawRest:
         *,
         name: str,
         auto_archive_duration: Unknownish[int] = UNKNOWN,
+        rate_limit_per_user: Unknownish[typing.Optional[int]] = UNKNOWN,
         reason: Unknownish[str] = UNKNOWN,
     ) -> Request[Channel]:
         return Request[Channel](
@@ -568,6 +577,8 @@ class RawRest:
         name: str,
         auto_archive_duration: Unknownish[int],
         type: ChannelTypes,
+        invitable: bool,
+        rate_limit_per_user: Unknownish[typing.Optional[int]] = UNKNOWN,
         reason: Unknownish[str] = UNKNOWN,
     ) -> Request[Channel]:
         return Request[Channel](
@@ -656,7 +667,6 @@ class RawRest:
         self,
         channel_id: Snowflake,
         *,
-        # TODO: why is this a snowflake???
         before: Unknownish[Snowflake] = UNKNOWN,
         limit: Unknownish[int] = UNKNOWN,
     ) -> Request[typing.Tuple[Channel]]:
@@ -804,6 +814,7 @@ class RawRest:
         preferred_locale: Unknownish[typing.Optional[str]] = UNKNOWN,
         features: Unknownish[typing.Iterable[GuildFeatures]] = UNKNOWN,
         description: Unknownish[typing.Optional[str]] = UNKNOWN,
+        premium_progress_bar_enabled: Unknownish[typing.Optional[bool]] = UNKNOWN,
         reason: Unknownish[str] = UNKNOWN,
     ) -> Request[Guild]:
         return Request[Guild](
@@ -832,6 +843,7 @@ class RawRest:
                     'preferred_locale': preferred_locale,
                     'features': tuple_(features),
                     'description': description,
+                    'premium_progress_bar_enabled': premium_progress_bar_enabled,
                 },
             ),
             headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
@@ -1002,7 +1014,6 @@ class RawRest:
             headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
-    # TODO: does this actually return a str of the nickname?
     def modify_current_user_nick(
         self,
         guild_id: Snowflake,
@@ -1010,9 +1021,9 @@ class RawRest:
         # TODO: why ON EARTH is this not required in the api???
         nick: Unknownish[typing.Optional[str]] = UNKNOWN,
         reason: Unknownish[str] = UNKNOWN,
-    ) -> Request[str]:
+    ) -> Request[GuildMember]:
         # deprecated for modify current member
-        return Request[str](
+        return Request[GuildMember](
             'PATCH',
             '/guilds/{guild_id}/members/@me/nick',
             {'guild_id': guild_id},
@@ -1379,6 +1390,131 @@ class RawRest:
             json=prepare(self, {'channel_id': channel_id, 'suppress': suppress}),
         )
 
+    def list_scheduled_events_for_guild(
+        self, guild_id: Snowflake, *, with_user_count: Unknownish[bool] = UNKNOWN
+    ) -> Request[typing.List[GuildScheduledEvent]]:
+        return Request[typing.List[GuildScheduledEvent]](
+            'GET',
+            '/guilds/{guild_id}/scheduled-events',
+            {'guild_id': guild_id},
+            json=prepare(self, {'with_user_count': with_user_count}),
+        )
+
+    # TODO: shouldn't this take an audit log reason?
+    def create_guild_scheduled_event(
+        self,
+        guild_id: Snowflake,
+        *,
+        channel_id: Unknownish[Snowflake] = UNKNOWN,
+        entity_metadata: Unknownish[GuildScheduledEventEntityMetadata] = UNKNOWN,
+        name: str,
+        privacy_level: GuildScheduledEventPrivacyLevel,
+        scheduled_start_time: datetime.datetime,
+        scheduled_end_time: Unknownish[datetime.datetime] = UNKNOWN,
+        description: Unknownish[str] = UNKNOWN,
+        entity_type: GuildScheduledEventEntityType,
+    ) -> Request[typing.List[GuildScheduledEvent]]:
+        return Request[typing.List[GuildScheduledEvent]](
+            'POST',
+            '/guilds/{guild_id}/scheduled-events',
+            {'guild_id': guild_id},
+            json=prepare(
+                self,
+                {
+                    'channel_id': channel_id,
+                    'entity_metadata': entity_metadata,
+                    'name': name,
+                    'privacy_level': privacy_level,
+                    'scheduled_start_time': scheduled_start_time,
+                    'scheduled_end_time': scheduled_end_time,
+                    'description': description,
+                    'entity_type': entity_type,
+                },
+            ),
+        )
+
+    def get_guild_scheduled_event(
+        self,
+        guild_id: Snowflake,
+        event_id: Snowflake,
+        *,
+        with_user_count: Unknownish[bool] = UNKNOWN,
+    ) -> Request[GuildScheduledEvent]:
+        return Request[GuildScheduledEvent](
+            'GET',
+            '/guilds/{guild_id}/scheduled-events/{event_id}',
+            {'guild_id': guild_id, 'event_id': event_id},
+            json=prepare(self, {'with_user_count': with_user_count}),
+        )
+
+    # TODO: are the arguments to this... nullable too?
+    # TODO: does this not take an audit log reason
+    def modify_guild_scheduled_event(
+        self,
+        guild_id: Snowflake,
+        event_id: Snowflake,
+        *,
+        channel_id: Unknownish[Snowflake] = UNKNOWN,
+        entity_metadata: Unknownish[GuildScheduledEventEntityMetadata] = UNKNOWN,
+        name: Unknownish[str] = UNKNOWN,
+        privacy_level: Unknownish[GuildScheduledEventPrivacyLevel] = UNKNOWN,
+        scheduled_start_time: Unknownish[datetime.datetime] = UNKNOWN,
+        scheduled_end_time: Unknownish[datetime.datetime] = UNKNOWN,
+        description: Unknownish[str] = UNKNOWN,
+        entity_type: Unknownish[GuildScheduledEventEntityType] = UNKNOWN,
+        status: Unknownish[EventStatus] = UNKNOWN,
+    ) -> Request[GuildScheduledEvent]:
+        return Request[GuildScheduledEvent](
+            'PATCH',
+            '/guilds/{guild_id}/scheduled-events/{event_id}',
+            {'guild_id': guild_id, 'event_id': event_id},
+            json=prepare(
+                self,
+                {
+                    'channel_id': channel_id,
+                    'entity_metadata': entity_metadata,
+                    'name': name,
+                    'privacy_level': privacy_level,
+                    'scheduled_start_time': scheduled_start_time,
+                    'scheduled_end_time': scheduled_end_time,
+                    'description': description,
+                    'entity_type': entity_type,
+                    'status': status,
+                },
+            ),
+        )
+
+    # TODO: does this take an audit log reason?
+    def delete_guild_scheduled_event(
+        self, guild_id: Snowflake, event_id: Snowflake
+    ) -> Request[None]:
+        return Request[None](
+            'DELETE',
+            '/guilds/{guild_id}/scheduled-events/{event_id}',
+            {'guild_id': guild_id, 'event_id': event_id},
+        )
+
+    # `users`: array of user objects with an optional guild_member property for each user
+    def get_guild_scheduled_event_users(
+        self,
+        guild_id: Snowflake,
+        event_id: Snowflake,
+        *,
+        limit: Unknownish[int] = UNKNOWN,
+        with_member: Unknownish[bool] = UNKNOWN,
+        before: Unknownish[Snowflake] = UNKNOWN,
+        after: Unknownish[Snowflake] = UNKNOWN,
+    ) -> Request[typing.List[GuildScheduledEventUser]]:
+        return Request[typing.List[GuildScheduledEventUser]](
+            'GET',
+            '/guilds/{guild_id}/scheduled-events/{event_id}/users',
+            {'guild_id': guild_id, 'event_id': event_id},
+            json=prepare(
+                self,
+                {'limit': limit, 'with_member': with_member, 'before': before, 'after': after},
+            ),
+        )
+
     def get_guild_template(self, template_code: str) -> Request[GuildTemplate]:
         return Request[GuildTemplate](
             'GET', '/guilds/template/{template_code}', {'template_code': template_code}
@@ -1451,8 +1587,24 @@ class RawRest:
             {'guild_id': guild_id, 'template_code': template_code},
         )
 
-    def get_invite(self, invite_code: str) -> Request[Invite]:
-        return Request[Invite]('GET', '/invites/{invite_code}', {'invite_code': invite_code})
+    def get_invite(
+        self,
+        invite_code: str,
+        *,
+        with_counts: Unknownish[bool] = UNKNOWN,
+        with_expiration: Unknownish[bool] = UNKNOWN,
+        guild_scheduled_event_id: Unknownish[Snowflake] = UNKNOWN,
+    ) -> Request[Invite]:
+        return Request[Invite](
+            'GET',
+            '/invites/{invite_code}',
+            {'invite_code': invite_code},
+            params={
+                'with_counts': with_counts,
+                'with_expiration': with_expiration,
+                'guild_scheduled_event_id': guild_scheduled_event_id,
+            },
+        )
 
     def delete_invite(
         self, invite_code: str, *, reason: Unknownish[str] = UNKNOWN
@@ -1472,8 +1624,8 @@ class RawRest:
         topic: str,
         privacy_level: Unknownish[PrivacyLevel] = UNKNOWN,
         reason: Unknownish[str] = UNKNOWN,
-    ) -> Request[None]:
-        return Request[None](
+    ) -> Request[typing.Any]:
+        return Request[typing.Any](
             'POST',
             '/stage-instances',
             {},
@@ -1603,6 +1755,11 @@ class RawRest:
     # TODO: partial guild object?
     def get_current_user_guilds(self) -> Request[typing.Tuple[typing.Dict[str, typing.Any]]]:
         return Request[typing.Tuple[typing.Dict[str, typing.Any]]]('GET', '/users/@me/guilds', {})
+
+    def get_current_user_guild_member(self, guild_id: Snowflake) -> Request[GuildMember]:
+        return Request[GuildMember](
+            'GET', '/users/@me/guilds/{guild_id}/member', {'guild_id': guild_id}
+        )
 
     def leave_guild(self, guild_id: Snowflake) -> Request[None]:
         return Request[None]('DELETE', '/users/@me/guilds/{guild_id}', {'guild_id': guild_id})
