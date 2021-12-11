@@ -8,9 +8,9 @@ import urllib.parse
 import attr
 from cattr import Converter
 
-from bloom._compat import Literal
-from bloom.models.application import Application
-from bloom.models.application_commands import (
+from bloom.ll._compat import Literal
+from bloom.ll.models.application import Application
+from bloom.ll.models.application_commands import (
     ApplicationCommand,
     ApplicationCommandOption,
     ApplicationCommandPermissions,
@@ -18,9 +18,9 @@ from bloom.models.application_commands import (
     GuildApplicationCommandPermissions,
     InteractionResponse,
 )
-from bloom.models.audit_log import AuditLog, AuditLogEvents
-from bloom.models.base import UNKNOWN, UNKNOWN_TYPE, Snowflake, Unknownish
-from bloom.models.channel import (
+from bloom.ll.models.audit_log import AuditLog, AuditLogEvents
+from bloom.ll.models.base import UNKNOWN, UNKNOWN_TYPE, Snowflake, Unknownish
+from bloom.ll.models.channel import (
     AllowedMentions,
     Attachment,
     Channel,
@@ -33,9 +33,9 @@ from bloom.models.channel import (
     ThreadMember,
     VideoQualityModes,
 )
-from bloom.models.emoji import Emoji
-from bloom.models.gateway import DetailedGatewayResponse, GatewayResponse
-from bloom.models.guild import (
+from bloom.ll.models.emoji import Emoji
+from bloom.ll.models.gateway import DetailedGatewayResponse, GatewayResponse
+from bloom.ll.models.guild import (
     Ban,
     DefaultMessageNotificationLevel,
     ExplicitContentFilterLevel,
@@ -56,25 +56,25 @@ from bloom.models.guild import (
     WelcomeScreenChannel,
     WidgetStyleOptions,
 )
-from bloom.models.guild_scheduled_events import (
+from bloom.ll.models.guild_scheduled_events import (
     EventStatus,
     GuildScheduledEvent,
     GuildScheduledEventEntityMetadata,
     GuildScheduledEventEntityType,
     GuildScheduledEventPrivacyLevel,
 )
-from bloom.models.guild_template import GuildTemplate
-from bloom.models.invite import Invite, InviteMetadata, InviteTargetTypes
-from bloom.models.message import Message
-from bloom.models.message_components import Component
-from bloom.models.oauth2 import AuthorizationInformation
-from bloom.models.permissions import BitwisePermissionFlags, Role
-from bloom.models.stage_instance import PrivacyLevel, StageInstance
-from bloom.models.sticker import NitroStickerPacks, Sticker
-from bloom.models.user import User
-from bloom.models.voice import VoiceRegion
-from bloom.models.webhook import Webhook
-from bloom.rest.models import Request
+from bloom.ll.models.guild_template import GuildTemplate
+from bloom.ll.models.invite import Invite, InviteMetadata, InviteTargetTypes
+from bloom.ll.models.message import Message
+from bloom.ll.models.message_components import Component
+from bloom.ll.models.oauth2 import AuthorizationInformation
+from bloom.ll.models.permissions import BitwisePermissionFlags, Role
+from bloom.ll.models.stage_instance import PrivacyLevel, StageInstance
+from bloom.ll.models.sticker import NitroStickerPacks, Sticker
+from bloom.ll.models.user import User
+from bloom.ll.models.voice import VoiceRegion
+from bloom.ll.models.webhook import Webhook
+from bloom.ll.rest.models import Request
 
 
 def prepare(rest: RawRest, input_dict: typing.Dict[str, object]) -> typing.Dict[str, object]:

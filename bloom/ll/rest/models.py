@@ -7,7 +7,7 @@ from typing import Generic
 
 import attr
 
-from bloom._compat import Literal
+from bloom.ll._compat import Literal
 
 ReturnT = typing.TypeVar('ReturnT')
 

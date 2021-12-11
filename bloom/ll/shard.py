@@ -14,11 +14,11 @@ import trio_websocket
 from cattr import Converter
 from cattr.preconf.json import make_converter
 
-import bloom._compat as compat
-import bloom.models.base as base_models
-import bloom.models.gateway as gateway_models
-import bloom.models.permissions as permission_models
-import bloom.substrate as subs
+import bloom.ll._compat as compat
+import bloom.ll.models.base as base_models
+import bloom.ll.models.gateway as gateway_models
+import bloom.ll.models.permissions as permission_models
+import bloom.ll.substrate as subs
 
 tags_to_model = {
     'READY': gateway_models.ReadyEvent,
@@ -285,6 +285,9 @@ async def _shared_logic(
 
             # https://discord.com/channels/613425648685547541/697489244649816084/870221091849793587
             if message['t'] == 'GUILD_APPLICATION_COMMAND_COUNTS_UPDATE':
+                continue
+            # TODO: ???
+            elif message['t'] == 'APPLICATION_COMMAND_PERMISSIONS_UPDATE':
                 continue
 
             try:

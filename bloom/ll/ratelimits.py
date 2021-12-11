@@ -46,8 +46,8 @@ import cattr
 import httpx
 import trio
 
-from bloom._compat import get_args
-from bloom.rest.models import Request
+from bloom.ll._compat import get_args
+from bloom.ll.rest.models import Request
 
 API_BASE_URL = 'https://discord.com/api/v9'
 ReturnT = typing.TypeVar('ReturnT')

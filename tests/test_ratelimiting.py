@@ -4,9 +4,9 @@ import attr
 import httpx
 import trio
 
-import bloom._compat
-import bloom.ratelimits
-import bloom.rest.models
+import bloom.ll._compat
+import bloom.ll.ratelimits
+import bloom.ll.rest.models
 
 
 @attr.frozen()
