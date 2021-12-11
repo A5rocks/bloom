@@ -1400,7 +1400,6 @@ class RawRest:
             json=prepare(self, {'with_user_count': with_user_count}),
         )
 
-    # TODO: shouldn't this take an audit log reason?
     def create_guild_scheduled_event(
         self,
         guild_id: Snowflake,
@@ -1413,8 +1412,9 @@ class RawRest:
         scheduled_end_time: Unknownish[datetime.datetime] = UNKNOWN,
         description: Unknownish[str] = UNKNOWN,
         entity_type: GuildScheduledEventEntityType,
-    ) -> Request[typing.List[GuildScheduledEvent]]:
-        return Request[typing.List[GuildScheduledEvent]](
+        reason: Unknownish[str] = UNKNOWN,
+    ) -> Request[GuildScheduledEvent]:
+        return Request[GuildScheduledEvent](
             'POST',
             '/guilds/{guild_id}/scheduled-events',
             {'guild_id': guild_id},
@@ -1431,6 +1431,7 @@ class RawRest:
                     'entity_type': entity_type,
                 },
             ),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def get_guild_scheduled_event(
@@ -1448,7 +1449,6 @@ class RawRest:
         )
 
     # TODO: are the arguments to this... nullable too?
-    # TODO: does this not take an audit log reason
     def modify_guild_scheduled_event(
         self,
         guild_id: Snowflake,
@@ -1463,6 +1463,7 @@ class RawRest:
         description: Unknownish[str] = UNKNOWN,
         entity_type: Unknownish[GuildScheduledEventEntityType] = UNKNOWN,
         status: Unknownish[EventStatus] = UNKNOWN,
+        reason: Unknownish[str] = UNKNOWN,
     ) -> Request[GuildScheduledEvent]:
         return Request[GuildScheduledEvent](
             'PATCH',
@@ -1482,9 +1483,9 @@ class RawRest:
                     'status': status,
                 },
             ),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
-    # TODO: does this take an audit log reason?
     def delete_guild_scheduled_event(
         self, guild_id: Snowflake, event_id: Snowflake
     ) -> Request[None]:
@@ -1494,7 +1495,6 @@ class RawRest:
             {'guild_id': guild_id, 'event_id': event_id},
         )
 
-    # `users`: array of user objects with an optional guild_member property for each user
     def get_guild_scheduled_event_users(
         self,
         guild_id: Snowflake,
@@ -1509,7 +1509,7 @@ class RawRest:
             'GET',
             '/guilds/{guild_id}/scheduled-events/{event_id}/users',
             {'guild_id': guild_id, 'event_id': event_id},
-            json=prepare(
+            params=prepare(
                 self,
                 {'limit': limit, 'with_member': with_member, 'before': before, 'after': after},
             ),
