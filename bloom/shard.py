@@ -576,10 +576,12 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'application_command_counts',
             # I asked in DDevs, no answer yet.
             'guild_scheduled_events',
-            # TODO: ??
+            # TODO: activites like poker night?
             'embedded_activities',
             # https://github.com/discord/discord-api-docs/pull/4001
             'premium_progress_bar_enabled',
+            # TODO: school hubs?
+            'hub_type',
         }
     elif tag == 'GUILD_UPDATE':
         return {
@@ -676,6 +678,11 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
         return {
             # TODO: what's this?
             'application.type'
+        }
+    elif tag == 'CHANNEL_UPDATE':
+        return {
+            # TODO: channel banners
+            'banner'
         }
 
     return set()

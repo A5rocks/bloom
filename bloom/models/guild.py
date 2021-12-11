@@ -310,6 +310,11 @@ class GuildMember:
     #: returned when in the interaction object
     permissions: Unknownish[str] = UNKNOWN
 
+    # TODO: https://github.com/discord/discord-api-docs/pull/4075
+    #: timestamp of when the time out will be removed; until then, they cannot
+    #: interact with the guild
+    communication_disabled_until: Unknownish[t.Optional[dt.datetime]] = UNKNOWN
+
 
 @attr.frozen(kw_only=True)
 class Integration:
