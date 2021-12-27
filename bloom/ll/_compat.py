@@ -16,7 +16,6 @@ if sys.version_info < (3, 8):
         else:
             return ()
 
-
 else:
     from typing import Literal, TypedDict, get_args
 

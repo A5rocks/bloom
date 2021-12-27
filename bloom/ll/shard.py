@@ -518,7 +518,8 @@ def _register_converter(converter: Converter) -> Converter:
         return False
 
     def unknown_function(data: object, cls: typing.Type[typing.Any]) -> object:
-        args = getattr(cls, '__args__', tuple())
+        default: typing.Tuple[typing.Any] = ()  # type: ignore[assignment]  # mypy 0.930 regression
+        args: typing.Tuple[typing.Type[typing.Any]] = getattr(cls, '__args__', default)
         if len(args) == 2:
             return converter.structure(data, [n for n in args if n != UNKNOWN_TYPE][0])
         else:
