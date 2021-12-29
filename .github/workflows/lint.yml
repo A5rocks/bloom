@@ -6,6 +6,8 @@ on:
   pull_request:
     branches: [ default ]
   workflow_dispatch:
+  schedule:
+    - cron: "0 12 * * 6" 
 
 jobs:
   lints:
@@ -16,24 +18,23 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: install poetry
-        run: pip install poetry
+      - run: pip install -U pip wheel
 
       - name: install dependencies
-        run: poetry install
+        run: pip install .[dev]
 
       - name: run mypy
         if: always()
-        run: poetry run mypy bloom/
+        run: mypy bloom/
       
       - name: run isort
         if: always()
-        run: poetry run isort -c bloom/
+        run: isort -c bloom/
 
       - name: run flake8
         if: always()
-        run: poetry run flake8 bloom/
+        run: flake8 bloom/
 
       - name: run black
         if: always()
-        run: poetry run black bloom/ --diff
+        run: black bloom/ --diff
