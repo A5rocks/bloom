@@ -1,21 +1,23 @@
 from __future__ import annotations
 
-import typing as t
-from enum import Enum
+import enum
+import typing
 
 import attr
 
-from .base import Snowflake
+from bloom.ll.models.base import Snowflake
+
+# docs in this module are copied from the Discord Documentation
 
 
 @attr.frozen(kw_only=True)
 class Team:
     #: a hash of the image of the team's icon
-    icon: t.Optional[str]
+    icon: typing.Optional[str]
     #: the unique id of the team
     id: Snowflake
     #: the members of the team
-    members: t.List[TeamMember]
+    members: typing.List[TeamMember]
     #: the name of the team
     name: str
     #: the user id of the current team owner
@@ -27,13 +29,13 @@ class TeamMember:
     #: the user's membership state on the team
     membership_state: int
     #: will always be ["*"]
-    permissions: t.List[str]
+    permissions: typing.List[str]
     #: the id of the parent team of which they are a member
     team_id: Snowflake
     #: the avatar, discriminator, id, and username of the user
-    user: t.Dict[str, t.Any]
+    user: typing.Dict[str, typing.Any]
 
 
-class MembershipState(Enum):
+class MembershipState(enum.Enum):
     INVITED = 1
     ACCEPTED = 2

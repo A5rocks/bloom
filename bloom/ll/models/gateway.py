@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import datetime as dt
-import typing as t
-from enum import Enum, IntFlag
+import datetime
+import enum
+import typing
 
 import attr
 
@@ -31,6 +31,8 @@ from .sticker import Sticker, StickerItem
 from .user import User
 from .voice import VoiceState
 
+# docs in this module are copied from the Discord Documentation
+
 
 @attr.frozen(kw_only=True)
 class GuildRequestMembers:
@@ -38,16 +40,18 @@ class GuildRequestMembers:
     guild_id: Snowflake
     #: maximum number of members to send matching the query; a limit of 0 can
     #: be used with an empty string query to return all members
-    limit: t.Optional[int]
+    limit: typing.Optional[int]
     #: string that username starts with, or an empty string to return all
     #: members
-    query: Unknownish[t.Optional[str]] = UNKNOWN
+    query: Unknownish[typing.Optional[str]] = UNKNOWN
     #: used to specify if we want the presences of the matched members
-    presences: Unknownish[t.Optional[bool]] = UNKNOWN
+    presences: Unknownish[typing.Optional[bool]] = UNKNOWN
     #: used to specify which users you wish to fetch
-    user_ids: Unknownish[t.Optional[t.Union[Snowflake, t.List[Snowflake]]]] = UNKNOWN
+    user_ids: Unknownish[
+        typing.Optional[typing.Union[Snowflake, typing.List[Snowflake]]]
+    ] = UNKNOWN
     #: nonce to identify the Guild Members Chunk response
-    nonce: Unknownish[t.Optional[str]] = UNKNOWN
+    nonce: Unknownish[typing.Optional[str]] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)
@@ -55,7 +59,7 @@ class GatewayVoiceStateUpdateEvent:
     #: id of the guild
     guild_id: Snowflake
     #: id of the voice channel client wants to join (null if disconnecting)
-    channel_id: t.Optional[Snowflake]
+    channel_id: typing.Optional[Snowflake]
     #: is the client muted
     self_mute: bool
     #: is the client deafened
@@ -66,16 +70,16 @@ class GatewayVoiceStateUpdateEvent:
 class Presence:
     #: unix time (in milliseconds) of when the client went idle, or null if
     #: the client is not idle
-    since: t.Optional[int]
+    since: typing.Optional[int]
     #: the user's activities
-    activities: t.List[Activity]
+    activities: typing.List[Activity]
     #: the user's new status
     status: str
     #: whether or not the client is afk
     afk: bool
 
 
-class StatusTypes(Enum):
+class StatusTypes(enum.Enum):
     ONLINE = 'Online'
     DND = 'Do Not Disturb'
     IDLE = 'AFK'
@@ -96,14 +100,14 @@ class ReadyEvent:
     #: information about the user including email
     user: User
     #: the guilds the user is in
-    guilds: t.List[t.Dict[str, t.Any]]
+    guilds: typing.List[typing.Dict[str, typing.Any]]
     #: used for resuming connections
     session_id: str
     #: contains id and flags
-    application: t.Dict[str, t.Any]
+    application: typing.Dict[str, typing.Any]
     #: the shard information associated with this session, if sent when
     #: identifying
-    shard: Unknownish[t.List[int]] = UNKNOWN
+    shard: Unknownish[typing.List[int]] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)
@@ -147,7 +151,7 @@ class ThreadDeleteEvent:
     #: for guild channels: id of the parent category for a channel (each
     #: parent category can contain up to 50 channels), for threads: id of the
     #: text channel this thread was created
-    parent_id: Unknownish[t.Optional[Snowflake]] = UNKNOWN
+    parent_id: Unknownish[typing.Optional[Snowflake]] = UNKNOWN
     #: the type of channel
     type: ChannelTypes
 
@@ -158,15 +162,15 @@ class ThreadListSyncEvent:
     guild_id: Snowflake
     #: all active threads in the given channels that the current user can
     #: access
-    threads: t.List[Channel]
+    threads: typing.List[Channel]
     #: all thread member objects from the synced threads for the current user,
     #: indicating which threads the current user has been added to
-    members: t.List[ThreadMember]
+    members: typing.List[ThreadMember]
     #: the parent channel ids whose threads are being synced. If omitted, then
     #: threads were synced for the entire guild. This array may contain
     #: channel_ids that have no active threads as well, so you know to clear
     #: that data.
-    channel_ids: Unknownish[t.List[Snowflake]] = UNKNOWN
+    channel_ids: Unknownish[typing.List[Snowflake]] = UNKNOWN
 
 
 # TODO: blocked on https://github.com/python-attrs/attrs/issues/842
@@ -187,9 +191,9 @@ class ThreadMembersUpdateEvent:
     #: the approximate number of members in the thread, capped at 50
     member_count: int
     #: the users who were added to the thread
-    added_members: Unknownish[t.List[ThreadMember]] = UNKNOWN
+    added_members: Unknownish[typing.List[ThreadMember]] = UNKNOWN
     #: the id of the users who were removed from the thread
-    removed_member_ids: Unknownish[t.List[Snowflake]] = UNKNOWN
+    removed_member_ids: Unknownish[typing.List[Snowflake]] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)
@@ -199,7 +203,7 @@ class ChannelPinsUpdateEvent:
     #: the id of the guild
     guild_id: Unknownish[Snowflake] = UNKNOWN
     #: the time at which the most recent pinned message was pinned
-    last_pin_timestamp: Unknownish[t.Optional[dt.datetime]] = UNKNOWN
+    last_pin_timestamp: Unknownish[typing.Optional[datetime.datetime]] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)
@@ -216,9 +220,9 @@ class GuildUpdateEvent(Guild):
 class GuildDeleteEvent:
     id: Snowflake
     unavailable: bool = False
-    # TODO: A partial guild object. Represents an Offline Guild, or a Guild
+    # TODO: A partial guild objectyping. Represents an Offline Guild, or a Guild
     # whose information has not been provided through Guild Create events
-    # during the Gateway connect.
+    # during the Gateway connectyping.
     pass
 
 
@@ -243,7 +247,7 @@ class GuildEmojisUpdateEvent:
     #: id of the guild
     guild_id: Snowflake
     #: array of emojis
-    emojis: t.List[Emoji]
+    emojis: typing.List[Emoji]
 
 
 @attr.frozen(kw_only=True)
@@ -251,7 +255,7 @@ class GuildStickersUpdateEvent:
     #: id of the guild
     guild_id: Snowflake
     #: array of stickers
-    stickers: t.List[Sticker]
+    stickers: typing.List[Sticker]
 
 
 @attr.frozen(kw_only=True)
@@ -284,19 +288,19 @@ class GuildMemberUpdateEvent:
     #: the id of the guild
     guild_id: Snowflake
     #: user role ids
-    roles: t.List[Snowflake]
+    roles: typing.List[Snowflake]
     #: the user
     user: User
     # TODO: does this get sent at all?
     #: the member's guild avatar hash
-    avatar: Unknownish[t.Optional[str]] = UNKNOWN
+    avatar: Unknownish[typing.Optional[str]] = UNKNOWN
     # TODO: when can this be null?
     #: when the user joined the guild
-    joined_at: t.Optional[dt.datetime]
+    joined_at: typing.Optional[datetime.datetime]
     #: nickname of the user in the guild
-    nick: Unknownish[t.Optional[str]] = UNKNOWN
+    nick: Unknownish[typing.Optional[str]] = UNKNOWN
     #: when the user starting boosting the guild
-    premium_since: Unknownish[t.Optional[dt.datetime]] = UNKNOWN
+    premium_since: Unknownish[typing.Optional[datetime.datetime]] = UNKNOWN
     #: whether the user is deafened in voice channels
     deaf: Unknownish[bool] = UNKNOWN
     #: whether the user is muted in voice channels
@@ -311,7 +315,7 @@ class GuildMembersChunkEvent:
     #: the id of the guild
     guild_id: Snowflake
     #: set of guild members
-    members: t.List[GuildMember]
+    members: typing.List[GuildMember]
     #: the chunk index in the expected chunks for this response (0 <=
     #: chunk_index < chunk_count)
     chunk_index: int
@@ -319,10 +323,10 @@ class GuildMembersChunkEvent:
     chunk_count: int
     #: if passing an invalid id to REQUEST_GUILD_MEMBERS, it will be returned
     #: here
-    not_found: Unknownish[t.List[Snowflake]] = UNKNOWN
+    not_found: Unknownish[typing.List[Snowflake]] = UNKNOWN
     #: if passing true to REQUEST_GUILD_MEMBERS, presences of the returned
     #: members will be here
-    presences: Unknownish[t.List[Presence]] = UNKNOWN
+    presences: Unknownish[typing.List[Presence]] = UNKNOWN
     #: the nonce used in the Guild Members Request
     nonce: Unknownish[str] = UNKNOWN
 
@@ -409,7 +413,7 @@ class InviteCreateEvent:
     #: the unique invite code
     code: str
     #: the time at which the invite was created
-    created_at: dt.datetime
+    created_at: datetime.datetime
     #: how long the invite is valid for (in seconds)
     max_age: int
     #: the maximum number of times the invite can be used
@@ -429,7 +433,7 @@ class InviteCreateEvent:
     target_user: Unknownish[User] = UNKNOWN
     #: the embedded application to open for this voice channel embedded
     #: application invite
-    target_application: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
+    target_application: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)
@@ -462,41 +466,41 @@ class MessageUpdateEvent:
     #: contents of the message
     content: Unknownish[str] = UNKNOWN
     #: when this message was sent
-    timestamp: Unknownish[dt.datetime] = UNKNOWN
+    timestamp: Unknownish[datetime.datetime] = UNKNOWN
     #: when this message was edited (or null if never)
-    edited_timestamp: Unknownish[t.Optional[dt.datetime]] = UNKNOWN
+    edited_timestamp: Unknownish[typing.Optional[datetime.datetime]] = UNKNOWN
     #: whether this was a TTS message
     tts: Unknownish[bool] = UNKNOWN
     #: whether this message mentions everyone
     mention_everyone: Unknownish[bool] = UNKNOWN
     #: users specifically mentioned in the message
-    mentions: Unknownish[t.List[User]] = UNKNOWN
+    mentions: Unknownish[typing.List[User]] = UNKNOWN
     #: roles specifically mentioned in this message
-    mention_roles: Unknownish[t.List[Snowflake]] = UNKNOWN
+    mention_roles: Unknownish[typing.List[Snowflake]] = UNKNOWN
     #: channels specifically mentioned in this message
-    mention_channels: Unknownish[t.List[ChannelMention]] = UNKNOWN
+    mention_channels: Unknownish[typing.List[ChannelMention]] = UNKNOWN
     #: any attached files
-    attachments: Unknownish[t.List[Attachment]] = UNKNOWN
+    attachments: Unknownish[typing.List[Attachment]] = UNKNOWN
     #: any embedded content
-    embeds: Unknownish[t.List[Embed]] = UNKNOWN
+    embeds: Unknownish[typing.List[Embed]] = UNKNOWN
     #: whether this message is pinned
     pinned: Unknownish[bool] = UNKNOWN
     #: type of message
     type: Unknownish[int] = UNKNOWN
     #: the message associated with the message_reference
-    referenced_message: Unknownish[t.Optional[Message]] = UNKNOWN
+    referenced_message: Unknownish[typing.Optional[Message]] = UNKNOWN
     #: id of the guild the message was sent in
     guild_id: Unknownish[Snowflake] = UNKNOWN
     #: reactions to the message
-    reactions: Unknownish[t.List[Reaction]] = UNKNOWN
+    reactions: Unknownish[typing.List[Reaction]] = UNKNOWN
     #: used for validating a message was sent
-    nonce: Unknownish[t.Union[int, str]] = UNKNOWN
+    nonce: Unknownish[typing.Union[int, str]] = UNKNOWN
     #: if the message is generated by a webhook, this is the webhook's id
     webhook_id: Unknownish[Snowflake] = UNKNOWN
     #: sent with Rich Presence-related chat embeds
     activity: Unknownish[MessageActivity] = UNKNOWN
     #: sent with Rich Presence-related chat embeds
-    application: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
+    application: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
     #: if the message is a response to an Interaction, this is the id of the
     #: interaction's application
     application_id: Unknownish[Snowflake] = UNKNOWN
@@ -512,11 +516,11 @@ class MessageUpdateEvent:
     thread: Unknownish[Channel] = UNKNOWN
     #: sent if the message contains components like buttons, action rows, or
     #: other interactive components
-    components: Unknownish[t.List[Component]] = UNKNOWN
+    components: Unknownish[typing.List[Component]] = UNKNOWN
     #: sent if the message contains stickers
-    sticker_items: Unknownish[t.List[StickerItem]] = UNKNOWN
+    sticker_items: Unknownish[typing.List[StickerItem]] = UNKNOWN
     #: Deprecated the stickers sent with the message
-    stickers: Unknownish[t.List[Sticker]] = UNKNOWN
+    stickers: Unknownish[typing.List[Sticker]] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)
@@ -532,7 +536,7 @@ class MessageDeleteEvent:
 @attr.frozen(kw_only=True)
 class MessageDeleteBulkEvent:
     #: the ids of the messages
-    ids: t.List[Snowflake]
+    ids: typing.List[Snowflake]
     #: the id of the channel
     channel_id: Snowflake
     #: the id of the guild
@@ -548,7 +552,7 @@ class MessageReactionAddEvent:
     #: the id of the message
     message_id: Snowflake
     #: the emoji used to react - example
-    emoji: t.Dict[str, t.Any]
+    emoji: typing.Dict[str, typing.Any]
     #: the id of the guild
     guild_id: Unknownish[Snowflake] = UNKNOWN
     #: the member who reacted if this happened in a guild
@@ -564,7 +568,7 @@ class MessageReactionRemoveEvent:
     #: the id of the message
     message_id: Snowflake
     #: the emoji used to react - example
-    emoji: t.Dict[str, t.Any]
+    emoji: typing.Dict[str, typing.Any]
     #: the id of the guild
     guild_id: Unknownish[Snowflake] = UNKNOWN
 
@@ -586,7 +590,7 @@ class MessageReactionRemoveEmojiEvent:
     #: the id of the message
     message_id: Snowflake
     #: the emoji that was removed
-    emoji: t.Dict[str, t.Any]
+    emoji: typing.Dict[str, typing.Any]
     #: the id of the guild
     guild_id: Unknownish[Snowflake] = UNKNOWN
 
@@ -603,11 +607,11 @@ class PresenceUpdateEvent:
     # field which must be sent is the id field, everything else is optional.
     # Along with this limitation, no fields are required, and the types of
     # the fields are not validated. Your client should expect any combination
-    # of fields and types within this event.
+    # of fields and types within this eventyping.
     user: Unknownish[PresenceUpdateUser] = UNKNOWN
     guild_id: Unknownish[Snowflake] = UNKNOWN
     status: Unknownish[str] = UNKNOWN
-    activities: Unknownish[t.List[Activity]] = UNKNOWN
+    activities: Unknownish[typing.List[Activity]] = UNKNOWN
     client_status: Unknownish[ClientStatus] = UNKNOWN
 
 
@@ -635,17 +639,17 @@ class Activity:
     #: user's session
     created_at: int
     #: stream url, is validated when type is 1
-    url: Unknownish[t.Optional[str]] = UNKNOWN
+    url: Unknownish[typing.Optional[str]] = UNKNOWN
     #: unix timestamps for start and/or end of the game
     timestamps: Unknownish[ActivityTimestamps] = UNKNOWN
     #: application id for the game
     application_id: Unknownish[Snowflake] = UNKNOWN
     #: what the player is currently doing
-    details: Unknownish[t.Optional[str]] = UNKNOWN
+    details: Unknownish[typing.Optional[str]] = UNKNOWN
     #: the user's current party status
-    state: Unknownish[t.Optional[str]] = UNKNOWN
+    state: Unknownish[typing.Optional[str]] = UNKNOWN
     #: the emoji used for a custom status
-    emoji: Unknownish[t.Optional[ActivityEmoji]] = UNKNOWN
+    emoji: Unknownish[typing.Optional[ActivityEmoji]] = UNKNOWN
     #: information for the current party of the player
     party: Unknownish[ActivityParty] = UNKNOWN
     #: images for the presence and their hover texts
@@ -657,10 +661,10 @@ class Activity:
     #: activity flagsORd together, describes what the payload includes
     flags: Unknownish[ActivityFlags] = UNKNOWN
     #: the custom buttons shown in the Rich Presence (max 2)
-    buttons: Unknownish[t.List[t.Tuple[str, str]]] = UNKNOWN
+    buttons: Unknownish[typing.List[typing.Tuple[str, str]]] = UNKNOWN
 
 
-class ActivityTypes(Enum):
+class ActivityTypes(enum.Enum):
     #: Playing {name} - "Playing Rocket League"
     GAME = 0
     #: Streaming {details} - "Streaming Rocket League"
@@ -699,7 +703,7 @@ class ActivityParty:
     #: the id of the party
     id: Unknownish[str] = UNKNOWN
     #: used to show the party's current and maximum size
-    size: Unknownish[t.Tuple[int, int]] = UNKNOWN
+    size: Unknownish[typing.Tuple[int, int]] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)
@@ -726,7 +730,7 @@ class ActivitySecrets:
     match: Unknownish[str] = UNKNOWN
 
 
-class ActivityFlags(IntFlag):
+class ActivityFlags(enum.IntFlag):
     INSTANCE = 1 << 0
     JOIN = 1 << 1
     SPECTATE = 1 << 2
@@ -778,7 +782,7 @@ class VoiceServerUpdateEvent:
     #: the guild this voice server update is for
     guild_id: Snowflake
     #: the voice server host
-    endpoint: t.Optional[str]
+    endpoint: typing.Optional[str]
 
 
 @attr.frozen(kw_only=True)

@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-import typing as t
-from enum import Enum
+import enum
+import typing
 
 import attr
 
-from .base import UNKNOWN, Snowflake, Unknownish
-from .user import User
+from bloom.ll.models.base import UNKNOWN, Snowflake, Unknownish
+from bloom.ll.models.user import User
+
+# docs in this module are copied from the Discord Documentation
 
 
 @attr.frozen(kw_only=True)
@@ -16,15 +18,15 @@ class Webhook:
     #: the type of the webhook
     type: int
     #: the channel id this webhook is for, if any
-    channel_id: t.Optional[Snowflake]
+    channel_id: typing.Optional[Snowflake]
     #: the default name of the webhook
-    name: t.Optional[str]
+    name: typing.Optional[str]
     #: the default user avatar hash of the webhook
-    avatar: t.Optional[str]
+    avatar: typing.Optional[str]
     #: the bot/OAuth2 application that created this webhook
-    application_id: t.Optional[Snowflake]
+    application_id: typing.Optional[Snowflake]
     #: the guild id this webhook is for, if any
-    guild_id: Unknownish[t.Optional[Snowflake]] = UNKNOWN
+    guild_id: Unknownish[typing.Optional[Snowflake]] = UNKNOWN
     #: the user this webhook was created by (not returned when getting a
     #: webhook with its token)
     user: Unknownish[User] = UNKNOWN
@@ -32,16 +34,16 @@ class Webhook:
     token: Unknownish[str] = UNKNOWN
     #: the guild of the channel that this webhook is following (returned for
     #: Channel Follower Webhooks)
-    source_guild: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
+    source_guild: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
     #: the channel that this webhook is following (returned for Channel
     #: Follower Webhooks)
-    source_channel: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
+    source_channel: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
     #: the url used for executing the webhook (returned by the webhooks OAuth2
     #: flow)
     url: Unknownish[str] = UNKNOWN
 
 
-class WebhookTypes(Enum):
+class WebhookTypes(enum.Enum):
     #: Incoming Webhooks can post messages to channels with a generated token
     INCOMING = 1
     #: Channel Follower Webhooks are internal webhooks used with Channel

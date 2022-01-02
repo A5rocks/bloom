@@ -1,14 +1,16 @@
 from __future__ import annotations
 
-import datetime as dt
-import typing as t
-from enum import Enum
+import datetime
+import enum
+import typing
 
 import attr
 
-from .base import UNKNOWN, Snowflake, Unknownish
-from .permissions import BitwisePermissionFlags
-from .user import User
+from bloom.ll.models.base import UNKNOWN, Snowflake, Unknownish
+from bloom.ll.models.permissions import BitwisePermissionFlags
+from bloom.ll.models.user import User
+
+# docs in this module are copied from the Discord Documentation
 
 
 @attr.frozen(kw_only=True)
@@ -27,24 +29,24 @@ class Channel:
     #: sorting position of the channel
     position: Unknownish[int] = UNKNOWN
     #: explicit permission overwrites for members and roles
-    permission_overwrites: Unknownish[t.List[Overwrite]] = UNKNOWN
+    permission_overwrites: Unknownish[typing.List[Overwrite]] = UNKNOWN
     #: the name of the channel (1-100 characters)
     name: Unknownish[str] = UNKNOWN
     #: the channel topic (0-1024 characters)
-    topic: Unknownish[t.Optional[str]] = UNKNOWN
+    topic: Unknownish[typing.Optional[str]] = UNKNOWN
     #: whether the channel is nsfw
     nsfw: Unknownish[bool] = UNKNOWN
     #: the id of the last message sent in this channel (may not point to an
     #: existing or valid message)
-    last_message_id: Unknownish[t.Optional[Snowflake]] = UNKNOWN
+    last_message_id: Unknownish[typing.Optional[Snowflake]] = UNKNOWN
     #: the bitrate (in bits) of the voice channel
     bitrate: Unknownish[int] = UNKNOWN
     #: the user limit of the voice channel
     user_limit: Unknownish[int] = UNKNOWN
     #: the recipients of the DM
-    recipients: Unknownish[t.List[User]] = UNKNOWN
+    recipients: Unknownish[typing.List[User]] = UNKNOWN
     #: icon hash
-    icon: Unknownish[t.Optional[str]] = UNKNOWN
+    icon: Unknownish[typing.Optional[str]] = UNKNOWN
     #: id of the creator of the group DM or thread
     owner_id: Unknownish[Snowflake] = UNKNOWN
     #: application id of the group DM creator if it is bot-created
@@ -52,12 +54,12 @@ class Channel:
     #: for guild channels: id of the parent category for a channel (each
     #: parent category can contain up to 50 channels), for threads: id of the
     #: text channel this thread was created
-    parent_id: Unknownish[t.Optional[Snowflake]] = UNKNOWN
+    parent_id: Unknownish[typing.Optional[Snowflake]] = UNKNOWN
     #: when the last pinned message was pinned. This may be null in events
     #: such as GUILD_CREATE when a message is not pinned.
-    last_pin_timestamp: Unknownish[t.Optional[dt.datetime]] = UNKNOWN
+    last_pin_timestamp: Unknownish[typing.Optional[datetime.datetime]] = UNKNOWN
     #: voice region id for the voice channel, automatic when set to null
-    rtc_region: Unknownish[t.Optional[str]] = UNKNOWN
+    rtc_region: Unknownish[typing.Optional[str]] = UNKNOWN
     #: the camera video quality mode of the voice channel, 1 when not present
     video_quality_mode: Unknownish[int] = UNKNOWN
     #: an approximate count of messages in a thread, stops counting at 50
@@ -79,7 +81,7 @@ class Channel:
     permissions: Unknownish[BitwisePermissionFlags] = UNKNOWN
 
 
-class ChannelTypes(Enum):
+class ChannelTypes(enum.Enum):
     #: a text channel within a server
     GUILD_TEXT = 0
     #: a direct message between users
@@ -105,14 +107,14 @@ class ChannelTypes(Enum):
     GUILD_STAGE_VOICE = 13
 
 
-class VideoQualityModes(Enum):
+class VideoQualityModes(enum.Enum):
     #: Discord chooses the quality for optimal performance
     AUTO = 1
     #: 720p
     FULL = 2
 
 
-class MessageTypes(Enum):
+class MessageTypes(enum.Enum):
     DEFAULT = 0
     RECIPIENT_ADD = 1
     RECIPIENT_REMOVE = 2
@@ -146,14 +148,14 @@ class MessageActivity:
     party_id: Unknownish[str] = UNKNOWN
 
 
-class MessageActivityTypes(Enum):
+class MessageActivityTypes(enum.Enum):
     JOIN = 1
     SPECTATE = 2
     LISTEN = 3
     JOIN_REQUEST = 5
 
 
-class MessageFlags(Enum):
+class MessageFlags(enum.Enum):
     #: this message has been published to subscribed channels (via Channel
     #: Following)
     CROSSPOSTED = 1
@@ -203,7 +205,7 @@ class Reaction:
     #: whether the current user reacted using this emoji
     me: bool
     #: emoji information
-    emoji: t.Dict[str, t.Any]
+    emoji: typing.Dict[str, typing.Any]
 
 
 @attr.frozen(kw_only=True)
@@ -227,7 +229,7 @@ class ThreadMetadata:
     auto_archive_duration: int
     #: timestamp when the thread's archive status was last changed, used for
     #: calculating recent activity
-    archive_timestamp: dt.datetime
+    archive_timestamp: datetime.datetime
     #: whether the thread is locked; when a thread is locked, only users with
     #: MANAGE_THREADS can unarchive it
     locked: bool
@@ -241,7 +243,7 @@ class ThreadMember:
     #: the id of the user
     user_id: Unknownish[Snowflake] = UNKNOWN
     #: the time the current user last joined the thread
-    join_timestamp: dt.datetime
+    join_timestamp: datetime.datetime
     #: any user-thread settings, currently only used for notifications
     flags: int
 
@@ -257,7 +259,7 @@ class Embed:
     #: url of embed
     url: Unknownish[str] = UNKNOWN
     #: timestamp of embed content
-    timestamp: Unknownish[dt.datetime] = UNKNOWN
+    timestamp: Unknownish[datetime.datetime] = UNKNOWN
     #: color code of the embed
     color: Unknownish[int] = UNKNOWN
     #: footer information
@@ -273,10 +275,10 @@ class Embed:
     #: author information
     author: Unknownish[EmbedAuthor] = UNKNOWN
     #: fields information
-    fields: Unknownish[t.List[EmbedField]] = UNKNOWN
+    fields: Unknownish[typing.List[EmbedField]] = UNKNOWN
 
 
-class EmbedTypes(Enum):
+class EmbedTypes(enum.Enum):
     #: generic embed rendered from embed attributes
     RICH = 'rich'
     #: image embed
@@ -384,9 +386,9 @@ class Attachment:
     #: the attachment's media type
     content_type: Unknownish[str] = UNKNOWN
     #: height of file (if image)
-    height: Unknownish[t.Optional[int]] = UNKNOWN
+    height: Unknownish[typing.Optional[int]] = UNKNOWN
     #: width of file (if image)
-    width: Unknownish[t.Optional[int]] = UNKNOWN
+    width: Unknownish[typing.Optional[int]] = UNKNOWN
     #: whether this attachment is ephemeral. Ephemeral attachments will
     #: automatically be removed after a set period of time. Ephemeral
     #: attachments on messages are guaranteed to be available as long as the
@@ -406,7 +408,7 @@ class ChannelMention:
     name: str
 
 
-class AllowedMentionTypes(Enum):
+class AllowedMentionTypes(enum.Enum):
     #: Controls role mentions
     ROLE_MENTIONS = 'roles'
     #: Controls user mentions
@@ -417,12 +419,12 @@ class AllowedMentionTypes(Enum):
 
 @attr.frozen(kw_only=True)
 class AllowedMentions:
-    #: An array of allowed mention types to parse from the content.
-    parse: t.List[AllowedMentionTypes]
+    #: An array of allowed mention types to parse from the contentyping.
+    parse: typing.List[AllowedMentionTypes]
     #: Array of role_ids to mention (Max size of 100)
-    roles: t.List[Snowflake]
+    roles: typing.List[Snowflake]
     #: Array of user_ids to mention (Max size of 100)
-    users: t.List[Snowflake]
+    users: typing.List[Snowflake]
     #: For replies, whether to mention the author of the message being replied
     #: to (default false)
     replied_user: bool
@@ -431,10 +433,10 @@ class AllowedMentions:
 @attr.frozen(kw_only=True)
 class ResponseBody:
     #: the private, archived threads the current user has joined
-    threads: t.List[Channel]
+    threads: typing.List[Channel]
     #: a thread member object for each returned thread the current user has
     #: joined
-    members: t.List[ThreadMember]
+    members: typing.List[ThreadMember]
     #: whether there are potentially additional threads that could be returned
     #: on a subsequent call
     has_more: bool

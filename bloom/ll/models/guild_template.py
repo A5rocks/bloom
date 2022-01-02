@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-import datetime as dt
-import typing as t
+import datetime
+import typing
 
 import attr
 
-from .base import Snowflake
-from .user import User
+from bloom.ll.models.base import Snowflake
+from bloom.ll.models.user import User
+
+# docs in this module are copied from the Discord Documentation
 
 
 @attr.frozen(kw_only=True)
@@ -16,7 +18,7 @@ class GuildTemplate:
     #: template name
     name: str
     #: the description for the template
-    description: t.Optional[str]
+    description: typing.Optional[str]
     #: number of times this template has been used
     usage_count: int
     #: the ID of the user who created the template
@@ -24,12 +26,12 @@ class GuildTemplate:
     #: the user who created the template
     creator: User
     #: when this template was created
-    created_at: dt.datetime
+    created_at: datetime.datetime
     #: when this template was last synced to the source guild
-    updated_at: dt.datetime
+    updated_at: datetime.datetime
     #: the ID of the guild this template is based on
     source_guild_id: Snowflake
     #: the guild snapshot this template contains
-    serialized_source_guild: t.Dict[str, t.Any]
+    serialized_source_guild: typing.Dict[str, typing.Any]
     #: whether the template has unsynced changes
-    is_dirty: t.Optional[bool]
+    is_dirty: typing.Optional[bool]

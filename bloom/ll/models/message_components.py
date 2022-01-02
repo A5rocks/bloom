@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-import typing as t
-from enum import Enum
+import enum
+import typing
 
 import attr
 
-from .base import UNKNOWN, Unknownish
+from bloom.ll.models.base import UNKNOWN, Unknownish
+
+# docs in this module are copied from the Discord Documentation
 
 
 @attr.frozen(kw_only=True)
@@ -13,7 +15,7 @@ class Component:
     #: component type (valid for: all types)
     type: int
     #: the choices in the select, max 25 (valid for: Select Menus)
-    options: Unknownish[t.List[SelectOption]] = UNKNOWN
+    options: Unknownish[typing.List[SelectOption]] = UNKNOWN
     #: a developer-defined identifier for the component, max 100 characters
     #: (valid for: Buttons, Select Menus)
     custom_id: Unknownish[str] = UNKNOWN
@@ -25,7 +27,7 @@ class Component:
     #: text that appears on the button, max 80 characters (valid for: Buttons)
     label: Unknownish[str] = UNKNOWN
     #: name, id, and animated (valid for: Buttons)
-    emoji: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
+    emoji: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
     #: a url for link-style buttons (valid for: Buttons)
     url: Unknownish[str] = UNKNOWN
     #: custom placeholder text if nothing is selected, max 100 characters
@@ -38,10 +40,10 @@ class Component:
     #: (valid for: Select Menus)
     max_values: Unknownish[int] = UNKNOWN
     #: a list of child components (valid for: Action Rows)
-    components: Unknownish[t.List[Component]] = UNKNOWN
+    components: Unknownish[typing.List[Component]] = UNKNOWN
 
 
-class ComponentTypes(Enum):
+class ComponentTypes(enum.Enum):
     #: A container for other components
     ACTION_ROW = 1
     #: A button object
@@ -59,7 +61,7 @@ class Button:
     #: text that appears on the button, max 80 characters
     label: Unknownish[str] = UNKNOWN
     #: name, id, and animated
-    emoji: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
+    emoji: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
     #: a developer-defined identifier for the button, max 100 characters
     custom_id: Unknownish[str] = UNKNOWN
     #: a url for link-style buttons
@@ -68,7 +70,7 @@ class Button:
     disabled: Unknownish[bool] = UNKNOWN
 
 
-class ButtonStyle(Enum):
+class ButtonStyle(enum.Enum):
     PRIMARY = 1
     SECONDARY = 2
     SUCCESS = 3
@@ -83,7 +85,7 @@ class SelectMenu:
     #: a developer-defined identifier for the button, max 100 characters
     custom_id: str
     #: the choices in the select, max 25
-    options: t.List[SelectOption]
+    options: typing.List[SelectOption]
     #: custom placeholder text if nothing is selected, max 100 characters
     placeholder: Unknownish[str] = UNKNOWN
     #: the minimum number of items that must be chosen; default 1, min 0, max
@@ -104,6 +106,6 @@ class SelectOption:
     #: an additional description of the option, max 100 characters
     description: Unknownish[str] = UNKNOWN
     #: id, name, and animated
-    emoji: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
+    emoji: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
     #: will render this option as selected by default
     default: Unknownish[bool] = UNKNOWN

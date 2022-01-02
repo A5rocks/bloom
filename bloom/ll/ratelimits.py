@@ -161,11 +161,16 @@ class RatelimitingState:
             result = await self.http.request(req.method, req.url, **kw_args)
             headers = result.headers
 
-            if result.status_code == 400:
-                print('error:', result.json())
-
             # TODO: handle errors (429, ...) correctly (including decoding of error type)
-            result.raise_for_status()
+            if result.status_code >= 500:
+                # TODO: how to handle server errors? retry?
+                result.raise_for_status()
+            elif result.status_code >= 400:
+                # TODO: decode returned error type, seperate out 400 vs 401 vs 403 vs 429
+                result.raise_for_status()
+            elif result.status_code >= 300:
+                # this should never happen? should I log anyways?
+                result.raise_for_status()
 
             # process the result
 
@@ -191,15 +196,14 @@ class RatelimitingState:
                 pass
 
             # runtime-only attribute :S
+            # TODO: clean this up and put unsafe parts in utility class/function
             result_type = req.type_args.inner  # type: ignore[attr-defined]
 
-            # None == 204 == no body
-            if result_type is None or None in get_args(result_type):
-                if result.status_code == 204:
-                    return None  # type: ignore[return-value]  # trust me mypy :-)
+            if result.status_code == 204:
+                if result_type is None or None in get_args(result_type):
+                    return None  # type: ignore[return-value]  # ResultT can be None
                 else:
-                    # TODO: specialize error (?)
-                    raise Exception("Expected no body, got a body.")
+                    raise ValueError(f"No body received for {req.method} {req.url}")
             else:
                 return_val: ReturnT = self.converter.structure(result.json(), result_type)
                 return return_val

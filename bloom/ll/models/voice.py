@@ -1,18 +1,20 @@
 from __future__ import annotations
 
-import typing as t
-from datetime import datetime
+import datetime
+import typing
 
 import attr
 
-from .base import UNKNOWN, Snowflake, Unknownish
-from .guild import GuildMember
+from bloom.ll.models.base import UNKNOWN, Snowflake, Unknownish
+from bloom.ll.models.guild import GuildMember
+
+# docs in this module are copied from the Discord Documentation
 
 
 @attr.frozen(kw_only=True)
 class VoiceState:
     #: the channel id this user is connected to
-    channel_id: t.Optional[Snowflake]
+    channel_id: typing.Optional[Snowflake]
     #: the user id this voice state is for
     user_id: Snowflake
     #: the session id for this voice state
@@ -30,7 +32,7 @@ class VoiceState:
     #: whether this user is muted by the current user
     suppress: bool
     #: the time at which the user requested to speak
-    request_to_speak_timestamp: t.Optional[datetime]
+    request_to_speak_timestamp: typing.Optional[datetime.datetime]
     #: the guild id this voice state is for
     guild_id: Unknownish[Snowflake] = UNKNOWN
     #: the guild member this voice state is for

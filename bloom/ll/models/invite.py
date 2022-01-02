@@ -1,14 +1,16 @@
 from __future__ import annotations
 
-import datetime as dt
-import typing as t
-from enum import Enum
+import datetime
+import enum
+import typing
 
 import attr
 
-from .base import UNKNOWN, Unknownish
-from .guild_scheduled_events import GuildScheduledEvent
-from .user import User
+from bloom.ll.models.base import UNKNOWN, Unknownish
+from bloom.ll.models.guild_scheduled_events import GuildScheduledEvent
+from bloom.ll.models.user import User
+
+# docs in this module are copied from the Discord Documentation
 
 
 @attr.frozen(kw_only=True)
@@ -17,9 +19,9 @@ class Invite:
     code: str
     #: the channel this invite is for
     # TODO: partial, investigate
-    channel: t.Optional[t.Dict[str, t.Any]]
+    channel: typing.Optional[typing.Dict[str, typing.Any]]
     #: the guild this invite is for
-    guild: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
+    guild: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
     #: the user who created the invite
     inviter: Unknownish[User] = UNKNOWN
     #: the type of target for this voice channel invite
@@ -28,7 +30,7 @@ class Invite:
     target_user: Unknownish[User] = UNKNOWN
     #: the embedded application to open for this voice channel embedded
     #: application invite
-    target_application: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
+    target_application: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
     #: approximate count of online members, returned from the
     #: GET /invites/<code> endpoint when with_counts is true
     approximate_presence_count: Unknownish[int] = UNKNOWN
@@ -37,7 +39,7 @@ class Invite:
     approximate_member_count: Unknownish[int] = UNKNOWN
     #: the expiration date of this invite, returned from the
     #: GET /invites/<code> endpoint when with_expiration is true
-    expires_at: Unknownish[t.Optional[dt.datetime]] = UNKNOWN
+    expires_at: Unknownish[typing.Optional[datetime.datetime]] = UNKNOWN
     #: stage instance data if there is a public Stage instance in the Stage
     #: channel this invite is for
     stage_instance: Unknownish[InviteStageInstance] = UNKNOWN
@@ -46,7 +48,7 @@ class Invite:
     guild_scheduled_event: Unknownish[GuildScheduledEvent] = UNKNOWN
 
 
-class InviteTargetTypes(Enum):
+class InviteTargetTypes(enum.Enum):
     STREAM = 1
     EMBEDDED_APPLICATION = 2
 
@@ -62,13 +64,13 @@ class InviteMetadata(Invite):
     #: whether this invite only grants temporary membership
     temporary: bool
     #: when this invite was created
-    created_at: dt.datetime
+    created_at: datetime.datetime
 
 
 @attr.frozen(kw_only=True)
 class InviteStageInstance:
     #: the members speaking in the Stage
-    members: t.List[t.Dict[str, t.Any]]
+    members: typing.List[typing.Dict[str, typing.Any]]
     #: the number of users in the Stage
     participant_count: int
     #: the number of users speaking in the Stage

@@ -1,14 +1,16 @@
 from __future__ import annotations
 
-import typing as t
-from enum import Enum
+import enum
+import typing
 
 import attr
 
-from .base import UNKNOWN, Snowflake, Unknownish
-from .channel import AllowedMentions, ChannelTypes, Embed
-from .message_components import Component
-from .user import User
+from bloom.ll.models.base import UNKNOWN, Snowflake, Unknownish
+from bloom.ll.models.channel import AllowedMentions, ChannelTypes, Embed
+from bloom.ll.models.message_components import Component
+from bloom.ll.models.user import User
+
+# docs in this module are copied from the Discord Documentation
 
 
 @attr.frozen(kw_only=True)
@@ -28,7 +30,7 @@ class ApplicationCommand:
     #: guild id of the command, if not global
     guild_id: Unknownish[Snowflake] = UNKNOWN
     #: the parameters for the command (this is only on CHAT_INPUT commands)
-    options: Unknownish[t.List[ApplicationCommandOption]] = UNKNOWN
+    options: Unknownish[typing.List[ApplicationCommandOption]] = UNKNOWN
     #: whether the command is enabled by default when the app is added to a
     #: guild
     default_permission: Unknownish[bool] = UNKNOWN
@@ -36,7 +38,7 @@ class ApplicationCommand:
     type: Unknownish[CommandTypes] = UNKNOWN
 
 
-class CommandTypes(Enum):
+class CommandTypes(enum.Enum):
     #: Slash commands; a text-based command that shows up when a user types
     #: `/`
     CHAT_INPUT = 1
@@ -58,17 +60,17 @@ class ApplicationCommandOption:
     #: if the parameter is required or optional–default false
     required: Unknownish[bool] = UNKNOWN
     #: choices for STRING, INTEGER, and NUMBER types for the user to pick from
-    choices: Unknownish[t.List[ApplicationCommandOptionChoice]] = UNKNOWN
+    choices: Unknownish[typing.List[ApplicationCommandOptionChoice]] = UNKNOWN
     #: enable autocomplete interactions for this option. Note that this cannot
     #: be True if choices is present, and that options using autocomplete are
     #: not confined to only use choices given by the application.
     autocomplete: Unknownish[bool] = UNKNOWN
     #: if the option is a subcommand or subcommand group type, this nested
     #: options will be the parameters
-    options: Unknownish[t.List[ApplicationCommandOption]] = UNKNOWN
+    options: Unknownish[typing.List[ApplicationCommandOption]] = UNKNOWN
     #: if the option is a channel type, the channels shown will be restricted
     #: to these types
-    channel_types: Unknownish[t.List[ChannelTypes]] = UNKNOWN
+    channel_types: Unknownish[typing.List[ChannelTypes]] = UNKNOWN
     #: if the option is an `INTEGER` or `NUMBER` type, the minimum value
     #: permitted
     min_value: Unknownish[float] = UNKNOWN
@@ -77,7 +79,7 @@ class ApplicationCommandOption:
     max_value: Unknownish[float] = UNKNOWN
 
 
-class ApplicationCommandOptionType(Enum):
+class ApplicationCommandOptionType(enum.Enum):
     SUB_COMMAND = 1
     SUB_COMMAND_GROUP = 2
     STRING = 3
@@ -99,7 +101,7 @@ class ApplicationCommandOptionChoice:
     #: 1-100 character choice name
     name: str
     #: value of the choice, up to 100 characters if string
-    value: t.Union[str, int, float]
+    value: typing.Union[str, int, float]
 
 
 @attr.frozen(kw_only=True)
@@ -111,7 +113,7 @@ class GuildApplicationCommandPermissions:
     #: the id of the guild
     guild_id: Snowflake
     #: the permissions for the command in the guild
-    permissions: t.List[ApplicationCommandPermissions]
+    permissions: typing.List[ApplicationCommandPermissions]
 
 
 @attr.frozen(kw_only=True)
@@ -124,12 +126,12 @@ class ApplicationCommandPermissions:
     permission: bool
 
 
-class ApplicationCommandPermissionType(Enum):
+class ApplicationCommandPermissionType(enum.Enum):
     ROLE = 1
     USER = 2
 
 
-class InteractionType(Enum):
+class InteractionType(enum.Enum):
     PING = 1
     APPLICATION_COMMAND = 2
     MESSAGE_COMPONENT = 3
@@ -149,21 +151,21 @@ class ApplicationCommandInteractionData:
     #: converted users + roles + channels
     resolved: Unknownish[ApplicationCommandInteractionDataResolved] = UNKNOWN
     #: the params + values from the user
-    options: Unknownish[t.List[ApplicationCommandInteractionDataOption]] = UNKNOWN
+    options: Unknownish[typing.List[ApplicationCommandInteractionDataOption]] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)
 class ApplicationCommandInteractionDataResolved:
     #: the ids and partial Member objects
-    members: Unknownish[t.Dict[str, t.Any]]
+    members: Unknownish[typing.Dict[str, typing.Any]]
     #: the ids and partial Channel objects
-    channels: Unknownish[t.Dict[str, t.Any]]
+    channels: Unknownish[typing.Dict[str, typing.Any]]
     #: the ids and User objects
-    users: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
+    users: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
     #: the ids and Role objects
-    roles: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
+    roles: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
     #: the ids and partial Message objects
-    messages: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
+    messages: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)
@@ -173,9 +175,9 @@ class ApplicationCommandInteractionDataOption:
     #: value of application command option type
     type: ApplicationCommandOptionType
     #: the value of the pair
-    value: Unknownish[t.Any] = UNKNOWN
+    value: Unknownish[typing.Any] = UNKNOWN
     #: present if this option is a group or subcommand
-    options: Unknownish[t.List[ApplicationCommandInteractionDataOption]] = UNKNOWN
+    options: Unknownish[typing.List[ApplicationCommandInteractionDataOption]] = UNKNOWN
     #: true if this option is the currently focused option for autocomplete
     focused: Unknownish[bool] = UNKNOWN
 
@@ -188,7 +190,7 @@ class InteractionResponse:
     data: Unknownish[InteractionApplicationCommandCallbackData] = UNKNOWN
 
 
-class InteractionCallbackType(Enum):
+class InteractionCallbackType(enum.Enum):
     #: ACK a Ping
     PONG = 1
     #: respond to an interaction with a message
@@ -213,19 +215,19 @@ class InteractionApplicationCommandCallbackData:
     #: message content
     content: Unknownish[str] = UNKNOWN
     #: supports up to 10 embeds
-    embeds: Unknownish[t.List[Embed]] = UNKNOWN
+    embeds: Unknownish[typing.List[Embed]] = UNKNOWN
     #: allowed mentions object
     allowed_mentions: Unknownish[AllowedMentions] = UNKNOWN
     #: interaction application command callback data flags
     flags: Unknownish[int] = UNKNOWN
     #: message components
-    components: Unknownish[t.List[Component]] = UNKNOWN
+    components: Unknownish[typing.List[Component]] = UNKNOWN
     # TODO: partial attachments
     #: attachment objects with filename and description
-    attachments: Unknownish[t.List[t.Dict[str, t.Any]]]
+    attachments: Unknownish[typing.List[typing.Dict[str, typing.Any]]]
 
 
-class InteractionApplicationCommandCallbackDataFlags(Enum):
+class InteractionApplicationCommandCallbackDataFlags(enum.Enum):
     #: only the user receiving the message can see it
     EPHEMERAL = 64
 

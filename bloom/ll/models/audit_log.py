@@ -1,53 +1,55 @@
 from __future__ import annotations
 
-import typing as t
-from enum import Enum
+import enum
+import typing
 
 import attr
 
-from .base import UNKNOWN, Snowflake, Unknownish
-from .channel import Channel
-from .guild_scheduled_events import GuildScheduledEvent
-from .user import User
-from .webhook import Webhook
+from bloom.ll.models.base import UNKNOWN, Snowflake, Unknownish
+from bloom.ll.models.channel import Channel
+from bloom.ll.models.guild_scheduled_events import GuildScheduledEvent
+from bloom.ll.models.user import User
+from bloom.ll.models.webhook import Webhook
+
+# docs in this module are copied from the Discord Documentation
 
 
 @attr.frozen(kw_only=True)
 class AuditLog:
     #: list of webhooks found in the audit log
-    webhooks: t.List[Webhook]
+    webhooks: typing.List[Webhook]
     #: list of users found in the audit log
-    users: t.List[User]
+    users: typing.List[User]
     #: list of audit log entries
-    audit_log_entries: t.List[AuditLogEntry]
+    audit_log_entries: typing.List[AuditLogEntry]
     # TODO: investigate this partial
     #: list of partial integration objects
-    integrations: t.List[t.Dict[str, t.Any]]
+    integrations: typing.List[typing.Dict[str, typing.Any]]
     #: list of threads in the audit log
-    threads: t.List[Channel]
+    threads: typing.List[Channel]
     #: list of guild scheduled events found in the audit log
-    guild_scheduled_events: t.List[GuildScheduledEvent]
+    guild_scheduled_events: typing.List[GuildScheduledEvent]
 
 
 @attr.frozen(kw_only=True)
 class AuditLogEntry:
     #: id of the affected entity (webhook, user, role, etc.)
-    target_id: t.Optional[str]
+    target_id: typing.Optional[str]
     #: the user who made the changes
-    user_id: t.Optional[Snowflake]
+    user_id: typing.Optional[Snowflake]
     #: id of the entry
     id: Snowflake
     #: type of action that occurred
     action_type: AuditLogEvents
     #: changes made to the target_id
-    changes: Unknownish[t.List[AuditLogChange]] = UNKNOWN
+    changes: Unknownish[typing.List[AuditLogChange]] = UNKNOWN
     #: additional info for certain action types
     options: Unknownish[OptionalAuditEntryInfo] = UNKNOWN
     #: the reason for the change (0-512 characters)
     reason: Unknownish[str] = UNKNOWN
 
 
-class AuditLogEvents(Enum):
+class AuditLogEvents(enum.Enum):
     GUILD_UPDATE = 1
     CHANNEL_CREATE = 10
     CHANNEL_UPDATE = 11
@@ -122,12 +124,12 @@ class AuditLogChange:
     #: name of audit log change key
     key: AuditLogChangeKey
     #: new value of the key
-    new_value: Unknownish[t.Any] = UNKNOWN
+    new_value: Unknownish[typing.Any] = UNKNOWN
     #: old value of the key
-    old_value: Unknownish[t.Any] = UNKNOWN
+    old_value: Unknownish[typing.Any] = UNKNOWN
 
 
-class AuditLogChangeKey(Enum):
+class AuditLogChangeKey(enum.Enum):
     #: a "guild" just changed. the values are of type snowflake
     #: description: afk channel changed
     AFK_CHANNEL_ID = 'afk_channel_id'

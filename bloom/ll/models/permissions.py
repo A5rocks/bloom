@@ -1,15 +1,17 @@
 from __future__ import annotations
 
-import typing as t
-from enum import IntFlag
+import enum
+import typing
 
 import attr
 
-from .base import UNKNOWN, Snowflake, Unknownish
+from bloom.ll.models.base import UNKNOWN, Snowflake, Unknownish
+
+# docs in this module are copied from the Discord Documentation
 
 
 # TODO: this should be serialized as a str :(
-class BitwisePermissionFlags(IntFlag):
+class BitwisePermissionFlags(enum.IntFlag):
     NONE = 0
     CREATE_INSTANT_INVITE = 1 << 0
     KICK_MEMBERS = 1 << 1
@@ -64,9 +66,9 @@ class Role:
     #: if this role is pinned in the user listing
     hoist: bool
     #: role icon hash
-    icon: Unknownish[t.Optional[str]] = UNKNOWN
+    icon: Unknownish[typing.Optional[str]] = UNKNOWN
     #: role unicode emoji
-    unicode_emoji: Unknownish[t.Optional[str]] = UNKNOWN
+    unicode_emoji: Unknownish[typing.Optional[str]] = UNKNOWN
     #: position of this role
     position: int
     #: permission bit set
@@ -76,7 +78,7 @@ class Role:
     #: whether this role is mentionable
     mentionable: bool
     #: the tags this role has
-    tags: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
+    tags: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)

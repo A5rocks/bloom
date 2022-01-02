@@ -1,21 +1,23 @@
 from __future__ import annotations
 
-import typing as t
+import typing
 
 import attr
 
-from .base import UNKNOWN, Snowflake, Unknownish
-from .user import User
+from bloom.ll.models.base import UNKNOWN, Snowflake, Unknownish
+from bloom.ll.models.user import User
+
+# docs in this module are copied from the Discord Documentation
 
 
 @attr.frozen(kw_only=True)
 class Emoji:
     #: emoji id
-    id: t.Optional[Snowflake]
+    id: typing.Optional[Snowflake]
     #: emoji name
-    name: t.Optional[str]
+    name: typing.Optional[str]
     #: roles allowed to use this emoji
-    roles: Unknownish[t.List[Snowflake]] = UNKNOWN
+    roles: Unknownish[typing.List[Snowflake]] = UNKNOWN
     #: user that created this emoji
     user: Unknownish[User] = UNKNOWN
     #: whether this emoji must be wrapped in colons

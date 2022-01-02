@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from enum import IntEnum
+import enum
 
 import attr
 
-from .base import Snowflake
+from bloom.ll.models.base import Snowflake
+
+# docs in this module are copied from the Discord Documentation
 
 
 @attr.frozen(kw_only=True)
@@ -23,7 +25,7 @@ class StageInstance:
     discoverable_disabled: bool
 
 
-class PrivacyLevel(IntEnum):
+class PrivacyLevel(enum.IntEnum):
     #: The Stage instance is visible publicly, such as on Stage Discovery.
     PUBLIC = 1
     #: The Stage instance is visible to only guild members.

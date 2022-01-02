@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-import typing as t
-from enum import IntEnum, IntFlag
+import enum
+import typing
 
 import attr
 
-from .base import UNKNOWN, Snowflake, Unknownish
+from bloom.ll.models.base import UNKNOWN, Snowflake, Unknownish
+
+# docs in this module are copied from the Discord Documentation
 
 
 @attr.frozen(kw_only=True)
@@ -17,7 +19,7 @@ class User:
     #: the user's 4-digit discord-tag
     discriminator: str
     #: the user's avatar hash
-    avatar: t.Optional[str]
+    avatar: typing.Optional[str]
     #: whether the user belongs to an OAuth2 application
     bot: Unknownish[bool] = UNKNOWN
     #: whether the user is an Official Discord System user (part of the urgent
@@ -26,16 +28,16 @@ class User:
     #: whether the user has two factor enabled on their account
     mfa_enabled: Unknownish[bool] = UNKNOWN
     #: the user's banner, or None if unset
-    banner: Unknownish[t.Optional[str]] = UNKNOWN
+    banner: Unknownish[typing.Optional[str]] = UNKNOWN
     #: the user's banner color encoded as an integer representation of
     #: hexadecimal color code
-    accent_color: Unknownish[t.Optional[int]] = UNKNOWN
+    accent_color: Unknownish[typing.Optional[int]] = UNKNOWN
     #: the user's chosen language option
     locale: Unknownish[str] = UNKNOWN
     #: whether the email on this account has been verified
     verified: Unknownish[bool] = UNKNOWN
     #: the user's email
-    email: Unknownish[t.Optional[str]] = UNKNOWN
+    email: Unknownish[typing.Optional[str]] = UNKNOWN
     #: the flags on a user's account
     flags: Unknownish[UserFlags] = UNKNOWN
     #: the type of Nitro subscription on a user's account
@@ -44,7 +46,7 @@ class User:
     public_flags: Unknownish[UserFlags] = UNKNOWN
 
 
-class UserFlags(IntFlag):
+class UserFlags(enum.IntFlag):
     #: None
     NONE = 0
     #: Discord Employee
@@ -77,7 +79,7 @@ class UserFlags(IntFlag):
     BOT_HTTP_INTERACTIONS = 1 << 19
 
 
-class PremiumTypes(IntEnum):
+class PremiumTypes(enum.IntEnum):
     NONE = 0
     NITRO_CLASSIC = 1
     NITRO = 2

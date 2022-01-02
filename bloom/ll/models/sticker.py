@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-import typing as t
-from enum import Enum
+import enum
+import typing
 
 import attr
 
-from .base import UNKNOWN, Snowflake, Unknownish
-from .user import User
+from bloom.ll.models.base import UNKNOWN, Snowflake, Unknownish
+from bloom.ll.models.user import User
+
+# docs in this module are copied from the Discord Documentation
 
 
 @attr.frozen(kw_only=True)
@@ -16,7 +18,7 @@ class Sticker:
     #: name of the sticker
     name: str
     #: description of the sticker
-    description: t.Optional[str]
+    description: typing.Optional[str]
     #: autocomplete/suggestion tags for the sticker (max 200 characters)
     tags: str
     #: Deprecated previously the sticker asset hash, now an empty string
@@ -38,7 +40,7 @@ class Sticker:
     sort_value: Unknownish[int] = UNKNOWN
 
 
-class StickerTypes(Enum):
+class StickerTypes(enum.Enum):
     #: an official sticker in a pack, part of Nitro or in a removed
     #: purchasable pack
     STANDARD = 1
@@ -46,7 +48,7 @@ class StickerTypes(Enum):
     GUILD = 2
 
 
-class StickerFormatTypes(Enum):
+class StickerFormatTypes(enum.Enum):
     PNG = 1
     APNG = 2
     LOTTIE = 3
@@ -67,7 +69,7 @@ class StickerPack:
     #: id of the sticker pack
     id: Snowflake
     #: the stickers in the pack
-    stickers: t.List[Sticker]
+    stickers: typing.List[Sticker]
     #: name of the sticker pack
     name: str
     #: id of the pack's SKU
@@ -83,4 +85,4 @@ class StickerPack:
 @attr.frozen(kw_only=True)
 class NitroStickerPacks:
     #: the sticker packs included with nitro
-    sticker_packs: t.List[StickerPack]
+    sticker_packs: typing.List[StickerPack]

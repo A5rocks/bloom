@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import attr
 
-from .application_commands import ApplicationCommandInteractionData, InteractionType
-from .base import UNKNOWN, Snowflake, Unknownish
-from .guild import GuildMember
-from .message import Message
-from .user import User
+from bloom.ll.models.application_commands import ApplicationCommandInteractionData, InteractionType
+from bloom.ll.models.base import UNKNOWN, Snowflake, Unknownish
+from bloom.ll.models.guild import GuildMember
+from bloom.ll.models.message import Message
+from bloom.ll.models.user import User
+
+# docs in this module are copied from the Discord Documentation
 
 
 @attr.frozen(kw_only=True)

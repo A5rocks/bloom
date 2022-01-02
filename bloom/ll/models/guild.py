@@ -1,19 +1,21 @@
 from __future__ import annotations
 
-import datetime as dt
-import typing as t
-from enum import Enum, IntFlag
+import datetime
+import enum
+import typing
 
 import attr
 
-from .base import UNKNOWN, Snowflake, Unknownish
-from .channel import Channel
-from .emoji import Emoji
-from .guild_scheduled_events import GuildScheduledEvent
-from .permissions import Role
-from .stage_instance import StageInstance
-from .sticker import Sticker
-from .user import User
+from bloom.ll.models.base import UNKNOWN, Snowflake, Unknownish
+from bloom.ll.models.channel import Channel
+from bloom.ll.models.emoji import Emoji
+from bloom.ll.models.guild_scheduled_events import GuildScheduledEvent
+from bloom.ll.models.permissions import Role
+from bloom.ll.models.stage_instance import StageInstance
+from bloom.ll.models.sticker import Sticker
+from bloom.ll.models.user import User
+
+# docs in this module are copied from the Discord Documentation
 
 
 @attr.frozen(kw_only=True)
@@ -24,12 +26,12 @@ class Guild:
     #: whitespace)
     name: str
     #: icon hash
-    icon: t.Optional[str]
+    icon: typing.Optional[str]
     #: splash hash
-    splash: t.Optional[str]
+    splash: typing.Optional[str]
     #: discovery splash hash; only present for guilds with the "DISCOVERABLE"
     #: feature
-    discovery_splash: t.Optional[str]
+    discovery_splash: typing.Optional[str]
     #: true if the user is the owner of the guild
     owner: Unknownish[bool] = UNKNOWN
     #: id of owner
@@ -37,9 +39,9 @@ class Guild:
     #: total permissions for the user in the guild (excludes overwrites)
     permissions: Unknownish[str] = UNKNOWN
     #: voice region id for the guild (deprecated)
-    region: Unknownish[t.Optional[str]] = UNKNOWN
+    region: Unknownish[typing.Optional[str]] = UNKNOWN
     #: id of afk channel
-    afk_channel_id: t.Optional[Snowflake]
+    afk_channel_id: typing.Optional[Snowflake]
     #: afk timeout in seconds
     afk_timeout: int
     #: verification level required for the guild
@@ -49,25 +51,25 @@ class Guild:
     #: explicit content filter level
     explicit_content_filter: int
     #: roles in the guild
-    roles: t.List[Role]
+    roles: typing.List[Role]
     #: custom guild emojis
-    emojis: t.List[Emoji]
+    emojis: typing.List[Emoji]
     #: enabled guild features
-    features: t.List[str]
+    features: typing.List[str]
     #: required MFA level for the guild
     mfa_level: int
     #: application id of the guild creator if it is bot-created
-    application_id: t.Optional[Snowflake]
+    application_id: typing.Optional[Snowflake]
     #: the id of the channel where guild notices such as welcome messages and
     #: boost events are posted
-    system_channel_id: t.Optional[Snowflake]
+    system_channel_id: typing.Optional[Snowflake]
     #: system channel flags
     system_channel_flags: int
     #: the id of the channel where Community guilds can display rules and/or
     #: guidelines
-    rules_channel_id: t.Optional[Snowflake]
+    rules_channel_id: typing.Optional[Snowflake]
     #: when this guild was joined at
-    joined_at: Unknownish[dt.datetime] = UNKNOWN
+    joined_at: Unknownish[datetime.datetime] = UNKNOWN
     #: true if this is considered a large guild
     large: Unknownish[bool] = UNKNOWN
     #: true if this guild is unavailable due to an outage
@@ -75,23 +77,23 @@ class Guild:
     #: total number of members in this guild
     member_count: Unknownish[int] = UNKNOWN
     #: states of members currently in voice channels; lacks the guild_id key
-    voice_states: Unknownish[t.List[t.Dict[str, t.Any]]] = UNKNOWN
+    voice_states: Unknownish[typing.List[typing.Dict[str, typing.Any]]] = UNKNOWN
     #: users in the guild
-    members: Unknownish[t.List[GuildMember]] = UNKNOWN
+    members: Unknownish[typing.List[GuildMember]] = UNKNOWN
     #: channels in the guild
-    channels: Unknownish[t.List[Channel]] = UNKNOWN
+    channels: Unknownish[typing.List[Channel]] = UNKNOWN
     #: all active threads in the guild that current user has permission to
     #: view
-    threads: Unknownish[t.List[Channel]] = UNKNOWN
+    threads: Unknownish[typing.List[Channel]] = UNKNOWN
     #: presences of the members in the guild, will only include non-offline
     #: members if the size is greater than large threshold
-    presences: Unknownish[t.List[t.Dict[str, t.Any]]] = UNKNOWN
+    presences: Unknownish[typing.List[typing.Dict[str, typing.Any]]] = UNKNOWN
     #: the vanity url code for the guild
-    vanity_url_code: t.Optional[str]
+    vanity_url_code: typing.Optional[str]
     #: the description of a Community guild
-    description: t.Optional[str]
+    description: typing.Optional[str]
     #: banner hash
-    banner: t.Optional[str]
+    banner: typing.Optional[str]
     #: premium tier (Server Boost level)
     premium_tier: int
     #: the preferred locale of a Community guild; used in server discovery and
@@ -99,21 +101,21 @@ class Guild:
     preferred_locale: str
     #: the id of the channel where admins and moderators of Community guilds
     #: receive notices from Discord
-    public_updates_channel_id: t.Optional[Snowflake]
+    public_updates_channel_id: typing.Optional[Snowflake]
     #: guild NSFW level
     nsfw_level: int
     #: Stage instances in the guild
-    stage_instances: Unknownish[t.List[StageInstance]] = UNKNOWN
+    stage_instances: Unknownish[typing.List[StageInstance]] = UNKNOWN
     #: icon hash, returned when in the template object
-    icon_hash: Unknownish[t.Optional[str]] = UNKNOWN
+    icon_hash: Unknownish[typing.Optional[str]] = UNKNOWN
     #: true if the server widget is enabled
     widget_enabled: Unknownish[bool] = UNKNOWN
     #: the channel id that the widget will generate an invite to, or null if
     #: set to no invite
-    widget_channel_id: Unknownish[t.Optional[Snowflake]] = UNKNOWN
+    widget_channel_id: Unknownish[typing.Optional[Snowflake]] = UNKNOWN
     #: the maximum number of presences for the guild (null is always returned,
     #: apart from the largest of guilds)
-    max_presences: Unknownish[t.Optional[int]] = UNKNOWN
+    max_presences: Unknownish[typing.Optional[int]] = UNKNOWN
     #: the maximum number of members for the guild
     max_members: Unknownish[int] = UNKNOWN
     #: the number of boosts this guild currently has
@@ -130,14 +132,14 @@ class Guild:
     #: in an Invite's guild object
     welcome_screen: Unknownish[WelcomeScreen] = UNKNOWN
     #: custom guild stickers
-    stickers: Unknownish[t.List[Sticker]] = UNKNOWN
+    stickers: Unknownish[typing.List[Sticker]] = UNKNOWN
     #: the scheduled events in the guild
-    guild_scheduled_events: Unknownish[t.List[GuildScheduledEvent]] = UNKNOWN
+    guild_scheduled_events: Unknownish[typing.List[GuildScheduledEvent]] = UNKNOWN
     #: whether the guild has the boost progress bar enabled
     premium_progress_bar_enabled: bool
 
 
-class DefaultMessageNotificationLevel(Enum):
+class DefaultMessageNotificationLevel(enum.Enum):
     #: members will receive notifications for all messages by default
     ALL_MESSAGES = 0
     #: members will receive notifications only for messages that @mention them
@@ -145,7 +147,7 @@ class DefaultMessageNotificationLevel(Enum):
     ONLY_MENTIONS = 1
 
 
-class ExplicitContentFilterLevel(Enum):
+class ExplicitContentFilterLevel(enum.Enum):
     #: media content will not be scanned
     DISABLED = 0
     #: media content sent by members without roles will be scanned
@@ -154,14 +156,14 @@ class ExplicitContentFilterLevel(Enum):
     ALL_MEMBERS = 2
 
 
-class MfaLevel(Enum):
+class MfaLevel(enum.Enum):
     #: guild has no MFA/2FA requirement for moderation actions
     NONE = 0
     #: guild has a 2FA requirement for moderation actions
     ELEVATED = 1
 
 
-class VerificationLevel(Enum):
+class VerificationLevel(enum.Enum):
     #: unrestricted
     NONE = 0
     #: must have verified email on account
@@ -174,14 +176,14 @@ class VerificationLevel(Enum):
     VERY_HIGH = 4
 
 
-class GuildNsfwLevel(Enum):
+class GuildNsfwLevel(enum.Enum):
     DEFAULT = 0
     EXPLICIT = 1
     SAFE = 2
     AGE_RESTRICTED = 3
 
 
-class PremiumTier(Enum):
+class PremiumTier(enum.Enum):
     #: guild has not unlocked any Server Boost perks
     NONE = 0
     #: guild has unlocked Server Boost level 1 perks
@@ -192,7 +194,7 @@ class PremiumTier(Enum):
     TIER_3 = 3
 
 
-class SystemChannelFlags(IntFlag):
+class SystemChannelFlags(enum.IntFlag):
     #: Suppress member join notifications
     SUPPRESS_JOIN_NOTIFICATIONS = 1 << 0
     #: Suppress server boost notifications
@@ -203,7 +205,7 @@ class SystemChannelFlags(IntFlag):
     SUPPRESS_JOIN_NOTIFICATION_REPLIES = 1 << 3
 
 
-class GuildFeatures(Enum):
+class GuildFeatures(enum.Enum):
     #: guild has access to set an animated guild icon
     ANIMATED_ICON = 'ANIMATED_ICON'
     #: guild has access to set a guild banner image
@@ -260,21 +262,21 @@ class GuildPreview:
     #: guild name (2-100 characters)
     name: str
     #: icon hash
-    icon: t.Optional[str]
+    icon: typing.Optional[str]
     #: splash hash
-    splash: t.Optional[str]
+    splash: typing.Optional[str]
     #: discovery splash hash
-    discovery_splash: t.Optional[str]
+    discovery_splash: typing.Optional[str]
     #: custom guild emojis
-    emojis: t.List[Emoji]
+    emojis: typing.List[Emoji]
     #: enabled guild features
-    features: t.List[str]
+    features: typing.List[str]
     #: approximate number of members in this guild
     approximate_member_count: int
     #: approximate number of online members in this guild
     approximate_presence_count: int
     #: the description for the guild, if the guild is discoverable
-    description: t.Optional[str]
+    description: typing.Optional[str]
 
 
 @attr.frozen(kw_only=True)
@@ -282,15 +284,15 @@ class GuildWidget:
     #: whether the widget is enabled
     enabled: bool
     #: the widget channel id
-    channel_id: t.Optional[Snowflake]
+    channel_id: typing.Optional[Snowflake]
 
 
 @attr.frozen(kw_only=True)
 class GuildMember:
     #: array of role object ids
-    roles: t.List[Snowflake]
+    roles: typing.List[Snowflake]
     #: when the user joined the guild
-    joined_at: dt.datetime
+    joined_at: datetime.datetime
     #: whether the user is deafened in voice channels
     deaf: bool
     #: whether the user is muted in voice channels
@@ -298,11 +300,11 @@ class GuildMember:
     #: the user this guild member represents
     user: Unknownish[User] = UNKNOWN
     #: this users guild nickname
-    nick: Unknownish[t.Optional[str]] = UNKNOWN
+    nick: Unknownish[typing.Optional[str]] = UNKNOWN
     #: the member's guild avatar hash
-    avatar: Unknownish[t.Optional[str]] = UNKNOWN
+    avatar: Unknownish[typing.Optional[str]] = UNKNOWN
     #: when the user started boosting the guild
-    premium_since: Unknownish[t.Optional[dt.datetime]] = UNKNOWN
+    premium_since: Unknownish[typing.Optional[datetime.datetime]] = UNKNOWN
     #: whether the user has not yet passed the guild's Membership Screening
     #: requirements
     pending: Unknownish[bool] = UNKNOWN
@@ -313,7 +315,7 @@ class GuildMember:
     # TODO: https://github.com/discord/discord-api-docs/pull/4075
     #: timestamp of when the time out will be removed; until then, they cannot
     #: interact with the guild
-    communication_disabled_until: Unknownish[t.Optional[dt.datetime]] = UNKNOWN
+    communication_disabled_until: Unknownish[typing.Optional[datetime.datetime]] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)
@@ -334,7 +336,7 @@ class Integration:
     #: currently)
     enable_emoticons: Unknownish[bool] = UNKNOWN
     #: the behavior of expiring subscribers
-    expire_behavior: Unknownish[t.Dict[str, t.Any]] = UNKNOWN
+    expire_behavior: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
     #: the grace period (in days) before expiring subscribers
     expire_grace_period: Unknownish[int] = UNKNOWN
     #: user for this integration
@@ -342,7 +344,7 @@ class Integration:
     #: integration account information
     account: IntegrationAccount
     #: when this integration was last synced
-    synced_at: Unknownish[dt.datetime] = UNKNOWN
+    synced_at: Unknownish[datetime.datetime] = UNKNOWN
     #: how many subscribers this integration has
     subscriber_count: Unknownish[int] = UNKNOWN
     #: has this integration been revoked
@@ -351,7 +353,7 @@ class Integration:
     application: Unknownish[IntegrationApplication] = UNKNOWN
 
 
-class IntegrationExpireBehaviors(Enum):
+class IntegrationExpireBehaviors(enum.Enum):
     REMOVE_ROLE = 0
     KICK = 1
 
@@ -371,7 +373,7 @@ class IntegrationApplication:
     #: the name of the app
     name: str
     #: the icon hash of the app
-    icon: t.Optional[str]
+    icon: typing.Optional[str]
     #: the description of the app
     description: str
     #: the summary of the app
@@ -383,7 +385,7 @@ class IntegrationApplication:
 @attr.frozen(kw_only=True)
 class Ban:
     #: the reason for the ban
-    reason: t.Optional[str]
+    reason: typing.Optional[str]
     #: the banned user
     user: User
 
@@ -391,9 +393,9 @@ class Ban:
 @attr.frozen(kw_only=True)
 class WelcomeScreen:
     #: the server description shown in the welcome screen
-    description: t.Optional[str]
+    description: typing.Optional[str]
     #: the channels shown in the welcome screen, up to 5
-    welcome_channels: t.List[WelcomeScreenChannel]
+    welcome_channels: typing.List[WelcomeScreenChannel]
 
 
 @attr.frozen(kw_only=True)
@@ -403,10 +405,10 @@ class WelcomeScreenChannel:
     #: the description shown for the channel
     description: str
     #: the emoji id, if the emoji is custom
-    emoji_id: t.Optional[Snowflake]
+    emoji_id: typing.Optional[Snowflake]
     #: the emoji name if custom, the unicode character if standard, or null
     #: if no emoji is set
-    emoji_name: t.Optional[str]
+    emoji_name: typing.Optional[str]
 
 
 @attr.frozen(kw_only=True)
@@ -416,12 +418,12 @@ class ModifyGuildChannelPositionsParameters:
     # TODO: some of these are optional (in the Unknownish kind of way)
     #      figure this out then update the documentation
     #: sorting position of the channel
-    position: t.Optional[int]
+    position: typing.Optional[int]
     #: syncs the permission overwrites with the new parent, if moving to a new
     #: category
-    lock_permissions: t.Optional[bool]
+    lock_permissions: typing.Optional[bool]
     #: the new parent ID for the channel that is moved
-    parent_id: t.Optional[Snowflake]
+    parent_id: typing.Optional[Snowflake]
 
 
 @attr.frozen(kw_only=True)
@@ -429,22 +431,22 @@ class ModifyGuildRolePositionsParameters:
     #: role
     id: Snowflake
     #: sorting position of the role
-    position: Unknownish[t.Optional[int]] = UNKNOWN
+    position: Unknownish[typing.Optional[int]] = UNKNOWN
 
 
-class WidgetStyleOptions(Enum):
+class WidgetStyleOptions(enum.Enum):
     #: shield style widget with Discord icon and guild members online count
     SHIELD = "shield"
-    #: large image with guild icon, name and online count. "POWERED BY
+    #: large image with guild icon, name and online countyping. "POWERED BY
     #: DISCORD" as the footer of the widget
     BANNER1 = "banner1"
-    #: smaller widget style with guild icon, name and online count. Split on
+    #: smaller widget style with guild icon, name and online countyping. Split on
     #: the right with Discord logo
     BANNER2 = "banner2"
-    #: large image with guild icon, name and online count. In the footer,
+    #: large image with guild icon, name and online countyping. In the footer,
     #: Discord logo on the left and "Chat Now" on the right
     BANNER3 = "banner3"
-    #: large Discord logo at the top of the widget. Guild icon, name and
+    #: large Discord logo at the top of the widgetyping. Guild icon, name and
     #: online count in the middle portion of the widget and a "JOIN MY SERVER"
     #: button at the bottom
     BANNER4 = "banner4"
@@ -455,7 +457,7 @@ class PruneCount:
     #: the number of members that would be removed in a prune operation. Will
     #: be ``None`` if ``compute_prune_count`` is ``False`` when beginning a
     #: prune.
-    pruned: t.Optional[int]
+    pruned: typing.Optional[int]
 
 
 # this is in here because otherwise circular imports.
@@ -470,7 +472,7 @@ class UserConnection:
     #: whether the connection is revoked
     revoked: Unknownish[bool] = UNKNOWN
     #: an array of partial server integrations
-    integrations: Unknownish[t.List[Integration]] = UNKNOWN
+    integrations: Unknownish[typing.List[Integration]] = UNKNOWN
     #: whether the connection is verified
     verified: bool
     #: whether friend sync is enabled for this connection
@@ -482,7 +484,7 @@ class UserConnection:
     visibility: UserConnectionVisibility
 
 
-class UserConnectionVisibility(Enum):
+class UserConnectionVisibility(enum.Enum):
     #: invisible to everyone except the user themselves
     NONE = 0
     #: visible to everyone

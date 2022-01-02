@@ -1,23 +1,25 @@
 from __future__ import annotations
 
-import datetime as dt
-import typing as t
+import datetime
+import typing
 
 import attr
 
-from .base import UNKNOWN, Unknownish
-from .user import User
+from bloom.ll.models.base import UNKNOWN, Unknownish
+from bloom.ll.models.user import User
+
+# docs in this module are copied from the Discord Documentation
 
 
 @attr.frozen(kw_only=True)
 class AuthorizationInformation:
     # TODO: what does partial mean in this context?
     #: the current application
-    application: t.Dict[str, t.Any]
+    application: typing.Dict[str, typing.Any]
     #: the scopes the user has authorized the application for
-    scopes: t.List[str]
+    scopes: typing.List[str]
     #: when the access token expires
-    expires: dt.datetime
+    expires: datetime.datetime
     #: the user who has authorized, if the user has authorized with the
     #: identify scope
     user: Unknownish[User] = UNKNOWN
