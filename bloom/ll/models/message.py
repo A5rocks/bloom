@@ -73,8 +73,9 @@ class Message:
     activity: Unknownish[MessageActivity] = UNKNOWN
     #: sent with Rich Presence-related chat embeds
     application: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
-    #: if the message is a response to an Interaction, this is the id of the
-    #: interaction's application
+    #: if the message is a response to an Interactionan Interaction or
+    #: application-owned webhook, this is the id of the interaction's
+    #: application
     application_id: Unknownish[Snowflake] = UNKNOWN
     #: data showing the source of a crosspost, channel follow add, pin, or
     #: reply message

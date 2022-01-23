@@ -61,9 +61,10 @@ class ApplicationCommandOption:
     required: Unknownish[bool] = UNKNOWN
     #: choices for STRING, INTEGER, and NUMBER types for the user to pick from
     choices: Unknownish[typing.List[ApplicationCommandOptionChoice]] = UNKNOWN
-    #: enable autocomplete interactions for this option. Note that this cannot
-    #: be True if choices is present, and that options using autocomplete are
-    #: not confined to only use choices given by the application.
+    #: if autocomplete interactions are enabled for this `STRING`, `INTEGER`,
+    #: or `NUMBER` type option. Note that this cannot be True if choices is
+    #: present, and that options using autocomplete are not confined to only
+    #: use choices given by the application.
     autocomplete: Unknownish[bool] = UNKNOWN
     #: if the option is a subcommand or subcommand group type, this nested
     #: options will be the parameters
@@ -174,8 +175,8 @@ class ApplicationCommandInteractionDataOption:
     name: str
     #: value of application command option type
     type: ApplicationCommandOptionType
-    #: the value of the pair
-    value: Unknownish[typing.Any] = UNKNOWN
+    #: the value of the option resulting from user input
+    value: Unknownish[typing.Union[str, int, float]] = UNKNOWN
     #: present if this option is a group or subcommand
     options: Unknownish[typing.List[ApplicationCommandInteractionDataOption]] = UNKNOWN
     #: true if this option is the currently focused option for autocomplete

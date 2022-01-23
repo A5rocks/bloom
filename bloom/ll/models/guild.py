@@ -277,10 +277,12 @@ class GuildPreview:
     approximate_presence_count: int
     #: the description for the guild, if the guild is discoverable
     description: typing.Optional[str]
+    #: custom guild stickers
+    stickers: typing.List[Sticker]
 
 
 @attr.frozen(kw_only=True)
-class GuildWidget:
+class GuildWidgetSettings:
     #: whether the widget is enabled
     enabled: bool
     #: the widget channel id
@@ -299,7 +301,7 @@ class GuildMember:
     mute: bool
     #: the user this guild member represents
     user: Unknownish[User] = UNKNOWN
-    #: this users guild nickname
+    #: this user's guild nickname
     nick: Unknownish[typing.Optional[str]] = UNKNOWN
     #: the member's guild avatar hash
     avatar: Unknownish[typing.Optional[str]] = UNKNOWN
@@ -312,7 +314,6 @@ class GuildMember:
     #: returned when in the interaction object
     permissions: Unknownish[str] = UNKNOWN
 
-    # TODO: https://github.com/discord/discord-api-docs/pull/4075
     #: timestamp of when the time out will be removed; until then, they cannot
     #: interact with the guild
     communication_disabled_until: Unknownish[typing.Optional[datetime.datetime]] = UNKNOWN
@@ -436,20 +437,20 @@ class ModifyGuildRolePositionsParameters:
 
 class WidgetStyleOptions(enum.Enum):
     #: shield style widget with Discord icon and guild members online count
-    SHIELD = "shield"
+    SHIELD = 'shield'
     #: large image with guild icon, name and online countyping. "POWERED BY
     #: DISCORD" as the footer of the widget
-    BANNER1 = "banner1"
+    BANNER1 = 'banner1'
     #: smaller widget style with guild icon, name and online countyping. Split on
     #: the right with Discord logo
-    BANNER2 = "banner2"
+    BANNER2 = 'banner2'
     #: large image with guild icon, name and online countyping. In the footer,
     #: Discord logo on the left and "Chat Now" on the right
-    BANNER3 = "banner3"
+    BANNER3 = 'banner3'
     #: large Discord logo at the top of the widgetyping. Guild icon, name and
     #: online count in the middle portion of the widget and a "JOIN MY SERVER"
     #: button at the bottom
-    BANNER4 = "banner4"
+    BANNER4 = 'banner4'
 
 
 @attr.frozen(kw_only=True)

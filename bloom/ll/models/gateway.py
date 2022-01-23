@@ -179,7 +179,7 @@ attr.resolve_types(ThreadMember)
 
 @attr.frozen(kw_only=True)
 class ThreadMemberUpdateEvent(ThreadMember):
-    pass
+    guild_id: Snowflake
 
 
 @attr.frozen(kw_only=True)
@@ -308,6 +308,10 @@ class GuildMemberUpdateEvent:
     #: whether the user has not yet passed the guild's Membership Screening
     #: requirements
     pending: Unknownish[bool] = UNKNOWN
+    #: when the user's timeout will expire and the user will be able to
+    #: communicate in the guild again, null or a time in the past if the user
+    #: is not timed out
+    communication_disabled_until: Unknownish[typing.Optional[datetime.datetime]] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)
@@ -501,8 +505,9 @@ class MessageUpdateEvent:
     activity: Unknownish[MessageActivity] = UNKNOWN
     #: sent with Rich Presence-related chat embeds
     application: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
-    #: if the message is a response to an Interaction, this is the id of the
-    #: interaction's application
+    #: if the message is a response to an Interactionan Interaction or
+    #: application-owned webhook, this is the id of the interaction's
+    #: application
     application_id: Unknownish[Snowflake] = UNKNOWN
     #: data showing the source of a crosspost, channel follow add, pin, or
     #: reply message
@@ -708,7 +713,8 @@ class ActivityParty:
 
 @attr.frozen(kw_only=True)
 class ActivityAssets:
-
+    # TODO:
+    # https://github.com/discord/discord-api-docs/commit/0a91423248b7de682515021de03d29d56f36b4f0
     #: the id for a large asset of the activity, usually a snowflake
     large_image: Unknownish[str] = UNKNOWN
     #: text displayed when hovering over the large image of the activity

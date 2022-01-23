@@ -174,7 +174,10 @@ class AuditLogChangeKey(enum.Enum):
     #: a "role" just changed. the values are of type integer
     #: description: role color changed
     COLOR = 'color'
-    #: a "user" just changed. the values are of type boolean
+    #: a "member" just changed. the values are of type datetime.datetime
+    #: description: member timeout state changed
+    COMMUNICATION_DISABLED_UNTIL = 'communication_disabled_until'
+    #: a "member" just changed. the values are of type boolean
     #: description: user server deafened/undeafened
     DEAF = 'deaf'
     #: a "channel" just changed. the values are of type int
@@ -200,7 +203,7 @@ class AuditLogChangeKey(enum.Enum):
     ENABLE_EMOTICONS = 'enable_emoticons'
     #: a "guild scheduled event" just changed. the values of type integer.
     #: description: entity type of guild scheduled event was changed
-    ENTITY_TYPE = "entity_type"
+    ENTITY_TYPE = 'entity_type'
     #: a "integration" just changed. the values are of type integer
     #: description: integration expiring subscriber behavior changed
     EXPIRE_BEHAVIOR = 'expire_behavior'
@@ -228,12 +231,15 @@ class AuditLogChangeKey(enum.Enum):
     #: description: the id of the changed entity - sometimes used in
     #:    conjunction with other keys
     ID = 'id'
+    #: a "thread" just changed. the values of type bool
+    #: description: private thread is now invitable/uninvitable
+    INVITABLE = 'invitable'
     #: a "invite" just changed. the values are of type snowflake
     #: description: person who created invite code changed
     INVITER_ID = 'inviter_id'
     #: a "guild scheduled event" just changed. the values are of type string
     #: description: change in channel id for guild scheduled event
-    LOCATION = "location"
+    LOCATION = 'location'
     #: a "thread" just changed. the values are of type bool
     #: description: thread is now locked/unlocked
     LOCKED = 'locked'
@@ -249,13 +255,13 @@ class AuditLogChangeKey(enum.Enum):
     #: a "guild" just changed. the values are of type integer
     #: description: two-factor auth requirement changed
     MFA_LEVEL = 'mfa_level'
-    #: a "user" just changed. the values are of type boolean
+    #: a "member" just changed. the values are of type boolean
     #: description: user server muted/unmuted
     MUTE = 'mute'
     #: a "any" just changed. the values are of type string
     #: description: name changed
     NAME = 'name'
-    #: a "user" just changed. the values are of type string
+    #: a "member" just changed. the values are of type string
     #: description: user nickname changed
     NICK = 'nick'
     #: a "channel" just changed. the values are of type boolean

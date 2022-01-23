@@ -77,7 +77,7 @@ class StickerPack:
     #: description of the sticker pack
     description: str
     #: id of the sticker pack's banner image
-    banner_asset_id: Snowflake
+    banner_asset_id: Unknownish[Snowflake] = UNKNOWN
     #: id of a sticker in the pack which is shown as the pack's icon
     cover_sticker_id: Unknownish[Snowflake] = UNKNOWN
 

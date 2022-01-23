@@ -45,7 +45,7 @@ class Channel:
     user_limit: Unknownish[int] = UNKNOWN
     #: the recipients of the DM
     recipients: Unknownish[typing.List[User]] = UNKNOWN
-    #: icon hash
+    #: icon hash of the group DM
     icon: Unknownish[typing.Optional[str]] = UNKNOWN
     #: id of the creator of the group DM or thread
     owner_id: Unknownish[Snowflake] = UNKNOWN
@@ -233,7 +233,12 @@ class ThreadMetadata:
     #: whether the thread is locked; when a thread is locked, only users with
     #: MANAGE_THREADS can unarchive it
     locked: bool
+    #: whether non-moderators can add other non-moderators to a thread; only
+    #: available on private threads
     invitable: Unknownish[bool] = UNKNOWN
+    #: timestamp when the thread was created; only populated for threads
+    #: created after 2022-01-09
+    create_timestamp: Unknownish[datetime.datetime] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)

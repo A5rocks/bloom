@@ -21,7 +21,7 @@ class StageInstance:
     topic: str
     #: The privacy level of the Stage instance
     privacy_level: PrivacyLevel
-    #: Whether or not Stage Discovery is disabled
+    #: Whether or not Stage Discovery is disabled (deprecated)
     discoverable_disabled: bool
 
 

@@ -44,7 +44,7 @@ from bloom.ll.models.guild import (
     GuildMember,
     GuildPreview,
     GuildScheduledEventUser,
-    GuildWidget,
+    GuildWidgetSettings,
     Integration,
     ModifyGuildChannelPositionsParameters,
     ModifyGuildRolePositionsParameters,
@@ -265,6 +265,7 @@ class RawRest:
         components: Unknownish[typing.Iterable[Component]] = UNKNOWN,
         # TODO: partial attachments
         attachments: Unknownish[typing.Iterable[typing.Dict[str, typing.Any]]] = UNKNOWN,
+        flags: Unknownish[MessageFlags] = UNKNOWN,
     ) -> Request[Message]:
         json_payload = prepare(
             self,
@@ -980,6 +981,7 @@ class RawRest:
         mute: Unknownish[typing.Optional[bool]] = UNKNOWN,
         deaf: Unknownish[typing.Optional[bool]] = UNKNOWN,
         channel_id: Unknownish[typing.Optional[Snowflake]] = UNKNOWN,
+        communication_disabled_until: Unknownish[typing.Optional[datetime.datetime]] = UNKNOWN,
         reason: Unknownish[str] = UNKNOWN,
     ) -> Request[GuildMember]:
         return Request[GuildMember](
@@ -994,6 +996,7 @@ class RawRest:
                     'mute': mute,
                     'deaf': deaf,
                     'channel_id': channel_id,
+                    'communication_disabled_until': communication_disabled_until,
                 },
             ),
             headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
@@ -1277,8 +1280,10 @@ class RawRest:
             headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
-    def get_guild_widget_settings(self, guild_id: Snowflake) -> Request[GuildWidget]:
-        return Request[GuildWidget]('GET', '/guilds/{guild_id}/widget', {'guild_id': guild_id})
+    def get_guild_widget_settings(self, guild_id: Snowflake) -> Request[GuildWidgetSettings]:
+        return Request[GuildWidgetSettings](
+            'GET', '/guilds/{guild_id}/widget', {'guild_id': guild_id}
+        )
 
     def modify_guild_widget(
         self,
@@ -1288,8 +1293,8 @@ class RawRest:
         enabled: Unknownish[bool] = UNKNOWN,
         channel_id: Unknownish[typing.Optional[Snowflake]] = UNKNOWN,
         reason: Unknownish[str] = UNKNOWN,
-    ) -> Request[GuildWidget]:
-        return Request[GuildWidget](
+    ) -> Request[GuildWidgetSettings]:
+        return Request[GuildWidgetSettings](
             'PATCH',
             '/guilds/{guild_id}/widget',
             {'guild_id': guild_id},
@@ -1297,6 +1302,7 @@ class RawRest:
         )
 
     # TODO: is it even worth making a model for this one route?
+    # https://github.com/discord/discord-api-docs/commit/e0e2f21821783f738ca5d3415fa0911209f6a253
     def get_guild_widget(self, guild_id: Snowflake) -> Request[typing.Dict[str, typing.Any]]:
         return Request[typing.Dict[str, typing.Any]](
             'GET', '/guilds/{guild_id}/widget.json', {'guild_id': guild_id}
@@ -1794,12 +1800,14 @@ class RawRest:
         name: str,
         # https://discord.com/developers/docs/reference#image-data
         avatar: Unknownish[typing.Optional[str]] = UNKNOWN,
+        reason: Unknownish[str] = UNKNOWN,
     ) -> Request[Webhook]:
         return Request[Webhook](
             'POST',
             '/channels/{channel_id}/webhooks',
             {'channel_id': channel_id},
             json=prepare(self, {'name': name, 'avatar': avatar}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def get_channel_webhooks(self, channel_id: Snowflake) -> Request[typing.Tuple[Webhook]]:
@@ -1832,12 +1840,14 @@ class RawRest:
         avatar: Unknownish[typing.Optional[str]] = UNKNOWN,
         # https://discord.com/developers/docs/reference#image-data
         channel_id: Unknownish[Snowflake] = UNKNOWN,
+        reason: Unknownish[str] = UNKNOWN,
     ) -> Request[Webhook]:
         return Request[Webhook](
             'PATCH',
             '/webhooks/{webhook_id}',
             {'webhook_id': webhook_id},
             json=prepare(self, {'name': name, 'avatar': avatar, 'channel_id': channel_id}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def modify_webhook_with_token(
@@ -1849,12 +1859,14 @@ class RawRest:
         avatar: Unknownish[typing.Optional[str]] = UNKNOWN,
         # https://discord.com/developers/docs/reference#image-data
         channel_id: Unknownish[Snowflake] = UNKNOWN,
+        reason: Unknownish[str],
     ) -> Request[Webhook]:
         return Request[Webhook](
             'PATCH',
             '/webhooks/{webhook_id}/{webhook_token}',
             {'webhook_id': webhook_id, 'webhook_token': webhook_token},
             json=prepare(self, {'name': name, 'avatar': avatar, 'channel_id': channel_id}),
+            headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
     def delete_webhook(self, webhook_id: Snowflake) -> Request[None]:
@@ -1891,6 +1903,7 @@ class RawRest:
         components: Unknownish[typing.Iterable[Component]] = UNKNOWN,
         # TODO: partial attachments
         attachments: Unknownish[typing.Iterable[typing.Dict[str, typing.Any]]] = UNKNOWN,
+        flags: Unknownish[MessageFlags] = UNKNOWN,
     ) -> Request[None]:
         json_payload = prepare(
             self,
@@ -1904,6 +1917,7 @@ class RawRest:
                 'message_reference': message_reference,
                 'components': tuple_(components),
                 'attachments': tuple_(attachments),
+                'flags': flags,
             },
         )
 

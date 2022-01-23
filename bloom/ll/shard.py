@@ -435,6 +435,8 @@ async def _run_shard(
                 # TODO: have a more comprehensive set of close codes
                 should_resume = exc.reason.code not in [1000, 1001]
 
+                # TODO: fatal errors e.g. bad intents should be disconnected.
+
             except _MissedHeartbeat as exc:
                 await websocket.aclose(3000)
 
@@ -675,8 +677,6 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             # only meaningful for users
             'mute_config',
             'muted',
-            # TODO: document this on the documentation.
-            'guild_id',
         }
     elif tag == 'INTEGRATION_CREATE':
         return {

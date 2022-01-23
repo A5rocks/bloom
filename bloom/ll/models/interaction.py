@@ -35,3 +35,9 @@ class Interaction:
     user: Unknownish[User] = UNKNOWN
     #: for components, the message they were attached to
     message: Unknownish[Message] = UNKNOWN
+    #: the selected language of the invoking user (not available in PING),
+    #: this is an IETF language tag composed of a 2 letter country code and
+    #: occasionally a region code.
+    locale: Unknownish[str] = UNKNOWN
+    #: the guild's preferred locale, if invoked in a guild (defaults to en-US)
+    guild_locale: Unknownish[str] = UNKNOWN
