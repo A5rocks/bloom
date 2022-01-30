@@ -7,7 +7,7 @@ import attr
 
 from bloom.ll.models.base import UNKNOWN, Snowflake, Unknownish
 from bloom.ll.models.channel import AllowedMentions, ChannelTypes, Embed
-from bloom.ll.models.message_components import Component
+from bloom.ll.models.message_components import Component, SelectOption
 from bloom.ll.models.user import User
 
 # docs in this module are copied from the Discord Documentation
@@ -141,18 +141,26 @@ class InteractionType(enum.Enum):
 
 @attr.frozen(kw_only=True)
 class ApplicationCommandInteractionData:
+    # TODO: adt
     #: the ID of the invoked command
-    id: Snowflake
+    id: Unknownish[Snowflake] = UNKNOWN
     #: the name of the invoked command
-    name: str
-    #: for components, the  of the component
-    custom_id: str
+    name: Unknownish[str] = UNKNOWN
+    #: the type of the invoked command
+    # TODO: flag
+    type: Unknownish[int] = UNKNOWN
+    #: for components, the custom_id of the component
+    custom_id: Unknownish[str] = UNKNOWN
     #: for components, the type of the component
-    component_type: int
+    component_type: Unknownish[int] = UNKNOWN
     #: converted users + roles + channels
     resolved: Unknownish[ApplicationCommandInteractionDataResolved] = UNKNOWN
     #: the params + values from the user
     options: Unknownish[typing.List[ApplicationCommandInteractionDataOption]] = UNKNOWN
+    #: the values the user selected
+    values: Unknownish[typing.List[SelectOption]] = UNKNOWN
+    #: id the of user or message targetted by a user or message command
+    target_id: Unknownish[Snowflake] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)
@@ -225,7 +233,7 @@ class InteractionApplicationCommandCallbackData:
     components: Unknownish[typing.List[Component]] = UNKNOWN
     # TODO: partial attachments
     #: attachment objects with filename and description
-    attachments: Unknownish[typing.List[typing.Dict[str, typing.Any]]]
+    attachments: Unknownish[typing.List[typing.Dict[str, typing.Any]]] = UNKNOWN
 
 
 class InteractionApplicationCommandCallbackDataFlags(enum.Enum):

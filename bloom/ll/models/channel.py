@@ -238,7 +238,7 @@ class ThreadMetadata:
     invitable: Unknownish[bool] = UNKNOWN
     #: timestamp when the thread was created; only populated for threads
     #: created after 2022-01-09
-    create_timestamp: Unknownish[datetime.datetime] = UNKNOWN
+    create_timestamp: Unknownish[typing.Optional[datetime.datetime]] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)

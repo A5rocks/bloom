@@ -688,6 +688,11 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             # TODO: channel banners
             'banner'
         }
+    elif tag == 'INTERACTION_CREATE':
+        return {
+            # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
+            'member.is_pending'
+        }
 
     return set()
 
