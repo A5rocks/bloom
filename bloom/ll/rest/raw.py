@@ -164,6 +164,7 @@ class RawRest:
         rate_limit_per_user: Unknownish[typing.Optional[int]] = UNKNOWN,
         bitrate: Unknownish[typing.Optional[int]] = UNKNOWN,
         user_limit: Unknownish[typing.Optional[int]] = UNKNOWN,
+        # TODO: partial overwrites
         permission_overwrites: Unknownish[typing.Optional[typing.Iterable[Overwrite]]] = UNKNOWN,
         parent_id: Unknownish[typing.Optional[Snowflake]] = UNKNOWN,
         rtc_region: Unknownish[typing.Optional[str]] = UNKNOWN,

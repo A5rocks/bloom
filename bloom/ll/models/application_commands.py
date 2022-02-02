@@ -227,7 +227,8 @@ class InteractionApplicationCommandCallbackData:
     embeds: Unknownish[typing.List[Embed]] = UNKNOWN
     #: allowed mentions object
     allowed_mentions: Unknownish[AllowedMentions] = UNKNOWN
-    #: interaction application command callback data flags
+    #: message flags combined as a bitfield (only SUPPRESS_EMBEDS and
+    #: EPHEMERAL can be set)
     flags: Unknownish[int] = UNKNOWN
     #: message components
     components: Unknownish[typing.List[Component]] = UNKNOWN
@@ -251,3 +252,6 @@ class MessageInteraction:
     name: str
     #: the user who invoked the interaction
     user: User
+    #: the member who invoked the interaction in the guild
+    # TODO: partial member
+    member: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN

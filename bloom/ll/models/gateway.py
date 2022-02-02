@@ -132,7 +132,7 @@ class ChannelDeleteEvent(Channel):
 
 @attr.frozen(kw_only=True)
 class ThreadCreateEvent(Channel):
-    pass
+    newly_created: Unknownish[bool] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)
