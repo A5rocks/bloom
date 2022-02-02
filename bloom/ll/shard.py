@@ -138,7 +138,7 @@ class _Backoff:
         # 2, 4, 8, 16, 32, 64, 64, 64
         await trio.sleep(
             # exponential wait
-            self.base ** self.repeats
+            self.base**self.repeats
             # random jitter (+- jitter)
             + random.random() * 2 * self.jitter
             - self.jitter

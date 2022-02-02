@@ -37,4 +37,4 @@ jobs:
 
       - name: run black
         if: always()
-        run: black bloom/ --diff
+        run: black bloom/ --diff --check
