@@ -46,7 +46,6 @@ import cattr
 import httpx
 import trio
 
-from bloom.ll._compat import get_args
 from bloom.ll.rest.models import Request
 
 API_BASE_URL = 'https://discord.com/api/v9'
@@ -200,7 +199,7 @@ class RatelimitingState:
             result_type = req.type_args.inner  # type: ignore[attr-defined]
 
             if result.status_code == 204:
-                if result_type is None or None in get_args(result_type):
+                if result_type is None or None in typing.get_args(result_type):
                     return None  # type: ignore[return-value]  # ResultT can be None
                 else:
                     raise ValueError(f"No body received for {req.method} {req.url}")

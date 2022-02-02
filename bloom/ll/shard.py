@@ -14,7 +14,6 @@ import trio_websocket
 from cattr import Converter
 from cattr.preconf.json import make_converter
 
-import bloom.ll._compat as compat
 import bloom.ll.models.base as base_models
 import bloom.ll.models.gateway as gateway_models
 import bloom.ll.models.permissions as permission_models
@@ -220,13 +219,13 @@ class Intents(enum.IntFlag):
         return cls.all() & ~(cls.GUILD_MEMBERS | cls.GUILD_PRESENCES)
 
 
-class _EveryPayload(compat.TypedDict):
-    op: compat.Literal[1, 7, 9, 10, 11]
+class _EveryPayload(typing.TypedDict):
+    op: typing.Literal[1, 7, 9, 10, 11]
     d: typing.Any
 
 
-class _DispatchPayload(compat.TypedDict):
-    op: compat.Literal[0]
+class _DispatchPayload(typing.TypedDict):
+    op: typing.Literal[0]
     t: str
     s: int
     d: typing.Any

@@ -8,7 +8,6 @@ import urllib.parse
 import attr
 from cattr import Converter
 
-from bloom.ll._compat import Literal
 from bloom.ll.models.application import Application
 from bloom.ll.models.application_commands import (
     ApplicationCommand,
@@ -430,7 +429,7 @@ class RawRest:
         *,
         allow: BitwisePermissionFlags,
         deny: BitwisePermissionFlags,
-        type: Literal[0, 1],
+        type: typing.Literal[0, 1],
         reason: Unknownish[str] = UNKNOWN,
     ) -> Request[None]:
         return Request[None](
