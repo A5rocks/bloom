@@ -8,8 +8,9 @@ authors = [{name = "A5rocks", email = "git@helvetica.moe"}]
 readme = "README.md"
 license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: Apache Software License"]
-dynamic = ["version", "description"]
+dynamic = ["description"]
 requires-python = ">=3.8"
+version = "9.22.2"
 dependencies = [
 	"trio>=0.19",
 	"trio-websocket>=0.9.2",
