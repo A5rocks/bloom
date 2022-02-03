@@ -10,7 +10,9 @@ license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: Apache Software License"]
 dynamic = ["description"]
 requires-python = ">=3.8"
-version = "9.22.2"
+# TODO: version should be "<API version>.<2 digit year>.<month>"
+#   with versioning policy that major changes are fine every year.
+version = "0.0.1-dev"
 dependencies = [
 	"trio>=0.19",
 	"trio-websocket>=0.9.2",
