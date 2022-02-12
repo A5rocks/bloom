@@ -11,6 +11,11 @@ on:
 
 jobs:
   lints:
+    strategy:
+      fail-fast: false
+      matrix:
+        min_deps: [true, false]
+
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v2"
@@ -20,21 +25,25 @@ jobs:
 
       - run: pip install -U pip wheel
 
+      - name: install tomli and tomli-w
+        if: matrix.min_deps
+        run: pip install tomli tomli-w
+
+      - name: update pyproject.toml to pin minimum dependencies
+        if: matrix.min_deps
+        run: python scripts/min_deps.py && cat pyproject.toml
+
       - name: install dependencies
         run: pip install .[dev]
 
       - name: run mypy
-        if: always()
         run: mypy bloom/
       
       - name: run isort
-        if: always()
         run: isort -c bloom/
 
       - name: run flake8
-        if: always()
         run: flake8 bloom/
 
       - name: run black
-        if: always()
         run: black bloom/ --diff --check
