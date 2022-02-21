@@ -47,7 +47,7 @@ class GuildScheduledEvent:
     #: the number of users subscribed to the scheduled event
     user_count: Unknownish[int] = UNKNOWN
     #: the cover image hash of the scheduled event
-    image: typing.Optional[str]
+    image: Unknownish[typing.Optional[str]] = UNKNOWN
 
 
 class GuildScheduledEventPrivacyLevel(enum.IntEnum):

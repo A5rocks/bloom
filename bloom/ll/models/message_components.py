@@ -24,7 +24,7 @@ class ComponentTypes(enum.Enum):
 @attr.frozen(kw_only=True)
 class ActionRow:
     #: 1 for an action row
-    type: int
+    type: typing.Literal[1, ComponentTypes.ACTION_ROW]
     # a list of child components
     components: typing.List[Component]
 
@@ -32,7 +32,7 @@ class ActionRow:
 @attr.frozen(kw_only=True)
 class Button:
     #: 2 for a button
-    type: int
+    type: typing.Literal[2, ComponentTypes.BUTTON]
     #: one of button styles
     style: int
     #: text that appears on the button, max 80 characters
@@ -58,7 +58,7 @@ class ButtonStyle(enum.Enum):
 @attr.frozen(kw_only=True)
 class SelectMenu:
     #: 3 for a select menu
-    type: int
+    type: typing.Literal[3, ComponentTypes.SELECT_MENU]
     #: a developer-defined identifier for the button, max 100 characters
     custom_id: str
     #: the choices in the select, max 25
@@ -91,7 +91,7 @@ class SelectOption:
 @attr.frozen(kw_only=True)
 class TextInput:
     #: 4 for a text input
-    type: int
+    type: typing.Literal[4, ComponentTypes.TEXT_INPUT]
     #: a developer-defined identifier for the input, max 100 characters
     custom_id: str
     #: the Text Input Style

@@ -22,7 +22,7 @@ class Sticker:
     #: autocomplete/suggestion tags for the sticker (max 200 characters)
     tags: str
     #: Deprecated previously the sticker asset hash, now an empty string
-    asset: str
+    asset: Unknownish[str] = UNKNOWN
     #: type of sticker
     type: int
     #: type of sticker format

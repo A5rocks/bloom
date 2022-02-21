@@ -11,4 +11,5 @@ UNKNOWN = UNKNOWN_TYPE()
 Unknownish = typing.Union[UNKNOWN_TYPE, T]
 
 # TODO: this should serialize as a str
-Snowflake = typing.NewType('Snowflake', int)
+class Snowflake(int):
+    pass
