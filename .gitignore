@@ -18,3 +18,6 @@ _build/
 # testing script(s)
 main.py
 demos/
+
+# list of API docs changes to make
+todoc

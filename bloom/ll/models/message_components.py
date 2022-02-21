@@ -10,39 +10,6 @@ from bloom.ll.models.base import UNKNOWN, Unknownish
 # docs in this module are copied from the Discord Documentation
 
 
-@attr.frozen(kw_only=True)
-class Component:
-    #: component type (valid for: all types)
-    type: int
-    #: the choices in the select, max 25 (valid for: Select Menus)
-    options: Unknownish[typing.List[SelectOption]] = UNKNOWN
-    #: a developer-defined identifier for the component, max 100 characters
-    #: (valid for: Buttons, Select Menus)
-    custom_id: Unknownish[str] = UNKNOWN
-    #: whether the component is disabled, default false (valid for: Buttons,
-    #: Select Menus)
-    disabled: Unknownish[bool] = UNKNOWN
-    #: one of button styles (valid for: Buttons)
-    style: Unknownish[int] = UNKNOWN
-    #: text that appears on the button, max 80 characters (valid for: Buttons)
-    label: Unknownish[str] = UNKNOWN
-    #: name, id, and animated (valid for: Buttons)
-    emoji: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
-    #: a url for link-style buttons (valid for: Buttons)
-    url: Unknownish[str] = UNKNOWN
-    #: custom placeholder text if nothing is selected, max 100 characters
-    #: (valid for: Select Menus)
-    placeholder: Unknownish[str] = UNKNOWN
-    #: the minimum number of items that must be chosen; default 1, min 0, max
-    #: 25 (valid for: Select Menus)
-    min_values: Unknownish[int] = UNKNOWN
-    #: the maximum number of items that can be chosen; default 1, max 25
-    #: (valid for: Select Menus)
-    max_values: Unknownish[int] = UNKNOWN
-    #: a list of child components (valid for: Action Rows)
-    components: Unknownish[typing.List[Component]] = UNKNOWN
-
-
 class ComponentTypes(enum.Enum):
     #: A container for other components
     ACTION_ROW = 1
@@ -50,6 +17,16 @@ class ComponentTypes(enum.Enum):
     BUTTON = 2
     #: A select menu for picking from choices
     SELECT_MENU = 3
+    #: A text input object
+    TEXT_INPUT = 4
+
+
+@attr.frozen(kw_only=True)
+class ActionRow:
+    #: 1 for an action row
+    type: int
+    # a list of child components
+    components: typing.List[Component]
 
 
 @attr.frozen(kw_only=True)
@@ -109,3 +86,35 @@ class SelectOption:
     emoji: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
     #: will render this option as selected by default
     default: Unknownish[bool] = UNKNOWN
+
+
+@attr.frozen(kw_only=True)
+class TextInput:
+    #: 4 for a text input
+    type: int
+    #: a developer-defined identifier for the input, max 100 characters
+    custom_id: str
+    #: the Text Input Style
+    style: int
+    #: the label for this component
+    label: str
+    #: the minimum input length for a text input, min 0, max 4000
+    min_length: Unknownish[int] = UNKNOWN
+    #: the maximum input length for a text input, min 1, max 4000
+    max_length: Unknownish[int] = UNKNOWN
+    #: whether this component is required to be filled, default true
+    required: Unknownish[bool] = UNKNOWN
+    #: a pre-filled value for this component, max 4000 characters
+    value: Unknownish[str] = UNKNOWN
+    #: custom placeholder text if the input is empty, max 100 characters
+    placeholder: Unknownish[str] = UNKNOWN
+
+
+class TextInputStyle(enum.IntEnum):
+    #: A single-line input
+    SHORT = 1
+    #: A multi-line input
+    PARAGRAPH = 2
+
+
+Component = typing.Union[ActionRow, Button, SelectMenu, TextInput]

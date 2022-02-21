@@ -6,8 +6,10 @@ import typing
 import attr
 
 from bloom.ll.models.base import UNKNOWN, Snowflake, Unknownish
-from bloom.ll.models.channel import AllowedMentions, ChannelTypes, Embed
+from bloom.ll.models.channel import AllowedMentions, Attachment, ChannelTypes, Embed
+from bloom.ll.models.guild import GuildMember
 from bloom.ll.models.message_components import Component, SelectOption
+from bloom.ll.models.permissions import Role
 from bloom.ll.models.user import User
 
 # docs in this module are copied from the Discord Documentation
@@ -95,6 +97,8 @@ class ApplicationCommandOptionType(enum.Enum):
     MENTIONABLE = 9
     #: Any double between -2^53 and 2^53
     NUMBER = 10
+    #: attachment object
+    ATTACHMENT = 11
 
 
 @attr.frozen(kw_only=True)
@@ -153,7 +157,7 @@ class ApplicationCommandInteractionData:
     custom_id: Unknownish[str] = UNKNOWN
     #: for components, the type of the component
     component_type: Unknownish[int] = UNKNOWN
-    #: converted users + roles + channels
+    #: converted users + roles + channels + attachments
     resolved: Unknownish[ApplicationCommandInteractionDataResolved] = UNKNOWN
     #: the params + values from the user
     options: Unknownish[typing.List[ApplicationCommandInteractionDataOption]] = UNKNOWN
@@ -170,11 +174,13 @@ class ApplicationCommandInteractionDataResolved:
     #: the ids and partial Channel objects
     channels: Unknownish[typing.Dict[str, typing.Any]]
     #: the ids and User objects
-    users: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
+    users: Unknownish[typing.Dict[str, User]] = UNKNOWN
     #: the ids and Role objects
-    roles: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
+    roles: Unknownish[typing.Dict[str, Role]] = UNKNOWN
     #: the ids and partial Message objects
     messages: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
+    #: the ids and attachment objects
+    attachments: Unknownish[typing.Dict[str, Attachment]]
 
 
 @attr.frozen(kw_only=True)

@@ -22,7 +22,7 @@ class GuildScheduledEvent:
     #: scheduled entity type is EXTERNAL
     channel_id: typing.Optional[Snowflake]
     #: the id of the user that created the scheduled event
-    creator_id: typing.Optional[Snowflake] = None
+    creator_id: Unknownish[typing.Optional[Snowflake]] = UNKNOWN
     #: the name of the scheduled event (1-100 characters)
     name: str
     #: the description of the scheduled event (1-1000 characters)

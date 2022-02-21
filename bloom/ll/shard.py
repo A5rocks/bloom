@@ -138,7 +138,7 @@ class _Backoff:
         # 2, 4, 8, 16, 32, 64, 64, 64
         await trio.sleep(
             # exponential wait
-            self.base**self.repeats
+            self.base ** self.repeats
             # random jitter (+- jitter)
             + random.random() * 2 * self.jitter
             - self.jitter
@@ -691,6 +691,27 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
         return {
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
             'member.is_pending'
+        }
+    elif tag == 'STAGE_INSTANCE_DELETE':
+        return {
+            # TODO: what???
+            'invite_code',
+            # TODO: what? presumably linked to guild scheduled events.
+            'guild_scheduled_event_id',
+        }
+    elif tag == 'STAGE_INSTANCE_CREATE':
+        return {
+            # TODO: what???
+            'invite_code',
+            # TODO: what? presumably linked to guild scheduled events.
+            'guild_scheduled_event_id',
+        }
+    elif tag == 'STAGE_INSTANCE_UPDATE':
+        return {
+            # TODO: what???
+            'invite_code',
+            # TODO: what? presumably linked to guild scheduled events.
+            'guild_scheduled_event_id',
         }
 
     return set()

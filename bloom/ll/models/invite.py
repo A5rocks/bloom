@@ -41,7 +41,7 @@ class Invite:
     #: GET /invites/<code> endpoint when with_expiration is true
     expires_at: Unknownish[typing.Optional[datetime.datetime]] = UNKNOWN
     #: stage instance data if there is a public Stage instance in the Stage
-    #: channel this invite is for
+    #: channel this invite is for (deprecated)
     stage_instance: Unknownish[InviteStageInstance] = UNKNOWN
     #: guild scheduled event data, only included if `guild_scheduled_event_id`
     #: contains a valid guild scheduled event id
@@ -69,6 +69,7 @@ class InviteMetadata(Invite):
 
 @attr.frozen(kw_only=True)
 class InviteStageInstance:
+    # this is deprecated
     #: the members speaking in the Stage
     members: typing.List[typing.Dict[str, typing.Any]]
     #: the number of users in the Stage
