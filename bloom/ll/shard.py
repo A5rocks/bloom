@@ -14,6 +14,7 @@ import trio_websocket
 from cattr import Converter
 from cattr.preconf.json import make_converter
 
+import bloom.ll.models as models
 import bloom.ll.models.base as base_models
 import bloom.ll.models.gateway as gateway_models
 import bloom.ll.models.permissions as permission_models
@@ -138,7 +139,7 @@ class _Backoff:
         # 2, 4, 8, 16, 32, 64, 64, 64
         await trio.sleep(
             # exponential wait
-            self.base ** self.repeats
+            self.base**self.repeats
             # random jitter (+- jitter)
             + random.random() * 2 * self.jitter
             - self.jitter
@@ -528,6 +529,8 @@ def _register_converter(converter: Converter) -> Converter:
             return converter.structure(data, type)
 
     converter.register_structure_hook_func(is_unknown, unknown_function)
+
+    models.setup_cattrs(converter)
 
     return converter
 

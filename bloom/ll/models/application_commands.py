@@ -7,7 +7,6 @@ import attr
 
 from bloom.ll.models.base import UNKNOWN, Snowflake, Unknownish
 from bloom.ll.models.channel import AllowedMentions, Attachment, ChannelTypes, Embed
-from bloom.ll.models.guild import GuildMember
 from bloom.ll.models.message_components import Component, SelectOption
 from bloom.ll.models.permissions import Role
 from bloom.ll.models.user import User

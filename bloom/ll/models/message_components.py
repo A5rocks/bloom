@@ -4,6 +4,8 @@ import enum
 import typing
 
 import attr
+import cattr
+import cattr.gen
 
 from bloom.ll.models.base import UNKNOWN, Unknownish
 
@@ -118,3 +120,18 @@ class TextInputStyle(enum.IntEnum):
 
 
 Component = typing.Union[ActionRow, Button, SelectMenu, TextInput]
+
+
+def setup_cattrs(converter: cattr.Converter) -> None:
+    lookup: typing.Dict[int, typing.Callable[[typing.Any], Component]] = {
+        1: cattr.gen.make_dict_structure_fn(ActionRow, converter),
+        2: cattr.gen.make_dict_structure_fn(Button, converter),
+        3: cattr.gen.make_dict_structure_fn(SelectMenu, converter),
+        4: cattr.gen.make_dict_structure_fn(TextInput, converter),
+    }
+
+    # mypy can't infer types here
+    def structure_snowflake(raw: typing.Any, _ty: typing.Type[Component]) -> Component:
+        return lookup[raw["type"]](raw)
+
+    converter.register_structure_hook(Component, structure_snowflake)

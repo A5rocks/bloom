@@ -65,7 +65,7 @@ from bloom.ll.models.guild_scheduled_events import (
 from bloom.ll.models.guild_template import GuildTemplate
 from bloom.ll.models.invite import Invite, InviteMetadata, InviteTargetTypes
 from bloom.ll.models.message import Message
-from bloom.ll.models.message_components import Component
+from bloom.ll.models.message_components import ActionRow, Component
 from bloom.ll.models.oauth2 import AuthorizationInformation
 from bloom.ll.models.permissions import BitwisePermissionFlags, Role
 from bloom.ll.models.stage_instance import PrivacyLevel, StageInstance
@@ -262,7 +262,7 @@ class RawRest:
         tts: Unknownish[bool] = UNKNOWN,
         allowed_mentions: Unknownish[AllowedMentions] = UNKNOWN,
         message_reference: Unknownish[MessageReference] = UNKNOWN,
-        components: Unknownish[typing.Iterable[Component]] = UNKNOWN,
+        components: Unknownish[typing.Iterable[ActionRow]] = UNKNOWN,
         # TODO: partial attachments
         attachments: Unknownish[typing.Iterable[typing.Dict[str, typing.Any]]] = UNKNOWN,
         flags: Unknownish[MessageFlags] = UNKNOWN,

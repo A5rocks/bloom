@@ -337,7 +337,7 @@ class Integration:
     #: currently)
     enable_emoticons: Unknownish[bool] = UNKNOWN
     #: the behavior of expiring subscribers
-    expire_behavior: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
+    expire_behavior: Unknownish[IntegrationExpireBehaviors] = UNKNOWN
     #: the grace period (in days) before expiring subscribers
     expire_grace_period: Unknownish[int] = UNKNOWN
     #: user for this integration
