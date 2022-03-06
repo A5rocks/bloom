@@ -289,6 +289,9 @@ async def _shared_logic(
             # TODO: ???
             elif message['t'] == 'APPLICATION_COMMAND_PERMISSIONS_UPDATE':
                 continue
+            # https://github.com/discord/discord-api-docs/pull/3871
+            elif message['t'] == 'GUILD_JOIN_REQUEST_DELETE':
+                continue
 
             try:
                 model: object = data.converter.structure(message['d'], tags_to_model[message['t']])
