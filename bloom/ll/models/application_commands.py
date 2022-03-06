@@ -162,7 +162,7 @@ class ApplicationCommandInteractionData:
     options: Unknownish[typing.List[ApplicationCommandInteractionDataOption]] = UNKNOWN
     #: the values the user selected
     values: Unknownish[typing.List[SelectOption]] = UNKNOWN
-    #: id the of user or message targetted by a user or message command
+    #: id the of user or message targeted by a user or message command
     target_id: Unknownish[Snowflake] = UNKNOWN
 
 
