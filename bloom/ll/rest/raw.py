@@ -1418,6 +1418,8 @@ class RawRest:
         scheduled_end_time: Unknownish[datetime.datetime] = UNKNOWN,
         description: Unknownish[str] = UNKNOWN,
         entity_type: GuildScheduledEventEntityType,
+        # https://discord.com/developers/docs/reference#image-data
+        image: Unknownish[str] = UNKNOWN,
         reason: Unknownish[str] = UNKNOWN,
     ) -> Request[GuildScheduledEvent]:
         return Request[GuildScheduledEvent](
@@ -1454,7 +1456,6 @@ class RawRest:
             json=prepare(self, {'with_user_count': with_user_count}),
         )
 
-    # TODO: after adding image, check through parameters again
     def modify_guild_scheduled_event(
         self,
         guild_id: Snowflake,
@@ -1469,6 +1470,9 @@ class RawRest:
         description: Unknownish[typing.Optional[str]] = UNKNOWN,
         entity_type: Unknownish[GuildScheduledEventEntityType] = UNKNOWN,
         status: Unknownish[EventStatus] = UNKNOWN,
+        # TODO: this is probably nullable
+        # https://discord.com/developers/docs/reference#image-data
+        image: Unknownish[str] = UNKNOWN,
         reason: Unknownish[str] = UNKNOWN,
     ) -> Request[GuildScheduledEvent]:
         return Request[GuildScheduledEvent](

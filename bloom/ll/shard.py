@@ -605,12 +605,18 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             # https://github.com/discord/discord-api-docs/pull/4001
             'premium_progress_bar_enabled',
         }
+    elif tag == 'THREAD_CREATE':
+        return {
+            # TODO: what's this??
+            'flags'
+        }
     elif tag == 'THREAD_UPDATE':
         return {
             # will be removed soon-ish...
             # in discord developers
             # https://discord.com/channels/613425648685547541/859161948184379403/860543147817697300
             'audience',
+            'flags'
         }
     elif tag == 'THREAD_DELETE':
         return {
