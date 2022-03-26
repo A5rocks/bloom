@@ -227,6 +227,9 @@ class AuditLogChangeKey(enum.Enum):
     #: a "guild" just changed. the values are of type string
     #: description: icon changed
     ICON_HASH = 'icon_hash'
+    #: a "guild scheduled event" just changed. the values are of type string
+    #: description: guild scheduled event cover image changed
+    IMAGE_HASH = 'image_hash'
     #: a "any" just changed. the values are of type snowflake
     #: description: the id of the changed entity - sometimes used in
     #:    conjunction with other keys

@@ -39,6 +39,7 @@ from __future__ import annotations
 
 import collections
 import contextlib
+import math
 import typing
 
 import attr
@@ -124,7 +125,11 @@ class RatelimitingState:
         str, typing.Dict[typing.Optional[typing.Union[int, str]], Bucket]
     ] = attr.Factory(lambda: collections.defaultdict(lambda: {}))
 
-    async def request(self, req: Request[ReturnT]) -> ReturnT:
+    # TODO:
+    #  - basic post-hoc global rl
+    #  - sublimit (add a custom bucket? based on json resp)
+    #  - shared ratelimits between routes (lock on buckets)
+    async def request(self, req: Request[ReturnT], *, max_sleep: float = math.inf) -> ReturnT:
         # this code makes the assumption of only a single major param.
         major_parameter = req.args.get('channel_id') or req.args.get('guild_id')
 
@@ -135,9 +140,10 @@ class RatelimitingState:
             major_parameter = str(req.args['webhook_id']) + str(req.args['webhook_token'])
 
         async with self.locks[req.route][major_parameter]:
-            async with trio.open_nursery() as nursery:
-                for bucket in self.buckets[req.route][major_parameter]:
-                    nursery.start_soon(bucket.wait_for)
+            with trio.fail_after(max_sleep):
+                async with trio.open_nursery() as nursery:
+                    for bucket in self.buckets[req.route][major_parameter]:
+                        nursery.start_soon(bucket.wait_for)
 
             # make the request
             kw_args = {}

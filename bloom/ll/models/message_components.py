@@ -61,11 +61,11 @@ class ButtonStyle(enum.Enum):
 class SelectMenu:
     #: 3 for a select menu
     type: typing.Literal[3, ComponentTypes.SELECT_MENU]
-    #: a developer-defined identifier for the button, max 100 characters
+    #: a developer-defined identifier for the select menu, max 100 characters
     custom_id: str
     #: the choices in the select, max 25
     options: typing.List[SelectOption]
-    #: custom placeholder text if nothing is selected, max 100 characters
+    #: custom placeholder text if nothing is selected, max 150 characters
     placeholder: Unknownish[str] = UNKNOWN
     #: the minimum number of items that must be chosen; default 1, min 0, max
     #: 25
@@ -98,7 +98,7 @@ class TextInput:
     custom_id: str
     #: the Text Input Style
     style: int
-    #: the label for this component
+    #: the label for this component, max 45 characters
     label: str
     #: the minimum input length for a text input, min 0, max 4000
     min_length: Unknownish[int] = UNKNOWN

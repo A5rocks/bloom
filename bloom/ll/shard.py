@@ -301,8 +301,14 @@ async def _shared_logic(
                     differences = _diff_differences(reverse, message['d']) - _allowed_differences(
                         message['t']
                     )
-                    # https://github.com/discord/discord-api-docs/issues/1789
-                    differences = differences - {'guild_hashes'}
+
+                    differences = differences - {
+                        # https://github.com/discord/discord-api-docs/issues/1789
+                        'guild_hashes',
+                        # TODO: what's this attribute?
+                        'hashes',
+                    }
+
                     if differences:
                         raise _MissingKey(message['t'], message['d'], differences)
             except Exception as e:
@@ -616,7 +622,7 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             # in discord developers
             # https://discord.com/channels/613425648685547541/859161948184379403/860543147817697300
             'audience',
-            'flags'
+            'flags',
         }
     elif tag == 'THREAD_DELETE':
         return {
@@ -692,7 +698,9 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
     elif tag == 'INTEGRATION_CREATE':
         return {
             # TODO: what's this?
-            'application.type'
+            'application.type',
+            # TODO: what's this?
+            'application.cover_image',
         }
     elif tag == 'CHANNEL_UPDATE':
         return {

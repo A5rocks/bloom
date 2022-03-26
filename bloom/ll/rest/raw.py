@@ -2018,10 +2018,13 @@ class RawRest:
         return Request[AuthorizationInformation]('GET', '/oauth2/@me', {})
 
     def get_global_application_commands(
-        self, application_id: Snowflake
+        self, application_id: Snowflake, *, with_localizations: Unknownish[bool] = UNKNOWN
     ) -> Request[typing.Tuple[ApplicationCommand, ...]]:
         return Request[typing.Tuple[ApplicationCommand, ...]](
-            'GET', '/applications/{application_id}', {'application_id': application_id}
+            'GET',
+            '/applications/{application_id}',
+            {'application_id': application_id},
+            params=prepare(self, {'with_localizations': with_localizations}),
         )
 
     def create_global_application_command(
@@ -2104,12 +2107,17 @@ class RawRest:
         )
 
     def get_guild_application_commands(
-        self, application_id: Snowflake, guild_id: Snowflake
+        self,
+        application_id: Snowflake,
+        guild_id: Snowflake,
+        *,
+        with_localizations: Unknownish[bool] = UNKNOWN,
     ) -> Request[typing.Tuple[ApplicationCommand, ...]]:
         return Request[typing.Tuple[ApplicationCommand, ...]](
             'GET',
             '/applications/{application_id}/guilds/{guild_id}/commands',
             {'application_id': application_id, 'guild_id': guild_id},
+            params=prepare(self, {'with_localizations': with_localizations}),
         )
 
     def create_guild_application_command(
@@ -2183,6 +2191,8 @@ class RawRest:
             {'application_id': application_id, 'guild_id': guild_id, 'command_id': command_id},
         )
 
+    # TODO: what does this commit mean for this definition?
+    #  https://github.com/discord/discord-api-docs/commit/b6cb8a5a74ea7b47ef0f9076f23168b1262f5e00
     def bulk_overwrite_guild_application_commands(
         self,
         application_id: Snowflake,

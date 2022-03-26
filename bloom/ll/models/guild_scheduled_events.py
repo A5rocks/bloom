@@ -26,7 +26,7 @@ class GuildScheduledEvent:
     #: the name of the scheduled event (1-100 characters)
     name: str
     #: the description of the scheduled event (1-1000 characters)
-    description: str
+    description: typing.Optional[str]
     #: the time the scheduled event will start
     scheduled_start_time: datetime.datetime
     #: the time the scheduled event will end, required if entity_type is

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import enum
+import typing
 
 import attr
 
@@ -23,6 +24,8 @@ class StageInstance:
     privacy_level: PrivacyLevel
     #: Whether or not Stage Discovery is disabled (deprecated)
     discoverable_disabled: bool
+    #: The id of the scheduled event for this Stage instance
+    guild_scheduled_event_id: typing.Optional[Snowflake]
 
 
 class PrivacyLevel(enum.IntEnum):

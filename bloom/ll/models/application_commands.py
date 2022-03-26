@@ -23,8 +23,14 @@ class ApplicationCommand:
     #: 1-32 lowercase character name matching ^[\w-]{1,32}$ if this is a
     #: CHAT_INPUT command, else 1-32 chars.
     name: str
+    #: Localization dictionary for the name field. Values follow the same
+    #: restrictions as name
+    name_localizations: Unknownish[typing.Dict[str, str]] = UNKNOWN
     #: 1-100 character description
     description: str
+    #: Localization dictionary for the description field. Values follow the
+    #: same restrictions as description
+    description_localizations: Unknownish[typing.Dict[str, str]] = UNKNOWN
     #: autoincrementing version identifier updated during substantial record
     #: changes
     version: Snowflake
@@ -33,7 +39,7 @@ class ApplicationCommand:
     #: the parameters for the command (this is only on CHAT_INPUT commands)
     options: Unknownish[typing.List[ApplicationCommandOption]] = UNKNOWN
     #: whether the command is enabled by default when the app is added to a
-    #: guild
+    #: guild (default True)
     default_permission: Unknownish[bool] = UNKNOWN
     #: the type of the application command
     type: Unknownish[CommandTypes] = UNKNOWN
@@ -56,8 +62,14 @@ class ApplicationCommandOption:
     type: ApplicationCommandOptionType
     #: 1-32 lowercase character name matching ^[\w-]{1,32}$
     name: str
+    #: Localization dictionary for the `name` field. Values follow the same
+    #: restrictions as `name`
+    name_localizations: Unknownish[typing.Dict[str, str]] = UNKNOWN
     #: 1-100 character description
     description: str
+    #: Localization dictionary for the `description` field. Values follow the
+    #: same restrictions as `description`
+    description_localizations: Unknownish[typing.Dict[str, str]] = UNKNOWN
     #: if the parameter is required or optional–default false
     required: Unknownish[bool] = UNKNOWN
     #: choices for STRING, INTEGER, and NUMBER types for the user to pick from
@@ -104,6 +116,9 @@ class ApplicationCommandOptionType(enum.Enum):
 class ApplicationCommandOptionChoice:
     #: 1-100 character choice name
     name: str
+    #: Localization dictionary for the `name` field. Values follow the same
+    #: restrictions as `name`
+    name_localizations: Unknownish[typing.Dict[str, str]] = UNKNOWN
     #: value of the choice, up to 100 characters if string
     value: typing.Union[str, int, float]
 
@@ -140,6 +155,7 @@ class InteractionType(enum.Enum):
     APPLICATION_COMMAND = 2
     MESSAGE_COMPONENT = 3
     APPLICATION_COMMAND_AUTOCOMPLETE = 4
+    MODAL_SUBMIT = 5
 
 
 @attr.frozen(kw_only=True)
@@ -164,6 +180,8 @@ class ApplicationCommandInteractionData:
     values: Unknownish[typing.List[SelectOption]] = UNKNOWN
     #: id the of user or message targeted by a user or message command
     target_id: Unknownish[Snowflake] = UNKNOWN
+    #: the values submitted by the user
+    components: Unknownish[typing.List[Component]] = UNKNOWN
 
 
 @attr.frozen(kw_only=True)
@@ -220,6 +238,8 @@ class InteractionCallbackType(enum.Enum):
     #: respond to an autocomplete interaction with (up to 25) suggested
     #: choices
     APPLICATION_COMMAND_AUTOCOMPLETE_RESULT = 8
+    #: respond to an interaction with a popup modal
+    MODAL = 9
 
 
 @attr.frozen(kw_only=True)
@@ -260,3 +280,13 @@ class MessageInteraction:
     #: the member who invoked the interaction in the guild
     # TODO: partial member
     member: Unknownish[typing.Dict[str, typing.Any]] = UNKNOWN
+
+
+@attr.frozen(kw_only=True)
+class Modal:
+    #: a developer-defined identifier for the component, max 100 characters
+    custom_id: str
+    #: the title of the popup modal, max 45 characters
+    title: str
+    #: between 1 and 5 (inclusive) components that make up the modal
+    components: typing.List[Component]
