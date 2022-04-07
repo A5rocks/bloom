@@ -26,10 +26,6 @@ class Application:
     #: when true the app's bot will only join upon completion of the full
     #: oauth2 code grant flow
     bot_require_code_grant: bool
-    #: DEPRECATED: previously if this application was a game sold on Discord,
-    #: this field would be the summary field for the store page of its primary
-    #: SKU; now an empty string
-    summary: str
     #: the hex encoded key for verification in interactions and the GameSDK's
     #: GetTicket
     verify_key: str
@@ -57,6 +53,14 @@ class Application:
     cover_image: Unknownish[str] = UNKNOWN
     #: the application's public flags
     flags: Unknownish[int] = UNKNOWN
+    #: up to 5 tags describing the content and functionality of the
+    #: application
+    tags: Unknownish[typing.List[str]] = UNKNOWN
+    #: settings for the application's default in-app authorization link, if
+    #: enabled
+    install_params: Unknownish[ApplicationInstallParameters] = UNKNOWN
+    #: the application's default custom authorization link, if enabled
+    custom_install_url: Unknownish[str] = UNKNOWN
 
 
 class ApplicationFlags(enum.IntFlag):
@@ -85,3 +89,11 @@ class ApplicationFlags(enum.IntFlag):
     #: Intent required for bots in under 100 servers to receive message
     #: content
     GATEWAY_MESSAGE_CONTENT_LIMITED = 1 << 19
+
+
+@attr.frozen(kw_only=True)
+class ApplicationInstallParameters:
+    #: the scopes to add the application to the server with
+    scopes: typing.List[str]
+    #: the permissions to request for the bot role
+    permissions: str

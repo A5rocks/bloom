@@ -572,6 +572,8 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'is_pending',
             # https://github.com/discord/discord-api-docs/pull/4075
             'communication_disabled_until',
+            # TODO: what's this?
+            'flags',
         }
     elif tag == 'GUILD_MEMBER_ADD':
         return {
@@ -579,6 +581,8 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'is_pending',
             # https://github.com/discord/discord-api-docs/pull/4075
             'communication_disabled_until',
+            # TODO: what's this?
+            'flags',
         }
     elif tag == 'GUILD_CREATE':
         return {
@@ -653,6 +657,8 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'member.is_pending',
             # TODO: seems to be a partial member object? (same partial as on message)
             'interaction.member',
+            # TODO: what?
+            'member.flags',
         }
     elif tag == 'MESSAGE_UPDATE':
         return {
@@ -662,6 +668,8 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'member.is_pending',
             # TODO: seems to be a partial member object? (same partial as on message)
             'interaction.member',
+            # TODO: what?
+            'member.flags',
         }
     elif tag == 'MESSAGE_REACTION_ADD':
         return {
@@ -669,6 +677,8 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'member.hoisted_role',
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
             'member.is_pending',
+            # TODO: what?
+            'member.flags',
         }
     elif tag == 'TYPING_START':
         return {
@@ -676,6 +686,8 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'member.hoisted_role',
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
             'member.is_pending',
+            # TODO: what?
+            'member.flags',
         }
     elif tag == 'VOICE_STATE_UPDATE':
         return {
@@ -683,6 +695,8 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'member.hoisted_role',
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
             'member.is_pending',
+            # TODO: what?
+            'member.flags',
         }
     elif tag == 'THREAD_MEMBERS_UPDATE':
         return {
@@ -701,6 +715,8 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
             'application.type',
             # TODO: what's this?
             'application.cover_image',
+            # https://github.com/discord/discord-api-docs/commit/bada30b7ac4c06c4faec527e0547f9513b78c27f
+            'application.summary',
         }
     elif tag == 'CHANNEL_UPDATE':
         return {
@@ -709,8 +725,12 @@ def _allowed_differences(tag: str) -> typing.Set[str]:
         }
     elif tag == 'INTERACTION_CREATE':
         return {
+            # https://github.com/discord/discord-api-docs/pull/1610
+            'member.hoisted_role',
             # https://github.com/discord/discord-api-docs/pull/2299#issuecomment-742773209
-            'member.is_pending'
+            'member.is_pending',
+            # TODO: what?
+            'member.flags',
         }
     elif tag == 'STAGE_INSTANCE_DELETE':
         return {

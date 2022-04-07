@@ -31,7 +31,7 @@ class Channel:
     #: explicit permission overwrites for members and roles
     permission_overwrites: Unknownish[typing.List[Overwrite]] = UNKNOWN
     #: the name of the channel (1-100 characters)
-    name: Unknownish[str] = UNKNOWN
+    name: Unknownish[typing.Optional[str]] = UNKNOWN
     #: the channel topic (0-1024 characters)
     topic: Unknownish[typing.Optional[str]] = UNKNOWN
     #: whether the channel is nsfw
@@ -94,8 +94,6 @@ class ChannelTypes(enum.Enum):
     GUILD_CATEGORY = 4
     #: a channel that users can follow and crosspost into their own server
     GUILD_NEWS = 5
-    #: a channel in which game developers can sell their game on Discord
-    GUILD_STORE = 6
     #: a temporary sub-channel within a GUILD_NEWS channel
     GUILD_NEWS_THREAD = 10
     #: a temporary sub-channel within a GUILD_TEXT channel
@@ -105,6 +103,8 @@ class ChannelTypes(enum.Enum):
     GUILD_PRIVATE_THREAD = 12
     #: a voice channel for hosting events with an audience
     GUILD_STAGE_VOICE = 13
+    #: the channel in a hub containing the listed servers
+    GUILD_DIRECTORY = 14
 
 
 class VideoQualityModes(enum.Enum):

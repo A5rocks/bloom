@@ -90,7 +90,7 @@ class Guild:
     presences: Unknownish[typing.List[typing.Dict[str, typing.Any]]] = UNKNOWN
     #: the vanity url code for the guild
     vanity_url_code: typing.Optional[str]
-    #: the description of a Community guild
+    #: the description of a guild
     description: typing.Optional[str]
     #: banner hash
     banner: typing.Optional[str]
@@ -206,6 +206,8 @@ class SystemChannelFlags(enum.IntFlag):
 
 
 class GuildFeatures(enum.Enum):
+    #: guild has access to set an animated guild banner image
+    ANIMATED_BANNER = 'ANIMATED_BANNER'
     #: guild has access to set an animated guild icon
     ANIMATED_ICON = 'ANIMATED_ICON'
     #: guild has access to set a guild banner image
@@ -377,8 +379,6 @@ class IntegrationApplication:
     icon: typing.Optional[str]
     #: the description of the app
     description: str
-    #: the summary of the app
-    summary: str
     #: the bot associated with this application
     bot: Unknownish[User] = UNKNOWN
 

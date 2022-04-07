@@ -47,13 +47,11 @@ class User:
 
 
 class UserFlags(enum.IntFlag):
-    #: None
-    NONE = 0
     #: Discord Employee
     STAFF = 1 << 0
     #: Partnered Server Owner
     PARTNER = 1 << 1
-    #: HypeSquad Events Coordinator
+    #: HypeSquad Events Member
     HYPESQUAD = 1 << 2
     #: Bug Hunter Level 1
     BUG_HUNTER_LEVEL_1 = 1 << 3

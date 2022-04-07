@@ -25,12 +25,12 @@ class ApplicationCommand:
     name: str
     #: Localization dictionary for the name field. Values follow the same
     #: restrictions as name
-    name_localizations: Unknownish[typing.Dict[str, str]] = UNKNOWN
+    name_localizations: Unknownish[typing.Optional[typing.Dict[str, str]]] = UNKNOWN
     #: 1-100 character description
     description: str
     #: Localization dictionary for the description field. Values follow the
     #: same restrictions as description
-    description_localizations: Unknownish[typing.Dict[str, str]] = UNKNOWN
+    description_localizations: Unknownish[typing.Optional[typing.Dict[str, str]]] = UNKNOWN
     #: autoincrementing version identifier updated during substantial record
     #: changes
     version: Snowflake
@@ -64,12 +64,12 @@ class ApplicationCommandOption:
     name: str
     #: Localization dictionary for the `name` field. Values follow the same
     #: restrictions as `name`
-    name_localizations: Unknownish[typing.Dict[str, str]] = UNKNOWN
+    name_localizations: Unknownish[typing.Optional[typing.Dict[str, str]]] = UNKNOWN
     #: 1-100 character description
     description: str
     #: Localization dictionary for the `description` field. Values follow the
     #: same restrictions as `description`
-    description_localizations: Unknownish[typing.Dict[str, str]] = UNKNOWN
+    description_localizations: Unknownish[typing.Optional[typing.Dict[str, str]]] = UNKNOWN
     #: if the parameter is required or optional–default false
     required: Unknownish[bool] = UNKNOWN
     #: choices for STRING, INTEGER, and NUMBER types for the user to pick from
@@ -118,7 +118,7 @@ class ApplicationCommandOptionChoice:
     name: str
     #: Localization dictionary for the `name` field. Values follow the same
     #: restrictions as `name`
-    name_localizations: Unknownish[typing.Dict[str, str]] = UNKNOWN
+    name_localizations: Unknownish[typing.Optional[typing.Dict[str, str]]] = UNKNOWN
     #: value of the choice, up to 100 characters if string
     value: typing.Union[str, int, float]
 
@@ -176,6 +176,8 @@ class ApplicationCommandInteractionData:
     resolved: Unknownish[ApplicationCommandInteractionDataResolved] = UNKNOWN
     #: the params + values from the user
     options: Unknownish[typing.List[ApplicationCommandInteractionDataOption]] = UNKNOWN
+    #: the id of the guild the command is registered to
+    guild_id: Unknownish[int] = UNKNOWN
     #: the values the user selected
     values: Unknownish[typing.List[SelectOption]] = UNKNOWN
     #: id the of user or message targeted by a user or message command

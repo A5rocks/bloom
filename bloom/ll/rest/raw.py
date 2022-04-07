@@ -1071,9 +1071,20 @@ class RawRest:
             headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
 
-    def get_guild_bans(self, guild_id: Snowflake) -> Request[typing.Tuple[Ban, ...]]:
+    # TODO: before/after can probably take null.
+    def get_guild_bans(
+        self,
+        guild_id: Snowflake,
+        *,
+        limit: Unknownish[int] = UNKNOWN,
+        before: Unknownish[int] = UNKNOWN,
+        after: Unknownish[int] = UNKNOWN,
+    ) -> Request[typing.Tuple[Ban, ...]]:
         return Request[typing.Tuple[Ban, ...]](
-            'GET', '/guilds/{guild_id}/bans', {'guild_id': guild_id}
+            'GET',
+            '/guilds/{guild_id}/bans',
+            {'guild_id': guild_id},
+            params={'limit': limit, 'before': before, 'after': after},
         )
 
     def get_guild_ban(self, guild_id: Snowflake, user_id: Snowflake) -> Request[Ban]:
@@ -1634,6 +1645,7 @@ class RawRest:
         channel_id: Snowflake,
         topic: str,
         privacy_level: Unknownish[PrivacyLevel] = UNKNOWN,
+        send_start_notification: Unknownish[bool] = UNKNOWN,
         reason: Unknownish[str] = UNKNOWN,
     ) -> Request[StageInstance]:
         return Request[StageInstance](
@@ -1641,7 +1653,13 @@ class RawRest:
             '/stage-instances',
             {},
             json=prepare(
-                self, {'channel_id': channel_id, 'topic': topic, 'privacy_level': privacy_level}
+                self,
+                {
+                    'channel_id': channel_id,
+                    'topic': topic,
+                    'privacy_level': privacy_level,
+                    'send_start_notification': send_start_notification,
+                },
             ),
             headers=prepare(self, {'X-Audit-Log-Reason': parse_reason(reason)}),
         )
@@ -2032,7 +2050,9 @@ class RawRest:
         application_id: Snowflake,
         *,
         name: str,
+        name_localizations: Unknownish[typing.Optional[typing.Dict[str, str]]] = UNKNOWN,
         description: str,
+        description_localizations: Unknownish[typing.Optional[typing.Dict[str, str]]] = UNKNOWN,
         options: Unknownish[typing.Iterable[ApplicationCommandOption]] = UNKNOWN,
         default: Unknownish[bool] = UNKNOWN,
         type: Unknownish[CommandTypes] = UNKNOWN,
@@ -2045,7 +2065,9 @@ class RawRest:
                 self,
                 {
                     'name': name,
+                    'name_localizations': name_localizations,
                     'description': description,
+                    'description_localizations': description_localizations,
                     'options': tuple_(options),
                     'default': default,
                     'type': type,
@@ -2068,7 +2090,9 @@ class RawRest:
         command_id: Snowflake,
         *,
         name: Unknownish[str] = UNKNOWN,
+        name_localizations: Unknownish[typing.Optional[typing.Dict[str, str]]] = UNKNOWN,
         description: Unknownish[str] = UNKNOWN,
+        description_localizations: Unknownish[typing.Optional[typing.Dict[str, str]]] = UNKNOWN,
         options: Unknownish[typing.Iterable[ApplicationCommandOption]] = UNKNOWN,
         default_permission: Unknownish[bool] = UNKNOWN,
     ) -> Request[ApplicationCommand]:
@@ -2126,7 +2150,9 @@ class RawRest:
         guild_id: Snowflake,
         *,
         name: str,
+        name_localizations: Unknownish[typing.Optional[typing.Dict[str, str]]] = UNKNOWN,
         description: str,
+        description_localizations: Unknownish[typing.Optional[typing.Dict[str, str]]] = UNKNOWN,
         options: Unknownish[typing.Iterable[ApplicationCommandOption]] = UNKNOWN,
         default: Unknownish[bool] = UNKNOWN,
         type: Unknownish[CommandTypes] = UNKNOWN,
@@ -2163,7 +2189,9 @@ class RawRest:
         command_id: Snowflake,
         *,
         name: Unknownish[str] = UNKNOWN,
+        name_localizations: Unknownish[typing.Optional[typing.Dict[str, str]]] = UNKNOWN,
         description: Unknownish[str] = UNKNOWN,
+        description_localizations: Unknownish[typing.Optional[typing.Dict[str, str]]] = UNKNOWN,
         options: Unknownish[typing.Iterable[ApplicationCommandOption]] = UNKNOWN,
         default_permission: Unknownish[bool] = UNKNOWN,
     ) -> Request[ApplicationCommand]:
@@ -2191,7 +2219,7 @@ class RawRest:
             {'application_id': application_id, 'guild_id': guild_id, 'command_id': command_id},
         )
 
-    # TODO: what does this commit mean for this definition?
+    # TODO: what does this commit mean for this definition? (or is this definition even right?)
     #  https://github.com/discord/discord-api-docs/commit/b6cb8a5a74ea7b47ef0f9076f23168b1262f5e00
     def bulk_overwrite_guild_application_commands(
         self,
