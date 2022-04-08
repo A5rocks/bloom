@@ -123,7 +123,9 @@ Component = typing.Union[ActionRow, Button, SelectMenu, TextInput]
 
 
 def setup_cattrs(converter: cattr.Converter) -> None:
-    lookup: typing.Dict[int, typing.Callable[[typing.Any], Component]] = {
+    lookup: typing.Dict[
+        int, typing.Callable[[typing.Mapping[str, typing.Any], typing.Any], Component]
+    ] = {
         1: cattr.gen.make_dict_structure_fn(ActionRow, converter),
         2: cattr.gen.make_dict_structure_fn(Button, converter),
         3: cattr.gen.make_dict_structure_fn(SelectMenu, converter),
@@ -131,7 +133,7 @@ def setup_cattrs(converter: cattr.Converter) -> None:
     }
 
     # mypy can't infer types here
-    def structure_snowflake(raw: typing.Any, _ty: typing.Type[Component]) -> Component:
-        return lookup[raw["type"]](raw)
+    def structure_snowflake(raw: typing.Any, ty: typing.Type[Component]) -> Component:
+        return lookup[raw["type"]](raw, ty)
 
     converter.register_structure_hook(Component, structure_snowflake)
